@@ -9,6 +9,9 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Multi-page quote videos (up to 10 quotes from your book, one per page)
 - Book promo end card: your cover, book title, call to action (e.g. "Get the book on Amazon") and a small line (e.g. "Link in description ↓")
 - Channel handle shown on every frame (e.g. `@yourchannel`)
+- Keyword highlights: wrap words in `*asterisks*` to colour and underline them
+- Animated backgrounds (drifting light, bokeh, film texture) and a slow push-in so every frame has motion
+- Quote text auto-sizes to fit the frame, and the live preview uses the same renderer as the exported video
 - Formats: 9:16 (Shorts / Reels / TikTok), 16:9, 1:1
 - Text animations, page transitions and background presets
 - Live preview before rendering

@@ -28,6 +28,7 @@
     .app{max-width:none;margin:0;padding:0;display:grid;grid-template-columns:420px minmax(0,1fr);height:100vh;overflow:hidden}
     .sidebar{display:flex;flex-direction:column;min-height:0;background:#fffdf7;border-right:1px solid #e4ded2}.side-head{display:flex;flex-direction:column;gap:5px;padding:20px 24px 16px;border-bottom:1px solid #e4ded2}.side-head .appmeta{color:var(--blue)}.side-scroll{flex:1;min-height:0;overflow-y:auto;padding:0 24px 26px}.side-foot{padding:16px 24px 18px;border-top:1px solid #e4ded2;background:#fffdf7}.side-foot .generate{margin-top:0}.side-foot .helper{margin-top:9px}.sidebar .setup-grid{grid-template-columns:1fr}.sidebar .setup-grid label{margin:12px 0 7px}
     main.stage-wrap{display:flex;flex-direction:column;min-width:0;min-height:0;border:0;border-radius:0;box-shadow:none;background:radial-gradient(circle at 50% 45%,#12323e 0,#0b2530 45%,#061820 100%);color:#fff}.stage-bar,.stage-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 28px}.stage-bar{border-bottom:1px solid #ffffff14}.stage-foot{border-top:1px solid #ffffff14}.stage-info{display:flex;gap:16px;font:500 11px "DM Mono";text-transform:uppercase;letter-spacing:.07em}.stage-bar .tool-buttons button{padding:9px 15px}.stage-bar #export{background:linear-gradient(110deg,#fc601c,#e7450c);border-color:#fc601c}.stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:28px;overflow:hidden}.stage .phone{flex:0 0 auto;width:335px;transition:none}.stage .phone[data-format="landscape"]{width:520px}.stage .phone[data-format="square"]{width:390px}.local-note{font:500 11px "DM Mono";color:#b8c8cf;white-space:nowrap}.stage-foot .status{margin:0;text-align:right}
+    .phone canvas{position:absolute;inset:0;width:100%;height:100%;display:block}.counter{display:flex;justify-content:space-between;gap:10px}.counter .tip{font:400 11px "DM Sans",Arial,sans-serif;color:#7a8387}.counter .tip b{color:var(--blue);font-weight:600}
     .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:14px 24px 2px;padding:4px;background:#f1ece2;border-radius:12px}.tab{border:0;background:transparent;border-radius:9px;padding:9px 4px;font:600 13px "DM Sans",Arial,sans-serif;color:#5d6a70}.tab b{display:inline-grid;place-items:center;width:18px;height:18px;margin-right:4px;border-radius:50%;background:#e2dccf;font:600 10px "DM Mono";color:#5d6a70}.tab.active{background:#fff;color:var(--ink);box-shadow:0 1px 3px #081c2522}.tab.active b{background:var(--blue);color:#fff}.tab:focus-visible{outline:2px solid var(--blue)}
     .panel[hidden]{display:none}.panel>label:first-child,.panel>.pages-head:first-child{margin-top:20px}.sidebar label{margin:18px 0 8px}.sidebar .pages-head{margin-top:20px}.sidebar .pages-head label{margin:0}.field:after{content:"▾";font-size:13px;bottom:14px;color:#8a9499}.field.text:after{content:""}
     .segmented{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.segmented button{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid #ded8cc;border-radius:11px;background:#fcfaf4;padding:11px 6px;font:700 15px "DM Sans",Arial,sans-serif;color:var(--ink)}.segmented small{font:500 9px "DM Mono";letter-spacing:.06em;text-transform:uppercase;opacity:.65}.segmented button:hover{border-color:var(--ink)}.segmented button.active{background:var(--ink);border-color:var(--ink);color:#fff}
@@ -45,7 +46,7 @@
       <div class="side-scroll">
         <section class="panel" data-panel="quotes">
           <div class="pages-head"><label>Pages</label><span class="page-summary" id="pageSummary">1 page · 6s total</span></div><div class="page-strip" id="pageStrip"></div>
-          <label for="quote">Quote</label><textarea id="quote" maxlength="260">“Every chapter you finish is a promise you kept to yourself.”</textarea><div class="counter"><span id="count">76</span> / 260</div>
+          <label for="quote">Quote</label><textarea id="quote" maxlength="260">“Every chapter you finish is a *promise* you kept to yourself.”</textarea><div class="counter"><span class="tip">Wrap words in <b>*asterisks*</b> to highlight them</span><span><span id="count">63</span> / 260</span></div>
           <label for="source">Book &amp; author</label><div class="field text"><input id="source" value="The Quiet Work · J. Rivers" placeholder="Book title · Author name" maxlength="80" /></div>
         </section>
         <section class="panel" data-panel="style" hidden>
@@ -71,82 +72,141 @@
     </aside>
     <main class="stage-wrap">
       <div class="stage-bar"><div class="stage-info"><span>Live canvas</span><span class="ratio"><span id="formatLabel">9:16</span> / <span id="durationLabel">0:06</span></span></div><div class="tool-buttons"><button id="playPreview">▶ Play preview</button><button id="export">Render</button></div></div>
-      <div class="stage" id="stage"><div class="phone" id="phone" data-format="portrait" data-theme="calm"><div class="film"></div><div class="grain"></div><div class="quote-group" id="previewGroup"><div class="quote-mark">“</div><div class="video-copy" id="previewQuote"></div><div class="credit" id="previewSource">— The Quiet Work · J. Rivers</div></div><div class="end-card" id="endCard"><img id="endCoverImg" alt="" hidden /><div class="end-title" id="endTitleText"></div><div class="end-cta" id="endCtaText"></div><div class="end-sub" id="endSubText"></div></div><div class="handle" id="previewHandle"></div><div class="progress"><b id="previewProgress"></b></div></div></div>
+      <div class="stage" id="stage"><div class="phone" id="phone" data-format="portrait" data-theme="calm"><canvas id="previewCanvas" width="648" height="1152" aria-label="Live video preview"></canvas></div></div>
       <div class="stage-foot"><span class="local-note">No AI · 100% local render</span><div class="status" id="status">Ready to render a real video.</div></div>
     </main>
   </div><canvas id="renderCanvas" width="1080" height="1920" hidden></canvas><div class="toast" id="toast">Video rendered and downloaded.</div>
   <script>
-    const quote=document.querySelector('#quote'),preview=document.querySelector('#previewQuote'),previewGroup=document.querySelector('#previewGroup'),count=document.querySelector('#count'),source=document.querySelector('#source'),ps=document.querySelector('#previewSource'),phone=document.querySelector('#phone'),status=document.querySelector('#status'),toast=document.querySelector('#toast'),durationSelect=document.querySelector('#duration'),durationLabel=document.querySelector('#durationLabel'),formatSelect=document.querySelector('#format'),formatLabel=document.querySelector('#formatLabel'),textAnimationSelect=document.querySelector('#textAnimation'),transitionSelect=document.querySelector('#transition'),renderMeta=document.querySelector('#renderMeta'),previewProgress=document.querySelector('#previewProgress'),renderButton=document.querySelector('#generate'),exportButton=document.querySelector('#export'),pageStrip=document.querySelector('#pageStrip'),pageSummary=document.querySelector('#pageSummary');
-    const endEnabled=document.querySelector('#endEnabled'),endFields=document.querySelector('#endFields'),endCoverInput=document.querySelector('#endCover'),coverName=document.querySelector('#coverName'),endTitle=document.querySelector('#endTitle'),endCta=document.querySelector('#endCta'),endSub=document.querySelector('#endSub'),endSeconds=document.querySelector('#endSeconds'),handleInput=document.querySelector('#handle'),endCard=document.querySelector('#endCard'),endCoverImg=document.querySelector('#endCoverImg'),endTitleText=document.querySelector('#endTitleText'),endCtaText=document.querySelector('#endCtaText'),endSubText=document.querySelector('#endSubText'),previewHandle=document.querySelector('#previewHandle');let coverImage=null;
+    const $=selector=>document.querySelector(selector);
+    const quote=$('#quote'),count=$('#count'),source=$('#source'),phone=$('#phone'),status=$('#status'),toast=$('#toast'),durationSelect=$('#duration'),durationLabel=$('#durationLabel'),formatSelect=$('#format'),formatLabel=$('#formatLabel'),textAnimationSelect=$('#textAnimation'),transitionSelect=$('#transition'),renderMeta=$('#renderMeta'),renderButton=$('#generate'),exportButton=$('#export'),pageStrip=$('#pageStrip'),pageSummary=$('#pageSummary'),previewCanvas=$('#previewCanvas'),renderCanvas=$('#renderCanvas');
+    const endEnabled=$('#endEnabled'),endFields=$('#endFields'),endCoverInput=$('#endCover'),coverName=$('#coverName'),endTitle=$('#endTitle'),endCta=$('#endCta'),endSub=$('#endSub'),endSeconds=$('#endSeconds'),handleInput=$('#handle');
     const FORMATS={portrait:{label:'9:16',width:1080,height:1920},landscape:{label:'16:9',width:1920,height:1080},square:{label:'1:1',width:1080,height:1080}};
-    let pages=[{quote:'“Every chapter you finish is a promise you kept to yourself.”',source:'The Quiet Work · J. Rivers'}],currentPage=0,selectedTheme='calm',rendering=false,previewTimer=null;
-    function cleanQuote(text){return text.replace(/[“”]/g,'').trim()||'Your words belong here.'}
+    let pages=[{quote:'“Every chapter you finish is a *promise* you kept to yourself.”',source:'The Quiet Work · J. Rivers'}],currentPage=0,selectedTheme='calm',rendering=false,coverImage=null,playStart=null,previewEnd=false;
+
+    // ---------- Editor state ----------
+    function cleanQuote(text){return text.replace(/[“”"]/g,'').trim()||'Your words belong here.'}
     function formatTime(seconds){const m=Math.floor(seconds/60),s=seconds%60;return m+':'+String(s).padStart(2,'0')}
     function quoteDuration(){return pages.length*Number(durationSelect.value)}
     function endDuration(){return endEnabled.checked?Number(endSeconds.value):0}
     function totalDuration(){return quoteDuration()+endDuration()}
     function saveCurrent(){pages[currentPage]={quote:quote.value,source:source.value.trim()||'Unknown author'}}
-    function setPreviewText(text,animate=false){
-      const value=cleanQuote(text),mode=textAnimationSelect.value;preview.innerHTML='';preview.className='video-copy';
-      if(mode==='word'){value.split(/\s+/).forEach((word,index)=>{const span=document.createElement('span');span.className='word';span.textContent=word;span.style.animationDelay=(.08+index*.055)+'s';preview.appendChild(span)})}
-      else if(mode==='line'){const words=value.split(/\s+/),size=formatSelect.value==='landscape'?7:5;for(let i=0;i<words.length;i+=size){const span=document.createElement('span');span.className='line';span.textContent=words.slice(i,i+size).join(' ');span.style.animationDelay=(.08+(i/size)*.16)+'s';preview.appendChild(span)}}
-      else preview.textContent=mode==='type'&&animate?'':value;
-      if(animate){preview.classList.add('animate','anim-'+mode)}
-    }
-    function resetPreviewMotion(){previewGroup.style.transform='translateY(-50%)';previewGroup.style.opacity='1'}
-    function refresh(){saveCurrent();setPreviewText(quote.value);resetPreviewMotion();count.textContent=quote.value.length;ps.textContent='— '+source.value.trim();updateSummary()}
+    function refresh(){saveCurrent();count.textContent=quote.value.length;updateSummary()}
     function updateSummary(){const total=totalDuration();pageSummary.textContent=`${pages.length} page${pages.length===1?'':'s'}${endEnabled.checked?' + end card':''} · ${formatTime(total)} total`;durationLabel.textContent=formatTime(total)}
-    function updateSetup(showStatus=true){const config=FORMATS[formatSelect.value]||FORMATS.portrait;phone.dataset.format=formatSelect.value;formatLabel.textContent=config.label;renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · nothing is uploaded`;setPreviewText(quote.value);resetPreviewMotion();if(showStatus)status.textContent=`${config.label} format · ${textAnimationSelect.options[textAnimationSelect.selectedIndex].text} · ${transitionSelect.options[transitionSelect.selectedIndex].text}.`}
+    function updateSetup(showStatus=true){const config=FORMATS[formatSelect.value]||FORMATS.portrait;phone.dataset.format=formatSelect.value;formatLabel.textContent=config.label;renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · nothing is uploaded`;previewCanvas.width=Math.round(config.width*PREVIEW_SCALE);previewCanvas.height=Math.round(config.height*PREVIEW_SCALE);if(showStatus)status.textContent=`${config.label} format · ${textAnimationSelect.options[textAnimationSelect.selectedIndex].text} · ${transitionSelect.options[transitionSelect.selectedIndex].text}.`}
     function renderPageStrip(){pageStrip.innerHTML='';pages.forEach((page,index)=>{const b=document.createElement('button');b.className='page-chip'+(index===currentPage?' active':'');b.textContent='PAGE '+String(index+1).padStart(2,'0');b.addEventListener('click',()=>selectPage(index));pageStrip.appendChild(b)});const add=document.createElement('button');add.className='page-add';add.textContent='＋';add.title='Add page';add.disabled=pages.length>=10;add.addEventListener('click',addPage);pageStrip.appendChild(add);if(pages.length>1){const del=document.createElement('button');del.className='page-delete';del.textContent='Delete';del.addEventListener('click',deletePage);pageStrip.appendChild(del)}updateSummary()}
-    function selectPage(index){saveCurrent();currentPage=index;quote.value=pages[index].quote;source.value=pages[index].source;renderPageStrip();refresh();status.textContent=`Editing page ${index+1} of ${pages.length}.`}
-    function addPage(){if(pages.length>=10)return;saveCurrent();pages.push({quote:'Write the next quote here.',source:pages[currentPage].source});currentPage=pages.length-1;quote.value=pages[currentPage].quote;source.value=pages[currentPage].source;renderPageStrip();refresh();status.textContent=`Page ${pages.length} added.`}
+    function selectPage(index){saveCurrent();currentPage=index;quote.value=pages[index].quote;source.value=pages[index].source;renderPageStrip();refresh();showEnd(false);status.textContent=`Editing page ${index+1} of ${pages.length}.`}
+    function addPage(){if(pages.length>=10)return;saveCurrent();pages.push({quote:'Write the next *quote* here.',source:pages[currentPage].source});currentPage=pages.length-1;quote.value=pages[currentPage].quote;source.value=pages[currentPage].source;renderPageStrip();refresh();showEnd(false);status.textContent=`Page ${pages.length} added.`}
     function deletePage(){if(pages.length===1)return;pages.splice(currentPage,1);currentPage=Math.min(currentPage,pages.length-1);quote.value=pages[currentPage].quote;source.value=pages[currentPage].source;renderPageStrip();refresh();status.textContent='Page removed.'}
-    quote.addEventListener('input',refresh);source.addEventListener('input',refresh);durationSelect.addEventListener('change',()=>{updateSummary();status.textContent='Page duration updated.'});formatSelect.addEventListener('change',updateSetup);textAnimationSelect.addEventListener('change',()=>updateSetup());transitionSelect.addEventListener('change',()=>updateSetup());renderPageStrip();updateSetup(false);refresh();
-    document.querySelectorAll('.preset').forEach(p=>p.addEventListener('click',()=>{document.querySelector('.preset.active').classList.remove('active');p.classList.add('active');selectedTheme=p.dataset.theme;phone.dataset.theme=selectedTheme;document.documentElement.style.setProperty('--acid',selectedTheme==='noir'?'#f05216':selectedTheme==='editorial'?'#f1b449':'#f05216');status.textContent='Background updated.'}));
+    function showEnd(on){previewEnd=on;if(on)playStart=null}
+    function updateEndCard(){endFields.classList.toggle('off',!endEnabled.checked);updateSummary()}
 
-    function showEnd(on){phone.classList.toggle('show-end',on)}
-    function updateEndCard(){endTitleText.textContent=endTitle.value.trim();endCtaText.textContent=endCta.value.trim()||'Get the book';endSubText.textContent=endSub.value.trim();endCoverImg.hidden=!coverImage;previewHandle.textContent=handleInput.value.trim();endFields.classList.toggle('off',!endEnabled.checked);updateSummary()}
-    [endTitle,endCta,endSub].forEach(el=>el.addEventListener('input',()=>{updateEndCard();showEnd(endEnabled.checked)}));
-    endSeconds.addEventListener('change',()=>{updateEndCard();showEnd(endEnabled.checked)});handleInput.addEventListener('input',updateEndCard);
-    endEnabled.addEventListener('change',()=>{updateEndCard();showEnd(endEnabled.checked);status.textContent=endEnabled.checked?'End card on.':'End card off.'});
-    [quote,source].forEach(el=>el.addEventListener('focus',()=>showEnd(false)));
-    endCoverInput.addEventListener('change',()=>{const file=endCoverInput.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{coverImage=img;endCoverImg.src=reader.result;coverName.textContent=file.name.length>24?file.name.slice(0,21)+'…':file.name;updateEndCard();showEnd(endEnabled.checked);status.textContent='Book cover added.'};img.src=reader.result};reader.readAsDataURL(file)});
-    updateEndCard();
-
-    function easeOut(t){return 1-Math.pow(1-t,3)}
-    function nudgeCurve(t){t=Math.max(0,Math.min(1,t));if(t<.2)return .1*Math.pow(t/.2,3);if(t<.38)return .1+.65*((t-.2)/.18);return .75+.25*(1-Math.pow(1-(t-.38)/.62,4))}
+    // ---------- Drawing ----------
     const SERIF='"Playfair Display", Georgia, serif',SANS='"DM Sans", Arial, sans-serif',MONO='"DM Mono", "Courier New", monospace';
+    const THEMES={
+      calm:{bg:['#12323e','#030d17'],accent:'#f05216',text:'#ffffff',glow2:'#2f8fa3',glow:.42,particle:'#ffd9c2',scan:.05,grain:.06,vignette:.55},
+      noir:{bg:['#fffdf7','#e6d9c2'],accent:'#f05216',text:'#081c25',glow2:'#f1b449',glow:.2,particle:'#b8873f',scan:.03,grain:.05,vignette:.14},
+      editorial:{bg:['#f05216','#7d2209'],accent:'#f1b449',text:'#faf8f1',glow2:'#ffcf6e',glow:.32,particle:'#fff2d0',scan:.04,grain:.06,vignette:.42}
+    };
+    const PREVIEW_SCALE=.6;
+    function clamp01(v){return Math.max(0,Math.min(1,v))}
+    function easeOut(t){return 1-Math.pow(1-t,3)}
+    function nudgeCurve(t){t=clamp01(t);if(t<.2)return .1*Math.pow(t/.2,3);if(t<.38)return .1+.65*((t-.2)/.18);return .75+.25*(1-Math.pow(1-(t-.38)/.62,4))}
+    function hash(n){const x=Math.sin(n*127.1+311.7)*43758.5453;return x-Math.floor(x)}
+    function rgba(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`}
     function setTracking(ctx,px){if('letterSpacing' in ctx)ctx.letterSpacing=px+'px'}
     function loadVideoFonts(){const specs=['600 76px "Playfair Display"','500 30px "DM Mono"','700 40px "DM Sans"'];if(!document.fonts)return Promise.resolve();return Promise.race([Promise.all(specs.map(f=>document.fonts.load(f))).catch(()=>{}),new Promise(r=>setTimeout(r,4000))])}
-    function balanceText(ctx,text,maxWidth){const lines=wrapText(ctx,text,maxWidth);if(lines.length<2)return lines;let lo=maxWidth*.4,hi=maxWidth;for(let i=0;i<14;i++){const mid=(lo+hi)/2;if(wrapText(ctx,text,mid).length>lines.length)lo=mid;else hi=mid}return wrapText(ctx,text,hi)}
-    function wrapText(ctx,text,maxWidth){const words=text.split(/\s+/),lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word}else line=test}if(line)lines.push(line);return lines}
-    function drawFrame(ctx,t,w,h){
-      setTracking(ctx,0);
-      const palettes={calm:['#12323e','#030d17','#f05216','#ffffff'],noir:['#fffdf7','#e8ddc9','#f05216','#081c25'],editorial:['#f05216','#8e280b','#f1b449','#faf8f1']},colors=palettes[selectedTheme]||palettes.calm;
-      const gradient=ctx.createLinearGradient(0,0,w,h);gradient.addColorStop(0,colors[0]);gradient.addColorStop(1,colors[1]);ctx.fillStyle=gradient;ctx.fillRect(0,0,w,h);
-      ctx.globalAlpha=.1;for(let i=0;i<170;i++){const x=(i*83+t*24)%w,y=(i*131)%h,s=(i%3)+1;ctx.fillStyle=i%2?'#ffffff':'#000000';ctx.fillRect(x,y,s,s)}ctx.globalAlpha=1;
-      if(endEnabled.checked&&t>=quoteDuration())drawEndCard(ctx,t-quoteDuration(),w,h,colors);else{
-      const secondsPerPage=Number(durationSelect.value)||4,rawScene=Math.floor((Number(t)||0)/secondsPerPage),sceneIndex=Math.max(0,Math.min(pages.length-1,rawScene)),sceneTime=(Number(t)||0)-sceneIndex*secondsPerPage,page=pages[sceneIndex]||pages[0]||{quote:'Your words belong here.',source:'Unknown author'},exit=Math.min(1,Math.max(0,(sceneTime-(secondsPerPage-.6))/.6)),curve=nudgeCurve(exit),transition=transitionSelect.value;
-      let groupX=0,groupY=0,groupScale=1,groupAlpha=1;if(transition==='slide-left')groupX=-w*1.18*curve;else if(transition==='slide-up')groupY=-h*1.08*curve;else if(transition==='fade')groupAlpha=1-curve;else if(transition==='zoom'){groupScale=1-.45*curve;groupAlpha=1-curve*.78}
-      ctx.save();ctx.globalAlpha=groupAlpha;ctx.translate(w/2+groupX,h/2+groupY);ctx.scale(groupScale,groupScale);ctx.translate(-w/2,-h/2);
-      const text=cleanQuote(page.quote),words=text.split(/\s+/),isLandscape=w>h*1.25,isSquare=Math.abs(w-h)<20,fontSize=isLandscape?92:isSquare?72:90,maxWidth=isLandscape?w*.76:isSquare?w*.877:w*.857;
-      ctx.textAlign='center';ctx.font=`600 ${fontSize}px ${SERIF}`;setTracking(ctx,-.04*fontSize);const lines=balanceText(ctx,text,maxWidth),lineHeight=fontSize*1.08,blockHeight=lines.length*lineHeight,startY=h/2-blockHeight/2+fontSize*.38,mode=textAnimationSelect.value;
-      let entryAlpha=1,entryY=0;if(mode==='fade'){const p=easeOut(Math.max(0,Math.min(1,(sceneTime-.12)/.72)));entryAlpha=p;entryY=(1-p)*fontSize*.6}ctx.save();ctx.globalAlpha*=entryAlpha;ctx.translate(0,entryY);
-      ctx.fillStyle=colors[2];ctx.font=`600 ${fontSize*2.3}px ${SERIF}`;ctx.fillText('“',w/2,startY-fontSize*1.38);
-      ctx.fillStyle=colors[3];ctx.font=`600 ${fontSize}px ${SERIF}`;
-      if(mode==='word'){
-        let wordIndex=0;lines.forEach((line,lineIndex)=>{const lineWords=line.split(/\s+/),lineWidth=ctx.measureText(line).width;let x=w/2-lineWidth/2;lineWords.forEach(word=>{const delay=.18+wordIndex*.07,p=Math.max(0,Math.min(1,(sceneTime-delay)/.26)),width=ctx.measureText(word).width;if(p>0){ctx.save();ctx.globalAlpha*=easeOut(p);ctx.textAlign='left';ctx.fillText(word,x,startY+lineIndex*lineHeight+(1-easeOut(p))*fontSize*.84);ctx.restore()}x+=width+ctx.measureText(' ').width;wordIndex++})})
-      }else if(mode==='line'){
-        lines.forEach((line,index)=>{const p=Math.max(0,Math.min(1,(sceneTime-.16-index*.18)/.36));if(p>0){ctx.save();ctx.globalAlpha*=easeOut(p);ctx.fillText(line,w/2,startY+index*lineHeight+(1-easeOut(p))*fontSize*.65);ctx.restore()}})
-      }else if(mode==='type'){
-        let remaining=Math.floor(Math.max(0,sceneTime-.12)/.035);lines.forEach((line,index)=>{const fragment=line.slice(0,Math.max(0,remaining));if(fragment){ctx.textAlign='center';ctx.fillText(fragment,w/2,startY+index*lineHeight)}remaining-=line.length+1})
-      }else lines.forEach((line,index)=>ctx.fillText(line,w/2,startY+index*lineHeight));
-      let authorDelay=.85;if(mode==='word')authorDelay=.25+words.length*.07;else if(mode==='line')authorDelay=.28+lines.length*.18;else if(mode==='type')authorDelay=.2+text.length*.035;const authorProgress=Math.max(0,Math.min(1,(sceneTime-authorDelay)/.35));if(authorProgress>0){ctx.save();ctx.globalAlpha*=easeOut(authorProgress);ctx.textAlign='center';ctx.font=`500 ${Math.max(23,fontSize*.36)}px ${MONO}`;setTracking(ctx,.07*Math.max(23,fontSize*.36));ctx.fillStyle=colors[2];ctx.fillText(('— '+page.source).toUpperCase(),w/2,startY+blockHeight+fontSize*.85);ctx.restore()}ctx.restore();ctx.restore();ctx.globalAlpha=1;}
-      const handle=handleInput.value.trim();if(handle){ctx.save();ctx.globalAlpha=.72;ctx.fillStyle=colors[3];ctx.textAlign='center';ctx.font=`500 ${w>h*1.25?28:32}px ${MONO}`;setTracking(ctx,.07*(w>h*1.25?28:32));ctx.fillText(handle,w/2,w>h*1.25?70:110);ctx.restore()}
-      ctx.save();ctx.globalAlpha=.28;ctx.fillStyle=colors[3];ctx.fillRect(78,h-78,w-156,5);ctx.restore();ctx.fillStyle=colors[2];ctx.fillRect(78,h-78,(w-156)*Math.min(1,t/totalDuration()),5);
+
+    // The static part of the background (gradient, scanlines, grain, vignette) is painted once per size and theme.
+    const layerCache=new Map();
+    function staticLayer(w,h,th){
+      const key=w+'x'+h+'|'+selectedTheme;if(layerCache.has(key))return layerCache.get(key);
+      const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d'),big=Math.max(w,h);
+      const base=ctx.createLinearGradient(0,0,w*.6,h);base.addColorStop(0,th.bg[0]);base.addColorStop(1,th.bg[1]);ctx.fillStyle=base;ctx.fillRect(0,0,w,h);
+      const scan=document.createElement('canvas');scan.width=4;scan.height=6;const sc=scan.getContext('2d');sc.fillStyle='#fff';sc.fillRect(0,4,4,2);
+      ctx.globalAlpha=th.scan;ctx.fillStyle=ctx.createPattern(scan,'repeat');ctx.fillRect(0,0,w,h);
+      const noise=document.createElement('canvas');noise.width=noise.height=256;const n=noise.getContext('2d'),img=n.createImageData(256,256);
+      for(let i=0;i<img.data.length;i+=4){const v=Math.random()*255;img.data[i]=img.data[i+1]=img.data[i+2]=v;img.data[i+3]=255}
+      n.putImageData(img,0,0);ctx.globalAlpha=th.grain;ctx.fillStyle=ctx.createPattern(noise,'repeat');ctx.fillRect(0,0,w,h);ctx.globalAlpha=1;
+      const v=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.35,w/2,h/2,big*.75);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,`rgba(0,0,0,${th.vignette})`);ctx.fillStyle=v;ctx.fillRect(0,0,w,h);
+      if(layerCache.size>8)layerCache.clear();layerCache.set(key,c);return c;
+    }
+    // Soft light sprites, scaled up when drawn.
+    const glowCache=new Map();
+    function glowSprite(color){if(glowCache.has(color))return glowCache.get(color);const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d'),grad=g.createRadialGradient(64,64,0,64,64,64);grad.addColorStop(0,rgba(color,1));grad.addColorStop(.45,rgba(color,.45));grad.addColorStop(1,rgba(color,0));g.fillStyle=grad;g.fillRect(0,0,128,128);glowCache.set(color,c);return c}
+    function glow(ctx,x,y,r,color,alpha){ctx.globalAlpha=alpha;ctx.drawImage(glowSprite(color),x-r,y-r,r*2,r*2);ctx.globalAlpha=1}
+    function drawBackground(ctx,t,w,h,th){
+      ctx.drawImage(staticLayer(w,h,th),0,0,w,h);
+      const big=Math.max(w,h);
+      glow(ctx,w*(.74+.08*Math.sin(t*.35)),h*(.2+.05*Math.cos(t*.27)),big*.42,th.accent,th.glow);
+      glow(ctx,w*(.18+.07*Math.cos(t*.3)),h*(.86+.04*Math.sin(t*.38)),big*.36,th.glow2,th.glow*.6);
+      // Soft bokeh drifting upwards.
+      const s=Math.min(w,h)/1080;ctx.fillStyle=th.particle;
+      for(let i=0;i<44;i++){
+        const speed=(18+hash(i+100)*42)*s,y=((hash(i+50)*(h+80)-t*speed)%(h+80)+h+80)%(h+80)-40,x=hash(i)*w+Math.sin(t*.4+i)*24*s,r=(1.5+Math.pow(hash(i+150),2)*7)*s;
+        ctx.globalAlpha=(.1+.35*hash(i+200))*(.65+.35*Math.sin(t*1.3+i*1.7));ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+      }
+      ctx.globalAlpha=1;
+    }
+
+    // Words wrapped in *asterisks* are highlighted; a run can span several words.
+    function parseQuote(raw){
+      const words=[];let on=false;
+      cleanQuote(raw).split(/\s+/).forEach(token=>{let text=token,hl=on;if(text.startsWith('*')){hl=on=true;text=text.slice(1)}if(text.includes('*')){on=false;text=text.replace(/\*/g,'')}if(text)words.push({text,hl})});
+      return words;
+    }
+    function wrapWords(ctx,words,maxWidth){const lines=[];let current=[],text='';words.forEach((word,i)=>{const test=text?text+' '+word.text:word.text;if(current.length&&ctx.measureText(test).width>maxWidth){lines.push(current);current=[i];text=word.text}else{current.push(i);text=test}});if(current.length)lines.push(current);return lines}
+    function balanceWords(ctx,words,maxWidth){const lines=wrapWords(ctx,words,maxWidth);if(lines.length<2)return lines;let lo=maxWidth*.4,hi=maxWidth;for(let i=0;i<12;i++){const mid=(lo+hi)/2;if(wrapWords(ctx,words,mid).length>lines.length)lo=mid;else hi=mid}return wrapWords(ctx,words,hi)}
+    function wrapText(ctx,text,maxWidth){return wrapWords(ctx,text.split(/\s+/).map(t=>({text:t})),maxWidth).map(line=>line.map(i=>text.split(/\s+/)[i]).join(' '))}
+    // Largest font that keeps the quote inside its box, cached per quote and frame size.
+    const layoutCache=new Map();let fontsVersion=0;
+    if(document.fonts)document.fonts.addEventListener('loadingdone',()=>{fontsVersion++;layoutCache.clear()});
+    function layoutQuote(ctx,raw,w,h){
+      const key=[raw,w,h,fontsVersion].join('|');if(layoutCache.has(key))return layoutCache.get(key);
+      const words=parseQuote(raw),isLandscape=w>h*1.25,isSquare=Math.abs(w-h)<20,maxWidth=w*(isLandscape?.74:.84),maxHeight=h*(isLandscape||isSquare?.5:.42);
+      let fs=isLandscape?96:isSquare?84:108,lines;
+      for(;;fs-=4){ctx.font=`600 ${fs}px ${SERIF}`;setTracking(ctx,-.035*fs);lines=balanceWords(ctx,words,maxWidth);if(lines.length*fs*1.1<=maxHeight||fs<=40)break}
+      const space=ctx.measureText(' ').width;let chars=0;
+      const laid=lines.map(indices=>{let x=0;const items=indices.map(i=>{const width=ctx.measureText(words[i].text).width,item={index:i,text:words[i].text,hl:words[i].hl,x,width,charStart:chars};x+=width+space;chars+=words[i].text.length+1;return item});return{items,width:x-space}});
+      const layout={fs,lh:fs*1.1,lines:laid,words:words.length,chars};
+      if(layoutCache.size>200)layoutCache.clear();layoutCache.set(key,layout);return layout;
+    }
+    function drawQuoteScene(ctx,page,st,spp,w,h,th){
+      const L=layoutQuote(ctx,page.quote,w,h),fs=L.fs,mode=textAnimationSelect.value,transition=transitionSelect.value,exit=clamp01((st-(spp-.6))/.6),curve=nudgeCurve(exit);
+      // Slow push-in for the whole page, then the exit transition.
+      let gx=0,gy=0,gs=1+.04*clamp01(st/spp),ga=1;
+      if(transition==='slide-left')gx=-w*1.18*curve;else if(transition==='slide-up')gy=-h*1.08*curve;else if(transition==='fade')ga=1-curve;else if(transition==='zoom'){gs*=1-.45*curve;ga=1-curve*.78}
+      ctx.save();ctx.globalAlpha=ga;ctx.translate(w/2+gx,h/2+gy);ctx.scale(gs,gs);ctx.translate(-w/2,-h/2);
+      const blockH=L.lines.length*L.lh,top=h/2-blockH/2,markSize=fs*2.1;
+      const mark=easeOut(clamp01(st/.45));ctx.save();ctx.globalAlpha*=mark;ctx.fillStyle=th.accent;ctx.font=`600 ${markSize}px ${SERIF}`;setTracking(ctx,0);ctx.textAlign='center';ctx.translate(w/2,top-fs*.3+markSize*.35);ctx.scale(.7+.3*mark,.7+.3*mark);ctx.fillText('“',0,0);ctx.restore();
+      const appearAt=(item,lineIndex)=>mode==='word'?.25+item.index*.065:mode==='line'?.25+lineIndex*.22:mode==='type'?.25+item.charStart*.03:.25;
+      const span=mode==='word'?.32:mode==='line'?.4:mode==='type'?0:.8;
+      const textDone=mode==='word'?.25+L.words*.065+.32:mode==='line'?.25+L.lines.length*.22+.4:mode==='type'?.25+L.chars*.03:1.05;
+      ctx.font=`600 ${fs}px ${SERIF}`;setTracking(ctx,-.035*fs);ctx.textAlign='left';
+      L.lines.forEach((line,lineIndex)=>{
+        const baseline=top+lineIndex*L.lh+fs*.82,startX=w/2-line.width/2;
+        line.items.forEach(item=>{
+          const start=appearAt(item,lineIndex);let text=item.text,p;
+          if(mode==='type'){const shown=Math.floor((st-.25)/.03)-item.charStart;if(shown<=0)return;text=item.text.slice(0,shown);p=1}else{p=clamp01((st-start)/span);if(p<=0)return}
+          const e=easeOut(p);ctx.save();ctx.globalAlpha*=e;
+          if(item.hl){const u=easeOut(clamp01((st-start-.25)/.35));if(u>0){ctx.fillStyle=th.accent;ctx.globalAlpha*=.85;ctx.fillRect(startX+item.x,baseline+fs*.14,item.width*u,Math.max(4,fs*.07));ctx.globalAlpha/=.85}}
+          ctx.fillStyle=item.hl?th.accent:th.text;ctx.fillText(text,startX+item.x,baseline+(1-e)*fs*.5);ctx.restore();
+        });
+      });
+      const credit=easeOut(clamp01((st-textDone)/.4));
+      if(credit>0){const size=Math.max(24,Math.round(fs*.3));ctx.save();ctx.globalAlpha*=credit;ctx.font=`500 ${size}px ${MONO}`;setTracking(ctx,.08*size);ctx.fillStyle=th.accent;ctx.textAlign='center';ctx.fillText(('— '+page.source).toUpperCase(),w/2,top+blockH+fs*.5+size+(1-credit)*20);ctx.restore()}
+      ctx.restore();
+    }
+    function drawFrame(ctx,t,w,h,bgTime=t){
+      setTracking(ctx,0);ctx.textBaseline='alphabetic';
+      const th=THEMES[selectedTheme]||THEMES.calm,spp=Number(durationSelect.value)||6;
+      drawBackground(ctx,bgTime,w,h,th);
+      if(endEnabled.checked&&t>=quoteDuration())drawEndCard(ctx,t-quoteDuration(),w,h,[th.bg[0],th.bg[1],th.accent,th.text]);
+      else{const index=Math.max(0,Math.min(pages.length-1,Math.floor(t/spp)));drawQuoteScene(ctx,pages[index]||pages[0],t-index*spp,spp,w,h,th)}
+      const handle=handleInput.value.trim(),small=w>h*1.25;if(handle){ctx.save();ctx.globalAlpha=.72;ctx.fillStyle=th.text;ctx.textAlign='center';ctx.font=`500 ${small?28:32}px ${MONO}`;setTracking(ctx,.07*(small?28:32));ctx.fillText(handle,w/2,small?70:110);ctx.restore()}
+      ctx.save();ctx.globalAlpha=.28;ctx.fillStyle=th.text;ctx.fillRect(78,h-78,w-156,5);ctx.restore();ctx.fillStyle=th.accent;ctx.fillRect(78,h-78,(w-156)*Math.min(1,t/totalDuration()),5);
     }
     function drawEndCard(ctx,st,w,h,colors){
-      const isLandscape=w>h*1.25,isSquare=Math.abs(w-h)<20,clamp=v=>Math.max(0,Math.min(1,v)),appear=d=>easeOut(clamp((st-d)/.5));
+      const isLandscape=w>h*1.25,isSquare=Math.abs(w-h)<20,appear=d=>easeOut(clamp01((st-d)/.5));
       const titleSize=isLandscape?54:isSquare?56:66,ctaSize=isLandscape?36:40,subSize=isLandscape?26:30,maxWidth=isLandscape?w*.6:w*.78;
       ctx.font=`600 ${titleSize}px ${SERIF}`;setTracking(ctx,-.03*titleSize);const titleLines=endTitle.value.trim()?wrapText(ctx,endTitle.value.trim(),maxWidth):[],titleLH=titleSize*1.15;
       let coverW=0,coverH=0;if(coverImage){const maxH=isLandscape?h*.46:isSquare?h*.4:h*.38,maxW=isLandscape?w*.3:w*.6,scale=Math.min(maxH/coverImage.naturalHeight,maxW/coverImage.naturalWidth);coverW=coverImage.naturalWidth*scale;coverH=coverImage.naturalHeight*scale}
@@ -158,28 +218,54 @@
       {const p=appear(.5),pulse=st>1?1+.035*Math.sin((st-1)*4.2):1,label=endCta.value.trim()||'Get the book';ctx.save();ctx.globalAlpha=p;ctx.font=`700 ${ctaSize}px ${SANS}`;setTracking(ctx,0);const pillW=ctx.measureText(label).width+ctaSize*1.8;ctx.translate(w/2,y+ctaH/2+(1-p)*30);ctx.scale(pulse,pulse);ctx.fillStyle=colors[2];ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-pillW/2,-ctaH/2,pillW,ctaH,ctaH/2);else ctx.rect(-pillW/2,-ctaH/2,pillW,ctaH);ctx.fill();ctx.fillStyle=selectedTheme==='editorial'?'#081c25':'#ffffff';ctx.textBaseline='middle';ctx.fillText(label,0,2);ctx.restore();y+=ctaH}
       if(sub){const p=appear(.7);ctx.save();ctx.globalAlpha=p*.8;ctx.fillStyle=colors[3];ctx.font=`500 ${subSize}px ${MONO}`;setTracking(ctx,.06*subSize);ctx.fillText(sub,w/2,y+gap*.6+subSize*.8+(1-p)*20);ctx.restore()}
     }
-    function applyPreviewTransition(exit){const curve=nudgeCurve(exit),transition=transitionSelect.value;if(transition==='slide-left'){previewGroup.style.transform=`translate3d(${-118*curve}%, -50%, 0)`;previewGroup.style.opacity=String(1-exit*.15)}else if(transition==='slide-up'){previewGroup.style.transform=`translate3d(0, ${-50-108*curve}%, 0)`;previewGroup.style.opacity=String(1-exit*.15)}else if(transition==='fade'){previewGroup.style.transform='translateY(-50%)';previewGroup.style.opacity=String(1-curve)}else{previewGroup.style.transform=`translateY(-50%) scale(${1-.45*curve})`;previewGroup.style.opacity=String(1-curve*.78)}}
-    function playPreview(){saveCurrent();clearInterval(previewTimer);const secondsPerPage=Number(durationSelect.value),total=totalDuration()*1000,start=performance.now();let lastScene=-1;status.textContent=`Playing ${pages.length}-page preview…`;showEnd(false);previewTimer=setInterval(()=>{const elapsed=(performance.now()-start)/1000,p=Math.min(1,elapsed/(total/1000));if(endEnabled.checked&&elapsed>=quoteDuration()){if(lastScene!=='end'){resetPreviewMotion();showEnd(true);endCard.classList.remove('animate');void endCard.offsetWidth;endCard.classList.add('animate');lastScene='end'}}else{const sceneIndex=Math.min(pages.length-1,Math.floor(elapsed/secondsPerPage)),sceneTime=elapsed-sceneIndex*secondsPerPage;if(sceneIndex!==lastScene){setPreviewText(pages[sceneIndex].quote,true);ps.textContent='— '+pages[sceneIndex].source;lastScene=sceneIndex}if(textAnimationSelect.value==='type'){const value=cleanQuote(pages[sceneIndex].quote),visible=Math.floor(Math.max(0,sceneTime-.12)/.035);preview.textContent=value.slice(0,visible)}const exit=Math.min(1,Math.max(0,(sceneTime-(secondsPerPage-.6))/.6));applyPreviewTransition(exit)}previewProgress.style.width=(p*100)+'%';if(p>=1){clearInterval(previewTimer);endCard.classList.remove('animate');showEnd(false);resetPreviewMotion();setPreviewText(pages[currentPage].quote);ps.textContent='— '+pages[currentPage].source;status.textContent='Full preview complete. Ready to render.'}},33)}
+
+    // ---------- Live preview: the same renderer, drawn small ----------
+    const previewCtx=previewCanvas.getContext('2d');let lastMirror=0;
+    function previewTime(now){
+      if(playStart!==null){const t=(now-playStart)/1000;if(t<totalDuration())return t;playStart=null;status.textContent='Preview finished. Ready to render.'}
+      const spp=Number(durationSelect.value);
+      if(previewEnd&&endEnabled.checked)return quoteDuration()+Math.min(2.2,endDuration()-.05);
+      return currentPage*spp+spp-.65;
+    }
+    function previewLoop(now){
+      requestAnimationFrame(previewLoop);
+      if(rendering){if(now-lastMirror>400){lastMirror=now;previewCtx.setTransform(1,0,0,1,0,0);previewCtx.drawImage(renderCanvas,0,0,previewCanvas.width,previewCanvas.height)}return}
+      const config=FORMATS[formatSelect.value]||FORMATS.portrait;previewCtx.setTransform(previewCanvas.width/config.width,0,0,previewCanvas.height/config.height,0,0);drawFrame(previewCtx,previewTime(now),config.width,config.height,now/1000);
+    }
+    function playPreview(){saveCurrent();previewEnd=false;playStart=performance.now();status.textContent=`Playing ${pages.length}-page preview…`}
+
     async function renderVideo(){
       if(rendering)return;if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){status.textContent='This browser cannot render video locally. Try Chrome or Edge.';return}
-      rendering=true;renderButton.disabled=true;exportButton.disabled=true;renderButton.firstChild.textContent='Rendering video… ';
-      status.textContent='Loading fonts…';await loadVideoFonts();saveCurrent();const canvas=document.querySelector('#renderCanvas'),config=FORMATS[formatSelect.value]||FORMATS.portrait;canvas.width=config.width;canvas.height=config.height;const ctx=canvas.getContext('2d'),fps=30,duration=totalDuration(),secondsPerPage=Number(durationSelect.value),stream=canvas.captureStream(fps);
+      renderButton.disabled=true;exportButton.disabled=true;renderButton.firstChild.textContent='Rendering video… ';
+      status.textContent='Loading fonts…';await loadVideoFonts();saveCurrent();playStart=null;const canvas=renderCanvas,config=FORMATS[formatSelect.value]||FORMATS.portrait;canvas.width=config.width;canvas.height=config.height;const ctx=canvas.getContext('2d'),fps=30,duration=totalDuration(),secondsPerPage=Number(durationSelect.value),stream=canvas.captureStream(fps);
       const types=['video/mp4;codecs=avc1.42E01E','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];const mimeType=types.find(type=>MediaRecorder.isTypeSupported(type))||'';let recorder;
-      try{recorder=new MediaRecorder(stream,mimeType?{mimeType,videoBitsPerSecond:10000000}:{videoBitsPerSecond:10000000})}catch(e){status.textContent='Video encoder is unavailable in this browser.';rendering=false;renderButton.disabled=false;exportButton.disabled=false;renderButton.firstChild.textContent='Render & download video ';return}
+      try{recorder=new MediaRecorder(stream,mimeType?{mimeType,videoBitsPerSecond:10000000}:{videoBitsPerSecond:10000000})}catch(e){status.textContent='Video encoder is unavailable in this browser.';renderButton.disabled=false;exportButton.disabled=false;renderButton.firstChild.textContent='Render & download video ';return}
+      rendering=true;drawFrame(ctx,0,canvas.width,canvas.height);
       const chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};const finished=new Promise(resolve=>recorder.onstop=resolve);recorder.start(250);const start=performance.now();
-      await new Promise(resolve=>{function frame(now){const elapsed=Math.min(duration,(now-start)/1000);drawFrame(ctx,elapsed,canvas.width,canvas.height);const pct=Math.round(elapsed/duration*100),scene=Math.min(pages.length,Math.floor(elapsed/secondsPerPage)+1);status.textContent=elapsed>=quoteDuration()&&endEnabled.checked?`Rendering end card… ${pct}%`:`Rendering page ${scene}/${pages.length}… ${pct}%`;previewProgress.style.width=pct+'%';if(elapsed<duration)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)});
+      await new Promise(resolve=>{function frame(now){const elapsed=Math.min(duration,(now-start)/1000);drawFrame(ctx,elapsed,canvas.width,canvas.height);const pct=Math.round(elapsed/duration*100),scene=Math.min(pages.length,Math.floor(elapsed/secondsPerPage)+1);status.textContent=elapsed>=quoteDuration()&&endEnabled.checked?`Rendering end card… ${pct}%`:`Rendering page ${scene}/${pages.length}… ${pct}%`;if(elapsed<duration)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)});
       recorder.stop();await finished;const actualType=recorder.mimeType||mimeType||'video/webm',ext=actualType.includes('mp4')?'mp4':'webm',blob=new Blob(chunks,{type:actualType}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(endTitle.value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'quote-video')+'-short-'+Date.now()+'.'+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
       status.textContent=`Video downloaded · ${ext.toUpperCase()} · ${(blob.size/1048576).toFixed(1)} MB`;toast.textContent='Real video rendered and downloaded.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2800);rendering=false;renderButton.disabled=false;exportButton.disabled=false;renderButton.firstChild.textContent='Render & download video ';
     }
+
+    // ---------- Wiring ----------
+    quote.addEventListener('input',refresh);source.addEventListener('input',refresh);durationSelect.addEventListener('change',()=>{updateSummary();status.textContent='Page duration updated.'});formatSelect.addEventListener('change',updateSetup);textAnimationSelect.addEventListener('change',()=>updateSetup());transitionSelect.addEventListener('change',()=>updateSetup());
+    document.querySelectorAll('.preset').forEach(p=>p.addEventListener('click',()=>{document.querySelector('.preset.active').classList.remove('active');p.classList.add('active');selectedTheme=p.dataset.theme;phone.dataset.theme=selectedTheme;status.textContent='Background updated.'}));
+    [endTitle,endCta,endSub].forEach(el=>el.addEventListener('input',()=>{updateEndCard();showEnd(endEnabled.checked)}));
+    endSeconds.addEventListener('change',()=>{updateEndCard();showEnd(endEnabled.checked)});
+    endEnabled.addEventListener('change',()=>{updateEndCard();showEnd(endEnabled.checked);status.textContent=endEnabled.checked?'End card on.':'End card off.'});
+    [quote,source].forEach(el=>el.addEventListener('focus',()=>showEnd(false)));
+    endCoverInput.addEventListener('change',()=>{const file=endCoverInput.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{coverImage=img;coverName.textContent=file.name.length>24?file.name.slice(0,21)+'…':file.name;showEnd(endEnabled.checked);status.textContent='Book cover added.'};img.src=reader.result};reader.readAsDataURL(file)});
     const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
     function openTab(name){tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);try{localStorage.setItem('qvs-tab',name)}catch(e){}}
     tabs.forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));
     const formatButtons=document.querySelectorAll('#formatSeg button');formatButtons.forEach(b=>b.addEventListener('click',()=>{formatSelect.value=b.dataset.value;formatButtons.forEach(x=>x.classList.toggle('active',x===b));formatSelect.dispatchEvent(new Event('change'))}));
-    try{const saved=localStorage.getItem('qvs-tab');if(saved&&document.querySelector(`.tab[data-tab="${saved}"]`))openTab(saved)}catch(e){}
-    const stage=document.querySelector('#stage');
+    const stage=$('#stage');
     function fitPhone(){phone.style.zoom=1;const cs=getComputedStyle(stage),aw=stage.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-16,ah=stage.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-16;if(aw<=0||ah<=0)return;phone.style.zoom=Math.max(.45,Math.min(aw/phone.offsetWidth,ah/phone.offsetHeight,2.6))}
-    new ResizeObserver(fitPhone).observe(stage);formatSelect.addEventListener('change',fitPhone);fitPhone();
-    document.querySelector('#playPreview').addEventListener('click',playPreview);renderButton.addEventListener('click',renderVideo);exportButton.addEventListener('click',renderVideo);
+    new ResizeObserver(fitPhone).observe(stage);formatSelect.addEventListener('change',fitPhone);
+    $('#playPreview').addEventListener('click',playPreview);renderButton.addEventListener('click',renderVideo);exportButton.addEventListener('click',renderVideo);
+    renderPageStrip();updateSetup(false);refresh();updateEndCard();fitPhone();
+    try{const saved=localStorage.getItem('qvs-tab');if(saved&&document.querySelector(`.tab[data-tab="${saved}"]`))openTab(saved)}catch(e){}
+    requestAnimationFrame(previewLoop);
   </script>
 </body></html>
 

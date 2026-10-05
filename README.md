@@ -6,7 +6,7 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 
 ## Features
 
-- Multi-page quote videos (up to 10 quotes, one per page): page cards with a text preview and photo thumbnail, drag (or Alt + ↑/↓) to reorder, duplicate, and delete with undo
+- Multi-page quote videos (up to 10 quotes, one per page): page cards with a text preview, drag (or Alt + ↑/↓) to reorder, duplicate, and delete with undo
 - Paste many: paste a list of quotes (one per line, or separated by empty lines for poems) and each becomes a page; list numbers and bullets are removed
 - Opening hook: an optional 1.5-second first line before page 1 (e.g. "Lines from *Your Book*", "If you're tired, read this."), with one-click presets; with Voiceover on it can be read aloud (the hook then lasts as long as its voice, and with ElevenLabs it opens the same continuous take)
 - One book & author line for the whole video, with an optional per-page override (leave it empty to hide the credit)

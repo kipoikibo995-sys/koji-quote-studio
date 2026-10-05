@@ -8,7 +8,7 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 
 - Multi-page quote videos (up to 10 quotes, one per page): page cards with a text preview and photo thumbnail, drag (or Alt + ↑/↓) to reorder, duplicate, and delete with undo
 - Paste many: paste a list of quotes (one per line, or separated by empty lines for poems) and each becomes a page; list numbers and bullets are removed
-- Opening hook: an optional 1.5-second first line before page 1 (e.g. "Lines from *Your Book*", "If you're tired, read this."), with one-click presets; the voiceover starts after it
+- Opening hook: an optional 1.5-second first line before page 1 (e.g. "Lines from *Your Book*", "If you're tired, read this."), with one-click presets; with Voiceover on it can be read aloud (the hook then lasts as long as its voice, and with ElevenLabs it opens the same continuous take)
 - One book & author line for the whole video, with an optional per-page override (leave it empty to hide the credit)
 - Reading-time check: each page shows whether viewers can read it in the time it is on screen
 - Quote fonts: 11 Google Fonts for the quote text (Playfair, Cormorant, Lora, Baskerville, DM Serif, Montserrat, Poppins, Bebas Neue, Dancing Script, Caveat, Typewriter), each with its own size, spacing and line height so quotes still fit the frame
@@ -80,6 +80,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version is shown at the bottom of the left rail.
 
+- **0.9.2 (2026-10-05):** The opening hook can be read aloud with Kokoro or ElevenLabs.
 - **0.9.1 (2026-10-05):** Paste many quotes at once (one page per quote) and an optional opening hook before page 1.
 - **0.9.0 (2026-10-05):** the page photo moved from the Quotes tab to the Style tab ("Photo for page N").
   - Word cascade, line rise and typewriter speed up for long quotes, so the full text and the credit always appear.

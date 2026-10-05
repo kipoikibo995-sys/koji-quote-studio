@@ -98,6 +98,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version is shown at the bottom of the left rail.
 
+- **0.10.1 (2026-10-05):** Write step redesigned: no orange frames or stripes, flat quote editor, neutral page list and buttons.
 - **0.10.0 (2026-10-05):** Five-step flow (Write, Look, Sound, Promo, Export) with Next buttons; Promo features start off; the project is saved automatically (images in IndexedDB) and restored on reload; Start a new video; Render and PNG export live in the Export step.
 - **0.9.10 (2026-10-05):** Fixed videos that froze on the first frame on some computers: the render canvas is no longer display:none, every frame is pushed to the recorder explicitly, and a worker clock keeps rendering when the window is covered.
 - **0.9.9 (2026-10-05):** The rendered file is no longer a fraction of a second short (a 10 s video showed 0:09); the last frame is held briefly.

@@ -173,6 +173,17 @@
     .tips{margin-top:18px;padding:14px 16px;border-radius:14px;background:#f1ece2;font-size:14px;line-height:1.5}.tips ol{margin:6px 0 0;padding-left:20px}
     .promo-hook{margin-bottom:6px}
     @media(max-width:860px){.step-text small{display:none}.rail-item.step{padding:7px 10px!important;gap:8px}}
+      /* Write step: flat and neutral, no orange frames */
+    .panel[data-panel="quotes"] .page-editor{padding:0!important;border:0!important;background:none!important;box-shadow:none!important}
+    .panel[data-panel="quotes"] .quote-tools{align-items:center;margin:8px 0}.panel[data-panel="quotes"] .quote-tools label{margin:0!important;font-size:15px!important}
+    .panel[data-panel="quotes"] .hl-btn{margin:0;padding:6px 11px;border-color:#e4ded2;background:#fff;font-weight:600;font-size:13px}
+    .quote-box{border-color:#ddd6c8!important;background:#fff}.quote-box:focus-within{border-color:var(--ink)!important;box-shadow:0 0 0 3px #081c2514!important}
+    .quote-box textarea{padding:16px 16px 6px!important;font-size:18px!important;line-height:1.45!important}.quote-box .counter{padding:2px 16px 12px}
+    .panel[data-panel="quotes"] .page-editor .disclosure{margin-top:8px;border:0!important;background:none!important}.panel[data-panel="quotes"] .page-editor .disclosure>summary{padding:6px 2px!important}.panel[data-panel="quotes"] .page-editor .disc-title{font-size:13px!important;font-weight:500!important;color:#56616a!important}.panel[data-panel="quotes"] .page-editor .summary-note{font-size:12px}
+    .panel[data-panel="quotes"] .q-group{margin-top:22px;padding-top:0;border-top:0}
+    .page-card{background:#fbf9f4;border-color:#e8e2d6}.page-card.active{background:#fff;border-color:var(--ink)!important;box-shadow:0 1px 3px #081c2514!important}
+    .page-card.drop-before{box-shadow:0 -3px 0 var(--ink)!important}.page-card.drop-after{box-shadow:0 3px 0 var(--ink)!important}
+    .add-row .add-page-btn,.add-page-btn.alt{border:1px solid #e4ded2!important;border-style:solid!important;background:#fff!important;color:var(--ink)!important;font-weight:600}.add-row .add-page-btn:hover{border-color:var(--ink)!important}
   </style>
 </head>
 <body>
@@ -188,10 +199,10 @@
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="promo"><span class="step-num">4</span><span class="step-text"><b>Promo</b><small>Hook & book</small></span></button>
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
-      <div class="rail-foot"><p class="app-version" id="appVersion" title="0.10.0: The editor is now 5 steps (Write, Look, Sound, Promo, Export) with Next buttons; Promo features start off; the project is saved in the browser automatically. 0.9.10: Fixed videos that froze on the first frame on some computers (the hidden render canvas stopped sending frames); frames are now pushed explicitly and timed by a worker. 0.9.9: The rendered file is no longer a fraction of a second shorter than the video (a 10 s video showed 0:09). 0.9.8: New library collections: Vows, Unsent letters, She asked me, Three lines (90 original pieces). 0.9.7: Format picker removed; every video is 9:16 (1080 × 1920) for Shorts, Reels and TikTok. 0.9.6: Background picker is compact: Dark / Light / Bold tabs and small thumbnails; the chosen name shows next to the label. 0.9.5: 14 new backgrounds (Royal, Ocean Deep, Rose Noir, Galaxy, Charcoal, Emerald, Blush, Sage, Sky, Sand, Lavender, Sunset, Teal Pop, Berry), grouped as Dark, Light and Bold. 0.9.4: Per-page photos removed; one background photo is used for the whole video. 0.9.3: Backgrounds Blood Moon, Night Violet, Mist, Forest and Pure White; accent colour picker with a colour from your book cover; atmosphere overlays (embers, rain, snow, mist, stars); Seconds per page moved to the Quotes tab.">Version 0.10.0 · 05/10/2026<br><span>5-step flow · autosave · Promo off by default</span></p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion" title="0.10.1: Write step redesigned: no orange frames or stripes, flat quote editor, neutral page list. 0.10.0: The editor is now 5 steps (Write, Look, Sound, Promo, Export) with Next buttons; Promo features start off; the project is saved in the browser automatically. 0.9.10: Fixed videos that froze on the first frame on some computers (the hidden render canvas stopped sending frames); frames are now pushed explicitly and timed by a worker. 0.9.9: The rendered file is no longer a fraction of a second shorter than the video (a 10 s video showed 0:09). 0.9.8: New library collections: Vows, Unsent letters, She asked me, Three lines (90 original pieces). 0.9.7: Format picker removed; every video is 9:16 (1080 × 1920) for Shorts, Reels and TikTok. 0.9.6: Background picker is compact: Dark / Light / Bold tabs and small thumbnails; the chosen name shows next to the label. 0.9.5: 14 new backgrounds (Royal, Ocean Deep, Rose Noir, Galaxy, Charcoal, Emerald, Blush, Sage, Sky, Sand, Lavender, Sunset, Teal Pop, Berry), grouped as Dark, Light and Bold. 0.9.4: Per-page photos removed; one background photo is used for the whole video. 0.9.3: Backgrounds Blood Moon, Night Violet, Mist, Forest and Pure White; accent colour picker with a colour from your book cover; atmosphere overlays (embers, rain, snow, mist, stars); Seconds per page moved to the Quotes tab.">Version 0.10.1 · 05/10/2026<br><span>Cleaner Write step</span></p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
-      <div class="panel-head"><h2 id="panelTitle">Quotes</h2><p id="panelDesc">Your book, your pages and what each one says.</p></div>
+      <div class="panel-head"><h2 id="panelTitle">1 · Write</h2><p id="panelDesc">Write or pick your quotes. One quote per page.</p></div>
       <div class="side-scroll">
         <section class="panel" data-panel="quotes">
           <div class="page-editor">
@@ -199,7 +210,7 @@
             <div class="quote-box"><textarea id="quote" maxlength="260" rows="2" placeholder="Paste a line from your book…">“Every chapter you finish is a *promise* you kept to yourself.”</textarea><div class="counter"><span class="read-meter" id="readMeter"></span><span id="countWrap"><span id="count">63</span> / 260</span></div></div>
             <div class="tag-row" id="tagRow" hidden><span>Voice tags</span><button type="button" data-tag="whispers">[whispers]</button><button type="button" data-tag="sighs">[sighs]</button><button type="button" data-tag="exhales">[exhales]</button><button type="button" data-tag="sad">[sad]</button><button type="button" data-tag="crying">[crying]</button><button type="button" data-tag="angry">[angry]</button><button type="button" data-tag="mischievously">[mischievously]</button><button type="button" data-tag="excited">[excited]</button><button type="button" data-tag="laughs">[laughs]</button></div>
             
-            <details class="disclosure" id="pageOptions"><summary><span class="disc-title">Credit for this page</span><span class="summary-note" id="pageOptionsNote">Default credit · no photo</span></summary><div class="disc-body">
+            <details class="disclosure" id="pageOptions"><summary><span class="disc-title">Different credit for this page</span><span class="summary-note" id="pageOptionsNote">Default credit · no photo</span></summary><div class="disc-body">
               <label class="check-row" for="sourceOverride"><input type="checkbox" id="sourceOverride" /> Different book or author on this page</label>
               <div class="field text" id="pageSourceWrap" hidden><input id="pageSource" placeholder="Book title · Author name for this page (empty hides it)" maxlength="80" /></div>
             </div></details>
@@ -208,7 +219,7 @@
           <div class="page-list" id="pageStrip" role="listbox" aria-label="Pages — drag to reorder"></div>
           <div class="undo-bar" id="undoBar" hidden><span id="undoText">Page deleted.</span><button type="button" id="undoBtn">Undo</button></div>
           <div class="add-row"><button type="button" class="add-page-btn" id="addPageBtn">＋ Add page</button><button type="button" class="add-page-btn alt" id="bulkBtn" title="Paste a list of quotes, one per line">📋 Paste many</button></div></div>
-          <div class="q-group"><div class="group-title">Credit line</div><label for="source">Book &amp; author <span class="label-note">· shown on all pages</span></label><div class="field text"><input id="source" value="The Quiet Work · J. Rivers" placeholder="Book title · Author name (empty hides it)" maxlength="80" /></div>
+          <div class="q-group"><label for="source">Book &amp; author <span class="label-note">· shown under every quote</span></label><div class="field text"><input id="source" value="The Quiet Work · J. Rivers" placeholder="Book title · Author name (empty hides it)" maxlength="80" /></div>
           </div>
         <button type="button" class="next-step" data-next="style">Next: Look →</button>
         </section>

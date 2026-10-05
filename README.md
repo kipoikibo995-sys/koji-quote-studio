@@ -11,6 +11,8 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Channel handle shown on every frame (e.g. `@yourchannel`)
 - Keyword highlights: wrap words in `*asterisks*` to colour and underline them
 - Background photo: upload any image; it fills the frame, drifts slowly and sits under an adjustable darkening wash so the text stays readable
+- Per-page photos: give each quote page its own photo (pages without one use the background photo); photos cross-fade between pages
+- Book badge: your cover, title and button text in a corner of every quote page, so viewers see the book from the first second
 - Image export: download the current page or end card as a full-resolution PNG (thumbnails, Pinterest, Instagram, community posts)
 - Animated backgrounds (drifting light, bokeh, film texture) and a slow push-in so every frame has motion
 - Quote text auto-sizes to fit the frame, and the live preview uses the same renderer as the exported video

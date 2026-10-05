@@ -10,7 +10,7 @@ The editor follows five steps in the left rail; each step ends with a **Next** b
 
 1. **Write**: the quote for each page, the page list, Paste many, the Quote library and the credit line.
 2. **Look**: quote font, background, accent colour, atmosphere, background photo, text animation and transition.
-3. **Sound**: seconds per page and the optional voiceover (advanced voice settings are folded away).
+3. **Sound**: seconds per page, background music and the optional voiceover (advanced voice settings are folded away).
 4. **Promo** (all optional and off by default): opening hook, book promo end card, book badge and channel handle.
 5. **Export**: a summary of the video, Render video, Save the current page as PNG, and upload tips.
 
@@ -38,6 +38,7 @@ The project (quotes, settings, background photo and book cover) is saved in the 
 - Keyword highlights: select words and click Highlight (or Ctrl/Cmd + B) to colour and underline them in the video; this wraps them in `*asterisks*`
 - Background photo: upload one image for the whole video; it fills the frame, drifts slowly and sits under an adjustable darkening wash so the text stays readable
 - Book badge: your cover, title and button text in a corner of every quote page, so viewers see the book from the first second
+- Background music: add your own MP3, WAV or M4A; it fades in and out, loops if shorter than the video, ducks about 10 dB while the voice speaks, plays in the preview and is mixed into the rendered video (use music you have the rights to)
 - Voiceover: each quote (and optionally the end card) is read aloud by Kokoro TTS running in the browser; pages stretch to fit the voice and words appear in time with it. 11 US/UK voices and a speed control, or premium ElevenLabs voices with your own API key
 - Image export: download the current page or end card as a full-resolution PNG (thumbnails, Pinterest, Instagram, community posts)
 - 22 backgrounds in a compact picker (Dark / Light / Bold tabs, small thumbnails, the chosen name shown next to the label): Dark (Midnight, Blood Moon with a red moon, Night Violet, Mist, Forest, Royal, Ocean Deep, Rose Noir, Galaxy, Charcoal, Emerald), Light (Warm Paper, Pure White, Blush, Sage, Sky, Sand, Lavender) and Bold (Orange Glow, Sunset, Teal Pop, Berry)
@@ -98,6 +99,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.11.0 (2026-10-05):** Background music in the Sound step: upload, volume, fade in/out, looping, ducking under the voice; included in preview, render and autosave.
 - **0.10.2 (2026-10-05):** The render toast no longer shows on phones before a render; *highlighted* words are coloured inside the quote box (stars faded, voice tags tinted); the rail shows only the version number; the 5 steps always fit on phones; the free voice download shows a progress bar and asks before downloading 90 MB on mobile data.
 - **0.10.1 (2026-10-05):** Write step redesigned: no orange frames or stripes, flat quote editor, neutral page list and buttons.
 - **0.10.0 (2026-10-05):** Five-step flow (Write, Look, Sound, Promo, Export) with Next buttons; Promo features start off; the project is saved automatically (images in IndexedDB) and restored on reload; Start a new video; Render and PNG export live in the Export step.

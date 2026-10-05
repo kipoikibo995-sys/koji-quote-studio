@@ -20,8 +20,7 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Book promo end card: your cover, book title, call to action (e.g. "Get the book on Amazon") and a small line (e.g. "Link in description ↓")
 - Channel handle shown on every frame (e.g. `@yourchannel`)
 - Keyword highlights: select words and click Highlight (or Ctrl/Cmd + B) to colour and underline them in the video; this wraps them in `*asterisks*`
-- Background photo: upload any image; it fills the frame, drifts slowly and sits under an adjustable darkening wash so the text stays readable
-- Per-page photos: in the Style tab, give the selected page its own photo (pages without one use the background photo); photos cross-fade between pages
+- Background photo: upload one image for the whole video; it fills the frame, drifts slowly and sits under an adjustable darkening wash so the text stays readable
 - Book badge: your cover, title and button text in a corner of every quote page, so viewers see the book from the first second
 - Voiceover: each quote (and optionally the end card) is read aloud by Kokoro TTS running in the browser; pages stretch to fit the voice and words appear in time with it. 11 US/UK voices and a speed control, or premium ElevenLabs voices with your own API key
 - Image export: download the current page or end card as a full-resolution PNG (thumbnails, Pinterest, Instagram, community posts)
@@ -83,6 +82,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version is shown at the bottom of the left rail.
 
+- **0.9.4 (2026-10-05):** Per-page photos removed; one background photo is used for the whole video.
 - **0.9.3 (2026-10-05):** Five new backgrounds, accent colour picker (including a colour from the book cover), atmosphere overlays, and Seconds per page moved to the Quotes tab.
 - **0.9.2 (2026-10-05):** The opening hook can be read aloud with Kokoro or ElevenLabs.
 - **0.9.1 (2026-10-05):** Paste many quotes at once (one page per quote) and an optional opening hook before page 1.

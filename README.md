@@ -2,7 +2,7 @@
 
 Turn lines from your book into scroll-stopping YouTube Shorts that send viewers to your Amazon listing.
 
-Built for KDP authors: paste a quote from your book, add your cover, and render a ready-to-upload vertical video that ends with a "get the book" call to action. Everything renders locally in the browser: no AI service, no external rendering API, no server-side processing, and no subscription.
+Built for KDP authors: paste a quote from your book, add your cover, and render a ready-to-upload vertical video that ends with a "get the book" call to action. Video renders locally in the browser: no external rendering API, no server-side processing and no subscription. The optional voiceover runs on the device (Kokoro) or uses ElevenLabs with the user's own API key.
 
 ## Features
 
@@ -13,14 +13,7 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Background photo: upload any image; it fills the frame, drifts slowly and sits under an adjustable darkening wash so the text stays readable
 - Per-page photos: give each quote page its own photo (pages without one use the background photo); photos cross-fade between pages
 - Book badge: your cover, title and button text in a corner of every quote page, so viewers see the book from the first second
-- Voiceover: each quote (and optionally the end card) is read aloud by Kokoro TTS running in the browser; pages stretch to fit the voice and words appear in time with it. 11 US/UK voices and a speed control
-
-## Voiceover notes
-
-- The voice engine is [kokoro-js](https://www.npmjs.com/package/kokoro-js) 1.2.1, loaded from jsDelivr, with the Kokoro-82M model (`onnx-community/Kokoro-82M-v1.0-ONNX`, q8, about 90 MB) loaded from Hugging Face. Both are Apache-2.0 licensed.
-- The model downloads the first time someone uses Voiceover and is then cached by their browser. Text never leaves the device.
-- Voice generation runs in a web worker; it is fast on desktop computers and slower on older phones.
-- **ElevenLabs (premium, bring your own key):** in the Voice tab choose ElevenLabs, paste an API key (elevenlabs.io → Developers → API keys) and click Connect. The app lists the voices on that account, shows remaining characters, and calls the ElevenLabs API directly from the browser. The key is stored only in that browser (localStorage) and is sent only to `api.elevenlabs.io`; quote text is sent to ElevenLabs and characters count against the user's ElevenLabs plan. ElevenLabs returns per-character timings, so words appear exactly when they are spoken.
+- Voiceover: each quote (and optionally the end card) is read aloud by Kokoro TTS running in the browser; pages stretch to fit the voice and words appear in time with it. 11 US/UK voices and a speed control, or premium ElevenLabs voices with your own API key
 - Image export: download the current page or end card as a full-resolution PNG (thumbnails, Pinterest, Instagram, community posts)
 - Animated backgrounds (drifting light, bokeh, film texture) and a slow push-in so every frame has motion
 - Quote text auto-sizes to fit the frame, and the live preview uses the same renderer as the exported video
@@ -28,6 +21,13 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Text animations, page transitions and background presets
 - Live preview before rendering
 - Renders at full HD (1080 × 1920, 1920 × 1080 or 1080 × 1080) and downloads directly
+
+## Voiceover notes
+
+- The voice engine is [kokoro-js](https://www.npmjs.com/package/kokoro-js) 1.2.1, loaded from jsDelivr, with the Kokoro-82M model (`onnx-community/Kokoro-82M-v1.0-ONNX`, q8, about 90 MB) loaded from Hugging Face. Both are Apache-2.0 licensed.
+- The Kokoro model downloads the first time someone uses Voiceover and is then cached by their browser. With Kokoro, text never leaves the device.
+- Voice generation runs in a web worker; it is fast on desktop computers and slower on older phones.
+- **ElevenLabs (premium, bring your own key):** in the Voice tab choose ElevenLabs, paste an API key (elevenlabs.io → Developers → API keys) and click Connect. The app lists the voices on that account, shows remaining characters, and calls the ElevenLabs API directly from the browser. The key is stored only in that browser (localStorage) and is sent only to `api.elevenlabs.io`; quote text is sent to ElevenLabs and characters count against the user's ElevenLabs plan. ElevenLabs returns per-character timings, so words appear exactly when they are spoken.
 
 ## Suggested YouTube workflow
 

@@ -162,6 +162,8 @@
     .preset.active{background:#fff!important;border-color:var(--ink)!important;box-shadow:0 0 0 2px var(--ink)}.preset.active .thumb{box-shadow:none!important}
     @media(max-width:620px){.presets{grid-template-columns:repeat(5,1fr)!important}}
       .lib-head{flex-wrap:wrap}.lib-head .lib-sets{order:3;flex-basis:100%;flex-wrap:wrap;margin:12px 0 0}.lib-head .lib-close{margin-left:auto}
+      /* The render canvas stays in the page (not display:none) so every browser keeps capturing its frames. */
+    #renderCanvas{position:fixed;left:0;top:0;width:4px;height:4px;opacity:.01;pointer-events:none;z-index:-1}
   </style>
 </head>
 <body>
@@ -180,7 +182,7 @@
       <div class="rail-group">Tools</div>
       <button type="button" class="rail-item" id="railLibrary"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg><span>Quote library</span></button>
       <button type="button" class="rail-item" id="railImage"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg><span>Export image</span></button>
-      <div class="rail-foot"><p class="app-version" id="appVersion" title="0.9.9: The rendered file is no longer a fraction of a second shorter than the video (a 10 s video showed 0:09). 0.9.8: New library collections: Vows, Unsent letters, She asked me, Three lines (90 original pieces). 0.9.7: Format picker removed; every video is 9:16 (1080 × 1920) for Shorts, Reels and TikTok. 0.9.6: Background picker is compact: Dark / Light / Bold tabs and small thumbnails; the chosen name shows next to the label. 0.9.5: 14 new backgrounds (Royal, Ocean Deep, Rose Noir, Galaxy, Charcoal, Emerald, Blush, Sage, Sky, Sand, Lavender, Sunset, Teal Pop, Berry), grouped as Dark, Light and Bold. 0.9.4: Per-page photos removed; one background photo is used for the whole video. 0.9.3: Backgrounds Blood Moon, Night Violet, Mist, Forest and Pure White; accent colour picker with a colour from your book cover; atmosphere overlays (embers, rain, snow, mist, stars); Seconds per page moved to the Quotes tab.">Version 0.9.9 · 05/10/2026<br><span>Rendered length fix</span></p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion" title="0.9.10: Fixed videos that froze on the first frame on some computers (the hidden render canvas stopped sending frames); frames are now pushed explicitly and timed by a worker. 0.9.9: The rendered file is no longer a fraction of a second shorter than the video (a 10 s video showed 0:09). 0.9.8: New library collections: Vows, Unsent letters, She asked me, Three lines (90 original pieces). 0.9.7: Format picker removed; every video is 9:16 (1080 × 1920) for Shorts, Reels and TikTok. 0.9.6: Background picker is compact: Dark / Light / Bold tabs and small thumbnails; the chosen name shows next to the label. 0.9.5: 14 new backgrounds (Royal, Ocean Deep, Rose Noir, Galaxy, Charcoal, Emerald, Blush, Sage, Sky, Sand, Lavender, Sunset, Teal Pop, Berry), grouped as Dark, Light and Bold. 0.9.4: Per-page photos removed; one background photo is used for the whole video. 0.9.3: Backgrounds Blood Moon, Night Violet, Mist, Forest and Pure White; accent colour picker with a colour from your book cover; atmosphere overlays (embers, rain, snow, mist, stars); Seconds per page moved to the Quotes tab.">Version 0.9.10 · 05/10/2026<br><span>Fix frozen video on some PCs</span></p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><h2 id="panelTitle">Quotes</h2><p id="panelDesc">Your book, your pages and what each one says.</p></div>
@@ -279,7 +281,7 @@
         <div class="bulk-opts"><label class="check-row"><input type="radio" name="bulkMode" value="replace" checked /> Replace my pages</label><label class="check-row"><input type="radio" name="bulkMode" value="add" /> Add after my pages</label></div>
         <div class="bulk-foot"><span id="bulkCount">0 quotes found</span><button type="button" class="key-btn primary" id="bulkCreate" disabled>Create pages</button></div></div>
     </div>
-  </div><canvas id="renderCanvas" width="1080" height="1920" hidden></canvas><div class="toast" id="toast">Video rendered and downloaded.</div>
+  </div><canvas id="renderCanvas" width="1080" height="1920" aria-hidden="true"></canvas><div class="toast" id="toast">Video rendered and downloaded.</div>
   <script>
     const $=selector=>document.querySelector(selector);
     const hookVoiceInput=$('#hookVoice'),hookEnabledInput=$('#hookEnabled'),hookTextInput=$('#hookText'),quote=$('#quote'),count=$('#count'),source=$('#source'),phone=$('#phone'),status=$('#status'),toast=$('#toast'),durationSelect=$('#duration'),durationLabel=$('#durationLabel'),formatSelect=$('#format'),formatLabel=$('#formatLabel'),textAnimationSelect=$('#textAnimation'),transitionSelect=$('#transition'),renderMeta=$('#renderMeta'),renderButton=$('#generate'),pageStrip=$('#pageStrip'),pageSummary=$('#pageSummary'),previewCanvas=$('#previewCanvas'),renderCanvas=$('#renderCanvas');
@@ -796,13 +798,22 @@ self.onmessage=async e=>{const m=e.data;try{
     // Records one full pass of the video with the given container/codec and returns the result.
     // The last frame is held a little longer so the file is never shorter than the video.
     const RENDER_TAIL=.35;
+    // Render clock: a worker timer keeps ticking ~30 times a second even when the window is covered or minimised,
+    // where requestAnimationFrame would stop and freeze the video.
+    let clockWorker=null;
+    function renderClock(){
+      if(!clockWorker)try{clockWorker=new Worker(URL.createObjectURL(new Blob(['let id;onmessage=e=>{clearInterval(id);if(e.data>0)id=setInterval(()=>postMessage(0),e.data)}'],{type:'text/javascript'})))}catch(e){clockWorker=false}
+      let raf=0,on=false;
+      return{start(fn){on=true;if(clockWorker){clockWorker.onmessage=()=>{if(on)fn()};clockWorker.postMessage(1000/30)}else{const loop=()=>{if(!on)return;fn();raf=requestAnimationFrame(loop)};raf=requestAnimationFrame(loop)}},
+        stop(){on=false;if(clockWorker)clockWorker.postMessage(0);cancelAnimationFrame(raf)}};
+    }
     async function recordTake(mimeType,withVoice,config,label){
-      const canvas=renderCanvas;canvas.width=config.width;canvas.height=config.height;const ctx=canvas.getContext('2d'),duration=totalDuration(),stream=canvas.captureStream(30);let sources=[],audioDest=null;
+      const canvas=renderCanvas;canvas.width=config.width;canvas.height=config.height;const ctx=canvas.getContext('2d'),duration=totalDuration(),manual=typeof CanvasCaptureMediaStreamTrack!=='undefined'&&'requestFrame' in CanvasCaptureMediaStreamTrack.prototype,stream=canvas.captureStream(manual?0:30),vtrack=stream.getVideoTracks()[0],push=()=>{if(manual)try{vtrack.requestFrame()}catch(e){}};let sources=[],audioDest=null;
       if(withVoice){const actx=getAudioContext();await actx.resume();audioDest=actx.createMediaStreamDestination();stream.addTrack(audioDest.stream.getAudioTracks()[0])}
       let recorder;try{recorder=new MediaRecorder(stream,{mimeType,videoBitsPerSecond:10000000})}catch(e){stream.getTracks().forEach(t=>t.stop());return{error:e,blob:new Blob([]),type:mimeType}}
       const chunks=[];let error=null,wasHidden=false;recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};recorder.onerror=e=>{error=e.error||e};
-      const finished=new Promise(resolve=>recorder.onstop=resolve);drawFrame(ctx,0,canvas.width,canvas.height);recorder.start(250);if(withVoice)sources=scheduleVoices(getAudioContext(),audioDest,0);const start=performance.now();
-      await new Promise(resolve=>{function frame(now){if(document.hidden)wasHidden=true;const real=(now-start)/1000,elapsed=Math.min(duration,real);drawFrame(ctx,elapsed,canvas.width,canvas.height);const pct=Math.round(elapsed/duration*100),qt=elapsed-hookDuration(),scene=pageAt(Math.max(0,qt)).index+1;status.textContent=label+(qt<0?`Rendering hook… ${pct}%`:qt>=quoteDuration()&&endEnabled.checked?`Rendering end card… ${pct}%`:`Rendering page ${scene}/${pages.length}… ${pct}%`);if(real<duration+RENDER_TAIL&&!error)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)});
+      const finished=new Promise(resolve=>recorder.onstop=resolve);drawFrame(ctx,0,canvas.width,canvas.height);recorder.start(250);push();if(withVoice)sources=scheduleVoices(getAudioContext(),audioDest,0);const start=performance.now();
+      await new Promise(resolve=>{const clock=renderClock();function frame(){const now=performance.now();if(document.hidden)wasHidden=true;const real=(now-start)/1000,elapsed=Math.min(duration,real);drawFrame(ctx,elapsed,canvas.width,canvas.height);push();const pct=Math.round(elapsed/duration*100),qt=elapsed-hookDuration(),scene=pageAt(Math.max(0,qt)).index+1;status.textContent=label+(qt<0?`Rendering hook… ${pct}%`:qt>=quoteDuration()&&endEnabled.checked?`Rendering end card… ${pct}%`:`Rendering page ${scene}/${pages.length}… ${pct}%`);if(real>=duration+RENDER_TAIL||error){clock.stop();resolve()}}clock.start(frame)});
       // Ask for the last buffered data before stopping so the final frames are kept.
       if(recorder.state==='recording'){recorder.requestData();await new Promise(r=>setTimeout(r,120))}
       if(recorder.state!=='inactive')recorder.stop();await finished;sources.forEach(src=>{try{src.stop()}catch(e){}});stream.getTracks().forEach(t=>t.stop());

@@ -99,6 +99,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.12.2 (2026-10-05):** Library cards use the clean sans-serif UI font (regular weight, 16.5 px, more line spacing) instead of bold Playfair, so quotes are easier to read.
 - **0.12.1 (2026-10-05):** Quote library redesigned: collections on the left grouped as Short quotes and Story videos (2–4 pages) with counts, a title and description per collection, wrapped topic chips, a two-column card grid with topic and page badges, long stories folded behind Show all, and search that also matches topics.
 - **0.12.0 (2026-10-05):** Two-level navigation: each step lists its sections in the rail and the panel shows one section at a time (Write: Quotes & pages, Book & author, plus Quote library and Paste many shortcuts; Look: Quote font, Background, Colour & effects, Background photo, Motion; Sound: Timing, Music, Voiceover; Promo: Opening hook, End card, Book badge & handle).
 - **0.11.0 (2026-10-05):** Background music in the Sound step: upload, volume, fade in/out, looping, ducking under the voice; included in preview, render and autosave.

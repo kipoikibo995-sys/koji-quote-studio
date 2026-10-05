@@ -436,12 +436,18 @@ self.onmessage=async e=>{const m=e.data;try{
       try{
         const {voices=[]}=await (await elevenFetch('/v1/voices')).json();
         elevenVoices=voices;const previous=elevenVoice.value||safeGet('qvs-eleven-voice');elevenVoice.innerHTML='';
-        voices.forEach(v=>{const o=document.createElement('option'),l=v.labels||{};o.value=v.voice_id;o.textContent=[v.name,[l.accent,l.gender,l.age].filter(Boolean).join(', ')].filter(Boolean).join(' · ');elevenVoice.appendChild(o)});
+        elevenFillVoices(voices);
         if(previous&&voices.some(v=>v.voice_id===previous))elevenVoice.value=previous;
         safeSet('qvs-eleven-key',elevenKey.value.trim());elevenConnected.hidden=false;elevenForget.hidden=false;elevenConnect.textContent='Connected';
         setVoiceStatus(`Connected to ElevenLabs · ${voices.length} voices.`,'ok');elevenLoadAccount();refreshVoiceStatus();
       }catch(err){elevenConnected.hidden=true;elevenConnect.textContent='Connect';setVoiceStatus(err.message,'err')}
       finally{elevenConnect.disabled=false}
+    }
+    // Lists voices as "Name · Gender — traits", grouped by gender and sorted by name.
+    function elevenVoiceLabel(v){const l=v.labels||{},[name,...rest]=String(v.name||'Voice').split(' - '),traits=rest.join(' - ')||l.description||l.use_case||'',gender=l.gender?l.gender[0].toUpperCase()+l.gender.slice(1):'';return name.trim()+(gender?' · '+gender:'')+(traits?' — '+String(traits).replace(/_/g,' '):'')}
+    function elevenFillVoices(voices){
+      const groups={};voices.forEach(v=>{const g=((v.labels||{}).gender||'other').toLowerCase(),key=g==='female'?'Female':g==='male'?'Male':'Other';(groups[key]=groups[key]||[]).push(v)});
+      ['Female','Male','Other'].filter(k=>groups[k]).forEach(k=>{const group=document.createElement('optgroup');group.label=`${k} (${groups[k].length})`;groups[k].sort((a,b)=>elevenVoiceLabel(a).localeCompare(elevenVoiceLabel(b))).forEach(v=>{const o=document.createElement('option');o.value=v.voice_id;o.textContent=elevenVoiceLabel(v);group.appendChild(o)});elevenVoice.appendChild(group)});
     }
     async function elevenLoadAccount(){try{const sub=await (await elevenFetch('/v1/user/subscription')).json();if(sub&&sub.character_limit)elevenAccount.textContent=`ElevenLabs plan: ${sub.tier||'account'} · ${Math.max(0,sub.character_limit-sub.character_count).toLocaleString()} of ${sub.character_limit.toLocaleString()} characters left this period.`}catch(e){elevenAccount.textContent=''}}
     // Returns a decoded clip plus the start time of every word, from ElevenLabs' character alignment.

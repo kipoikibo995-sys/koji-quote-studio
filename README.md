@@ -12,9 +12,13 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - One book & author line for the whole video, with an optional per-page override (leave it empty to hide the credit)
 - Reading-time check: each page shows whether viewers can read it in the time it is on screen
 - Quote fonts: 11 Google Fonts for the quote text (Playfair, Cormorant, Lora, Baskerville, DM Serif, Montserrat, Poppins, Bebas Neue, Dancing Script, Caveat, Typewriter), each with its own size, spacing and line height so quotes still fit the frame
-- Quote library with three collections and 317 entries, with search, topic filters and "Surprise me"; multi-line poems can be split into one page per two lines
+- Quote library with seven collections and 407 entries, with search, topic filters and "Surprise me"; multi-line poems can be split into one page per two lines
   - Everyday (184): quotes and poems across 14 topics (love, heartbreak & healing, self-love, life, meaning & purpose, motivation, courage, hope, peace & mindfulness, gratitude, friendship & family, time & change, growth, books & reading)
   - Old tongues (30): multi-page dark fantasy pieces in the "In English, we say … But in <the tongue of dragons / the old tongue of the knights / the court of the night …>, we say …" format, each four pages long; use one as the whole video or insert its pages
+  - Vows (22): multi-page oaths sworn by knights, witches, vampires, dragons, gods and lovers ("I swear it on the broken sword…")
+  - Unsent letters (20): multi-page letters to a younger self, the one who left, a mother, a father, someone lost, a future self, a lover and the reader ("Dear seventeen, …")
+  - She asked me (18): multi-page conversations, from love and healing to dark fantasy ("She asked me why… I said…")
+  - Three lines (30): short three-line verses about night, love, heartbreak, healing, courage, time, dark fantasy and books
   - Dark fantasy (103): short poems across 15 topics (night & shadows, curses & hexes, witches & spells, vampires & blood, ghosts & hauntings, death & the reaper, fallen kingdoms, dragons & ancient beasts, forsaken gods, cursed forests, wolves & the moon, dark romance, villains & vengeance, prophecy & fate, the abyss & the sea)
 - Line breaks typed in a quote are kept in the video; each line is balanced on its own, and the text shrinks before it breaks a typed line
 - Book promo end card: your cover, book title, call to action (e.g. "Get the book on Amazon") and a small line (e.g. "Link in description ↓")
@@ -36,7 +40,7 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 
 ## Quote library licensing
 
-- **Originals** (141 everyday quotes, 90 dark fantasy poems and 30 Old tongues pieces) are written for Quote Video Studio and may be used freely in videos, including commercially.
+- **Originals** (141 everyday quotes, 90 dark fantasy poems, 30 Old tongues pieces, 22 Vows, 20 Unsent letters, 18 She asked me and 30 Three lines) are written for Quote Video Studio and may be used freely in videos, including commercially.
 - **Classics** (29) and **poems** (27) come from public-domain works published before 1929 (Shakespeare, Thoreau, Emerson, Austen, the Brontës, Dickens, Gibran, Tagore, Dickinson, Frost, Blake, Yeats, Poe, Shelley, Keats, Byron, Coleridge, Milton and others). Translated works use public-domain translations, which are named in the credit line.
 - The library is stored inside `index.html` (a JSON block with the id `quoteLibraryData`) and is easy to extend.
 
@@ -82,6 +86,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version is shown at the bottom of the left rail.
 
+- **0.9.8 (2026-10-05):** Four new library collections: Vows, Unsent letters, She asked me and Three lines (90 original pieces, 407 in total).
 - **0.9.7 (2026-10-05):** Format picker removed; every video is 9:16 (1080 × 1920).
 - **0.9.6 (2026-10-05):** Compact background picker with Dark / Light / Bold tabs.
 - **0.9.5 (2026-10-05):** 14 new backgrounds (22 in total), grouped as Dark, Light and Bold in a compact 4-column grid.

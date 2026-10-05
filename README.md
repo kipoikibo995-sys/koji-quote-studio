@@ -25,6 +25,9 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Book badge: your cover, title and button text in a corner of every quote page, so viewers see the book from the first second
 - Voiceover: each quote (and optionally the end card) is read aloud by Kokoro TTS running in the browser; pages stretch to fit the voice and words appear in time with it. 11 US/UK voices and a speed control, or premium ElevenLabs voices with your own API key
 - Image export: download the current page or end card as a full-resolution PNG (thumbnails, Pinterest, Instagram, community posts)
+- 8 backgrounds: Midnight, Warm Paper, Orange Glow, Blood Moon (with a red moon), Night Violet, Mist, Forest and Pure White, each with a thumbnail
+- Accent colour: keep the background's own, pick from 8 swatches or any colour, or take one from the book cover (kept readable on the background)
+- Atmosphere overlays: embers, rain, snow, mist or stars moving over the background (identical in preview and render)
 - Animated backgrounds (drifting light, bokeh, film texture) and a slow push-in so every frame has motion
 - Quote text auto-sizes to fit the frame, and the live preview uses the same renderer as the exported video
 - Formats: 9:16 (Shorts / Reels / TikTok), 16:9, 1:1
@@ -80,6 +83,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version is shown at the bottom of the left rail.
 
+- **0.9.3 (2026-10-05):** Five new backgrounds, accent colour picker (including a colour from the book cover), atmosphere overlays, and Seconds per page moved to the Quotes tab.
 - **0.9.2 (2026-10-05):** The opening hook can be read aloud with Kokoro or ElevenLabs.
 - **0.9.1 (2026-10-05):** Paste many quotes at once (one page per quote) and an optional opening hook before page 1.
 - **0.9.0 (2026-10-05):** the page photo moved from the Quotes tab to the Style tab ("Photo for page N").

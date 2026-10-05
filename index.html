@@ -129,6 +129,16 @@
     .hook-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.hook-chips button{border:1px solid #e4ded2;border-radius:99px;background:#fff;padding:6px 11px;font:500 13px var(--ui);color:var(--ink)}.hook-chips button:hover{border-color:var(--ink)}
     .bulk-panel{width:min(620px,100%)}.bulk-body{padding:8px 24px 20px}.bulk-body textarea{width:100%;height:260px;resize:vertical;border:1px solid #e3ddd1;border-radius:12px;padding:14px;font:16px/1.5 var(--ui);background:#fff;outline:none}.bulk-body textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #f0521622}
     .bulk-opts{display:flex;gap:18px;flex-wrap:wrap;margin-top:6px}.bulk-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;font-size:14px;color:#56616a}.key-btn.primary{background:var(--ink);color:#fff;height:42px;padding:0 18px}.key-btn.primary:disabled{opacity:.45;cursor:not-allowed}
+      .preset.blood .thumb{background:radial-gradient(circle at 72% 30%,#c8323a 0 13%,transparent 14%),radial-gradient(circle at 75% 25%,#e5323d66,transparent 55%),linear-gradient(160deg,#3d0b10,#0b0204)}.preset.blood .thumb i{color:#fbefea}.preset.blood .thumb u{background:#e5323d}
+    .preset.violet .thumb{background:radial-gradient(circle at 75% 25%,#b48cff55,transparent 55%),linear-gradient(160deg,#2b1848,#08051a)}.preset.violet .thumb i{color:#f7f2ff}.preset.violet .thumb u{background:#b48cff}
+    .preset.mist .thumb{background:radial-gradient(circle at 75% 25%,#ffffff44,transparent 55%),linear-gradient(160deg,#62737a,#1d292f)}.preset.mist .thumb i{color:#f5f9fa}.preset.mist .thumb u{background:#8fd0e0}
+    .preset.forest .thumb{background:radial-gradient(circle at 75% 25%,#d4b25455,transparent 55%),linear-gradient(160deg,#21402d,#06130c)}.preset.forest .thumb i{color:#f4f2e7}.preset.forest .thumb u{background:#d4b254}
+    .preset.white .thumb{background:radial-gradient(circle at 75% 25%,#00000010,transparent 55%),linear-gradient(160deg,#ffffff,#ecebe7)}.preset.white .thumb i{color:#14171a}.preset.white .thumb u{background:#d1432b}
+    .accent-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center}.acc{width:26px;height:26px;border-radius:50%!important;border:2px solid #fff;background:var(--c);box-shadow:0 0 0 1px #d8d1c4;padding:0;cursor:pointer}.acc.active{box-shadow:0 0 0 2px var(--ink)}
+    .acc.auto{width:auto;padding:0 11px;border-radius:99px!important;background:#fff;font:600 12px var(--ui);color:var(--ink)}.acc.pick{position:relative;display:inline-flex!important;align-items:center;justify-content:center;margin:0!important;background:conic-gradient(#f05216,#f1b449,#8bc34a,#2bb3a3,#4f7cff,#b48cff,#ff6fa8,#f05216);color:#fff;font:700 15px var(--ui)!important;text-shadow:0 1px 2px #0008}.acc.pick input{position:absolute;inset:0;opacity:0;cursor:pointer}
+    #accentFromCover{display:block;margin-top:8px}
+    .fx-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.fx-row button{border:1px solid #e4ded2;border-radius:var(--r-ctl);background:#fff;padding:9px 6px;font:600 13px var(--ui);color:var(--ink)}.fx-row button:hover{border-color:var(--ink)}.fx-row button.active{background:var(--ink);border-color:var(--ink);color:#fff}
+    .dur-row{margin-top:14px}
   </style>
 </head>
 <body>
@@ -147,7 +157,7 @@
       <div class="rail-group">Tools</div>
       <button type="button" class="rail-item" id="railLibrary"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg><span>Quote library</span></button>
       <button type="button" class="rail-item" id="railImage"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg><span>Export image</span></button>
-      <div class="rail-foot"><p class="app-version" id="appVersion" title="0.9.2: The opening hook can be read aloud (Kokoro or ElevenLabs); the hook lasts as long as its voice. 0.9.1: Paste many quotes, opening hook.">Version 0.9.2 · 05/10/2026<br><span>The opening hook can be read aloud</span></p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion" title="0.9.3: Backgrounds Blood Moon, Night Violet, Mist, Forest and Pure White; accent colour picker with a colour from your book cover; atmosphere overlays (embers, rain, snow, mist, stars); Seconds per page moved to the Quotes tab.">Version 0.9.3 · 05/10/2026<br><span>5 new backgrounds · accent colour · atmosphere</span></p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><h2 id="panelTitle">Quotes</h2><p id="panelDesc">Your book, your pages and what each one says.</p></div>
@@ -166,7 +176,8 @@
           <div class="q-group"><div class="pages-head"><label>Pages</label><span class="page-summary" id="pageSummary">1 page · 6s total</span></div>
           <div class="page-list" id="pageStrip" role="listbox" aria-label="Pages — drag to reorder"></div>
           <div class="undo-bar" id="undoBar" hidden><span id="undoText">Page deleted.</span><button type="button" id="undoBtn">Undo</button></div>
-          <div class="add-row"><button type="button" class="add-page-btn" id="addPageBtn">＋ Add page</button><button type="button" class="add-page-btn alt" id="bulkBtn" title="Paste a list of quotes, one per line">📋 Paste many</button></div></div>
+          <div class="add-row"><button type="button" class="add-page-btn" id="addPageBtn">＋ Add page</button><button type="button" class="add-page-btn alt" id="bulkBtn" title="Paste a list of quotes, one per line">📋 Paste many</button></div>
+          <div class="dur-row"><label for="duration">Seconds per page <span class="label-note">· without voiceover</span></label><div class="field"><select id="duration"><option value="4">4 seconds</option><option value="6" selected>6 seconds</option><option value="8">8 seconds</option></select></div></div></div>
           <div class="q-group"><label class="toggle-card" for="hookEnabled"><span><b>Opening hook</b><small>A short first line before page 1 that stops the scroll</small></span><input type="checkbox" id="hookEnabled" /></label>
             <div class="end-fields off" id="hookFields"><div class="field text"><input id="hookText" value="If you're tired, read this." maxlength="70" placeholder="Lines from *your book*" /></div>
               <div class="hook-chips" id="hookChips"><button type="button" data-hook="book">Lines from <i>your book</i></button><button type="button" data-hook="If you're tired, read this.">If you're tired…</button><button type="button" data-hook="Read this *slowly*.">Read this slowly</button><button type="button" data-hook="Save this for a *hard day*.">Save this for a hard day</button><button type="button" data-hook="Nobody tells you *this*:">Nobody tells you this</button><button type="button" data-hook="A page from my *book*:">A page from my book</button></div>
@@ -177,13 +188,15 @@
         <section class="panel" data-panel="style" hidden>
           <label>Format</label><div class="segmented" id="formatSeg"><button class="active" data-value="portrait">9:16<small>Shorts</small></button><button data-value="landscape">16:9<small>YouTube</small></button><button data-value="square">1:1<small>Square</small></button></div>
           <select id="format" hidden><option value="portrait">9:16 · Shorts</option><option value="landscape">16:9 · YouTube</option><option value="square">1:1 · Square</option></select>
-          <label>Background</label><div class="presets"><button class="preset calm active" data-theme="calm"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Midnight</b><small>navy · orange</small></button><button class="preset noir" data-theme="noir"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Warm Paper</b><small>cream · ink</small></button><button class="preset editorial" data-theme="editorial"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Orange Glow</b><small>orange · gold</small></button></div>
+          <label>Background</label><div class="presets"><button class="preset calm active" data-theme="calm"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Midnight</b><small>navy · orange</small></button><button class="preset noir" data-theme="noir"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Warm Paper</b><small>cream · ink</small></button><button class="preset editorial" data-theme="editorial"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Orange Glow</b><small>orange · gold</small></button><button class="preset blood" data-theme="blood"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Blood Moon</b><small>crimson · night</small></button><button class="preset violet" data-theme="violet"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Night Violet</b><small>violet · lilac</small></button><button class="preset mist" data-theme="mist"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Mist</b><small>grey-blue · ice</small></button><button class="preset forest" data-theme="forest"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Forest</b><small>moss · gold</small></button><button class="preset white" data-theme="white"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Pure White</b><small>white · ink</small></button></div>
+          <label>Accent colour <span class="label-note">· highlights, quote mark, credit</span></label><div class="accent-row" id="accentRow"><button type="button" class="acc auto active" data-accent="" title="Use the background's own accent">Auto</button><button type="button" class="acc" data-accent="#f05216" style="--c:#f05216" aria-label="Accent #f05216"></button><button type="button" class="acc" data-accent="#e5323d" style="--c:#e5323d" aria-label="Accent #e5323d"></button><button type="button" class="acc" data-accent="#f1b449" style="--c:#f1b449" aria-label="Accent #f1b449"></button><button type="button" class="acc" data-accent="#2bb3a3" style="--c:#2bb3a3" aria-label="Accent #2bb3a3"></button><button type="button" class="acc" data-accent="#4f7cff" style="--c:#4f7cff" aria-label="Accent #4f7cff"></button><button type="button" class="acc" data-accent="#b48cff" style="--c:#b48cff" aria-label="Accent #b48cff"></button><button type="button" class="acc" data-accent="#ff6fa8" style="--c:#ff6fa8" aria-label="Accent #ff6fa8"></button><button type="button" class="acc" data-accent="#8bc34a" style="--c:#8bc34a" aria-label="Accent #8bc34a"></button><label class="acc pick" title="Pick any colour"><input type="color" id="accentPick" value="#f05216" />＋</label></div>
+          <button type="button" class="link-btn" id="accentFromCover">🎨 Use a colour from my book cover</button>
+          <label>Atmosphere <span class="label-note">· moves over the background</span></label><div class="fx-row" id="fxRow"><button type="button" class="active" data-fx="">None</button><button type="button" data-fx="embers">🔥 Embers</button><button type="button" data-fx="rain">🌧 Rain</button><button type="button" data-fx="snow">❄ Snow</button><button type="button" data-fx="mist">🌫 Mist</button><button type="button" data-fx="stars">✨ Stars</button></div>
           <label for="bgPhoto">Background photo</label><label class="upload" for="bgPhoto"><b id="bgPhotoName">Upload a photo (optional)</b><span>Browse</span></label><input type="file" id="bgPhoto" accept="image/*" hidden />
           <div class="photo-controls" id="photoControls" hidden><label class="range-label" for="bgDim"><span>Darken photo</span><span id="bgDimValue">45%</span></label><input type="range" id="bgDim" min="0" max="85" value="45" /><button type="button" class="link-btn" id="bgRemove">Remove photo</button></div>
           <label for="pagePhoto">Photo for page <span id="pagePhotoPage">1</span></label><label class="upload" for="pagePhoto"><b id="pagePhotoName">Add a photo for this page</b><span>Browse</span></label><input type="file" id="pagePhoto" accept="image/*" hidden />
           <button type="button" class="link-btn" id="pagePhotoRemove" hidden>Remove page photo</button><p class="hint">Optional. Pages without their own photo use the background photo. Pick the page in the Quotes tab.</p>
           <div class="row"><div><label for="textAnimation">Text animation</label><div class="field"><select id="textAnimation"><option value="word">Word cascade</option><option value="line">Line rise</option><option value="type">Typewriter</option><option value="fade">Soft fade</option></select></div></div><div><label for="transition">Transition</label><div class="field"><select id="transition"><option value="slide-left">Slide left</option><option value="slide-up">Slide up</option><option value="fade">Crossfade</option><option value="zoom">Zoom through</option></select></div></div></div>
-          <label for="duration">Seconds per page</label><div class="field"><select id="duration"><option value="4">4 seconds</option><option value="6" selected>6 seconds</option><option value="8">8 seconds</option></select></div>
         </section>
         <section class="panel" data-panel="promo" hidden>
           <label class="toggle-card" for="endEnabled"><span><b>Book promo end card</b><small>Finish with your cover and a “get the book” button</small></span><input type="checkbox" id="endEnabled" checked /></label>
@@ -366,8 +379,13 @@
     const SERIF='"Playfair Display", Georgia, serif',SANS='"DM Sans", Arial, sans-serif',MONO='"DM Mono", ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace';
     const THEMES={
       calm:{bg:['#12323e','#030d17'],overlay:'#030d17',badge:'rgba(3,13,23,.55)',accent:'#f05216',credit:'#ffb08a',text:'#ffffff',glow2:'#2f8fa3',glow:.42,particle:'#ffd9c2',scan:.018,grain:.06,vignette:.55},
-      noir:{bg:['#fffdf7','#e6d9c2'],overlay:'#fffdf7',badge:'rgba(255,253,247,.72)',accent:'#f05216',credit:'#b03c0c',text:'#081c25',glow2:'#f1b449',glow:.2,particle:'#b8873f',scan:.012,grain:.05,vignette:.14},
-      editorial:{bg:['#f05216','#7d2209'],overlay:'#3a1004',badge:'rgba(58,16,4,.45)',accent:'#f1b449',credit:'#fff1d0',text:'#faf8f1',glow2:'#ffcf6e',glow:.32,particle:'#fff2d0',scan:.015,grain:.06,vignette:.42}
+      noir:{light:true,bg:['#fffdf7','#e6d9c2'],overlay:'#fffdf7',badge:'rgba(255,253,247,.72)',accent:'#f05216',credit:'#b03c0c',text:'#081c25',glow2:'#f1b449',glow:.2,particle:'#b8873f',scan:.012,grain:.05,vignette:.14},
+      editorial:{bg:['#f05216','#7d2209'],overlay:'#3a1004',badge:'rgba(58,16,4,.45)',accent:'#f1b449',credit:'#fff1d0',text:'#faf8f1',glow2:'#ffcf6e',glow:.32,particle:'#fff2d0',scan:.015,grain:.06,vignette:.42},
+      blood:{moon:true,bg:['#3d0b10','#0b0204'],overlay:'#0b0204',badge:'rgba(11,2,4,.55)',accent:'#e5323d',credit:'#ffa3a3',text:'#fbefea',glow2:'#7a0f1a',glow:.5,particle:'#ffb3a0',scan:.015,grain:.07,vignette:.62},
+      violet:{bg:['#2b1848','#08051a'],overlay:'#08051a',badge:'rgba(8,5,26,.55)',accent:'#b48cff',credit:'#ddccff',text:'#f7f2ff',glow2:'#5b3fa8',glow:.46,particle:'#d8c8ff',scan:.015,grain:.06,vignette:.56},
+      mist:{bg:['#62737a','#1d292f'],overlay:'#1d292f',badge:'rgba(29,41,47,.5)',accent:'#8fd0e0',credit:'#d4eef5',text:'#f5f9fa',glow2:'#a9c2c9',glow:.3,particle:'#e6f1f4',scan:.012,grain:.06,vignette:.5},
+      forest:{bg:['#21402d','#06130c'],overlay:'#06130c',badge:'rgba(6,19,12,.55)',accent:'#d4b254',credit:'#ecdca6',text:'#f4f2e7',glow2:'#3f7a4f',glow:.38,particle:'#e8e2b0',scan:.015,grain:.06,vignette:.55},
+      white:{light:true,bg:['#ffffff','#ecebe7'],overlay:'#ffffff',badge:'rgba(255,255,255,.78)',accent:'#d1432b',credit:'#8f2a17',text:'#14171a',glow2:'#d9d6cf',glow:.1,particle:'#9a958b',scan:0,grain:.03,vignette:.06}
     };
     const PREVIEW_SCALE=.6;
     function clamp01(v){return Math.max(0,Math.min(1,v))}
@@ -376,6 +394,15 @@
     // Page transitions: the outgoing page eases out over its last EXIT seconds while the next page eases in,
     // starting OVERLAP seconds before its own start, so the two cross instead of leaving an empty frame.
     const EXIT=.7,OVERLAP=.35,ENTER=.8,END_LEAD=OVERLAP+.1;
+    // Colour helpers for the accent picker.
+    function hexRgb(hex){const v=parseInt(hex.slice(1),16);return[v>>16&255,v>>8&255,v&255]}
+    function rgbHex(r,g,b){return'#'+[r,g,b].map(x=>Math.round(Math.max(0,Math.min(255,x))).toString(16).padStart(2,'0')).join('')}
+    function luminance(hex){const [r,g,b]=hexRgb(hex).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*r+.7152*g+.0722*b}
+    function mixHex(a,b,k){const A=hexRgb(a),B=hexRgb(b);return rgbHex(...A.map((v,i)=>v+(B[i]-v)*k))}
+    let accentColor='',fxMode='',themeMemo={};
+    // The selected background, with the custom accent (if any) and a credit colour derived from it.
+    function currentTheme(){const base=THEMES[selectedTheme]||THEMES.calm;if(!accentColor)return base;const key=selectedTheme+accentColor;
+      return themeMemo[key]||(themeMemo[key]={...base,accent:accentColor,credit:base.light?mixHex(accentColor,'#000000',.35):mixHex(accentColor,'#ffffff',.45)})}
     function hash(n){const x=Math.sin(n*127.1+311.7)*43758.5453;return x-Math.floor(x)}
     function rgba(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`}
     function setTracking(ctx,px){if('letterSpacing' in ctx)ctx.letterSpacing=px+'px'}
@@ -384,7 +411,10 @@
     // Static background layers are painted once per size and theme: the theme gradient, and a transparent texture layer (scanlines, grain, vignette) drawn on top of the gradient or the photo.
     const layerCache=new Map();
     function cachedLayer(key,w,h,paint){if(layerCache.has(key))return layerCache.get(key);const c=document.createElement('canvas');c.width=w;c.height=h;paint(c.getContext('2d'));if(layerCache.size>30)layerCache.clear();layerCache.set(key,c);return c}
-    function baseLayer(w,h,th){return cachedLayer(`base|${w}x${h}|${selectedTheme}`,w,h,ctx=>{const g=ctx.createLinearGradient(0,0,w*.6,h);g.addColorStop(0,th.bg[0]);g.addColorStop(1,th.bg[1]);ctx.fillStyle=g;ctx.fillRect(0,0,w,h)})}
+    function baseLayer(w,h,th){return cachedLayer(`base|${w}x${h}|${selectedTheme}`,w,h,ctx=>{const g=ctx.createLinearGradient(0,0,w*.6,h);g.addColorStop(0,th.bg[0]);g.addColorStop(1,th.bg[1]);ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+        if(th.moon){const R=Math.min(w,h)*.17,mx=w*.7,my=h*.17,halo=ctx.createRadialGradient(mx,my,R*.8,mx,my,R*3.2);halo.addColorStop(0,'rgba(200,40,48,.38)');halo.addColorStop(1,'rgba(200,40,48,0)');ctx.fillStyle=halo;ctx.fillRect(0,0,w,h);
+          const disc=ctx.createRadialGradient(mx-R*.3,my-R*.3,R*.1,mx,my,R);disc.addColorStop(0,'#e0565a');disc.addColorStop(.7,'#a3202b');disc.addColorStop(1,'#6e0f18');ctx.fillStyle=disc;ctx.beginPath();ctx.arc(mx,my,R,0,Math.PI*2);ctx.fill();
+          ctx.globalAlpha=.18;ctx.fillStyle='#3d0b10';[[.3,-.2,.22],[-.35,.25,.16],[.1,.45,.12],[-.1,-.45,.1]].forEach(([dx,dy,r])=>{ctx.beginPath();ctx.arc(mx+dx*R,my+dy*R,r*R,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1}})}
     function textureLayer(w,h,th){return cachedLayer(`texture|${w}x${h}|${selectedTheme}`,w,h,ctx=>{
       const scan=document.createElement('canvas');scan.width=4;scan.height=6;const sc=scan.getContext('2d');sc.fillStyle='#fff';sc.fillRect(0,5,4,1);
       ctx.globalAlpha=th.scan;ctx.fillStyle=ctx.createPattern(scan,'repeat');ctx.fillRect(0,0,w,h);
@@ -418,7 +448,33 @@
         const speed=(18+hash(i+100)*42)*s,y=((hash(i+50)*(h+80)-t*speed)%(h+80)+h+80)%(h+80)-40,x=hash(i)*w+Math.sin(t*.4+i)*24*s,r=(1.5+Math.pow(hash(i+150),2)*7)*s;
         ctx.globalAlpha=(.1+.35*hash(i+200))*(.65+.35*Math.sin(t*1.3+i*1.7));ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
       }
+      if(fxMode)drawAtmosphere(ctx,t,w,h,th);
       ctx.globalAlpha=1;ctx.drawImage(textureLayer(w,h,th),0,0,w,h);
+    }
+    // Atmosphere overlays; every position is a function of time, so preview and render match.
+    function drawAtmosphere(ctx,t,w,h,th){
+      const s=Math.min(w,h)/1080,dark=!th.light;ctx.save();
+      if(fxMode==='embers'){
+        for(let i=0;i<85;i++){const speed=(70+hash(i+300)*130)*s,life=h+120,y=h+60-((hash(i+310)*life+t*speed)%life),x=hash(i+320)*w+Math.sin(t*(.6+hash(i+330))+i)*40*s,r=(2.6+hash(i+340)*4.4)*s,f=.55+.45*Math.sin(t*(3+hash(i+350)*4)+i);
+          const fade=Math.min(1,(y+60)/(h*.35));ctx.globalAlpha=.9*f*fade;glow(ctx,x,y,r*8,'#ff6a1e',.55*f*fade);ctx.globalAlpha=.9*f*fade;ctx.fillStyle=hash(i+360)>.5?'#ffd27a':'#ff8a3d';ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+      }else if(fxMode==='rain'){
+        ctx.strokeStyle=dark?'#cfe3ff':'#3a4650';ctx.lineCap='round';const slant=.18;
+        for(let i=0;i<150;i++){const speed=(1500+hash(i+400)*900)*s,len=(28+hash(i+410)*46)*s,life=h+len*2,y=((hash(i+420)*life+t*speed)%life)-len,x=((hash(i+430)*(w+h*slant)+y*slant)%(w+h*slant))-h*slant*.5;
+          ctx.globalAlpha=(dark?.16:.12)+hash(i+440)*.18;ctx.lineWidth=(1+hash(i+450)*1.6)*s;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-len*slant,y-len);ctx.stroke()}
+      }else if(fxMode==='snow'){
+        ctx.fillStyle=dark?'#ffffff':'#8d979c';
+        for(let i=0;i<120;i++){const depth=hash(i+500),speed=(40+depth*90)*s,r=(1.5+depth*4.5)*s,life=h+40,y=((hash(i+510)*life+t*speed)%life)-20,x=(hash(i+520)*w+Math.sin(t*(.5+depth)+i*1.3)*30*s*(1+depth));
+          ctx.globalAlpha=.35+depth*.5;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+      }else if(fxMode==='mist'){
+        const c=dark?'#dfe9ee':'#7f8b91';
+        for(let i=0;i<7;i++){const r=(380+hash(i+600)*420)*s,speed=(14+hash(i+610)*22)*s,span=w+r*2,x=((hash(i+620)*span+t*speed*(i%2?1:-1))%span+span)%span-r,y=h*(.25+hash(i+630)*.7);glow(ctx,x,y,r,c,(dark?.16:.12)*(.7+.3*Math.sin(t*.4+i)))}
+      }else if(fxMode==='stars'){
+        ctx.fillStyle=dark?'#ffffff':th.text;
+        for(let i=0;i<130;i++){const x=hash(i+700)*w,y=Math.pow(hash(i+710),1.4)*h*.9,r=(.8+Math.pow(hash(i+720),3)*2.6)*s,tw=.5+.5*Math.sin(t*(1+hash(i+730)*2.5)+i*2.1);
+          ctx.globalAlpha=(dark?.25:.12)+tw*(dark?.65:.25);ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+          if(r>2.4*s&&dark){ctx.globalAlpha*=.6;ctx.fillRect(x-r*4,y-.5*s,r*8,1*s);ctx.fillRect(x-.5*s,y-r*4,1*s,r*8)}}
+      }
+      ctx.restore();ctx.globalAlpha=1;
     }
 
     // Words wrapped in *asterisks* are highlighted; a run can span several words.
@@ -496,7 +552,7 @@
     // The opening hook plays first; everything after it runs on the quote timeline (t minus the hook).
     function drawFrame(ctx,t,w,h,bgTime=t,still=false){
       const H=still?0:hookDuration();if(!H){drawMain(ctx,t,w,h,bgTime,still);return}
-      const th=THEMES[selectedTheme]||THEMES.calm,out=t-(H-OVERLAP-.1);
+      const th=currentTheme(),out=t-(H-OVERLAP-.1);
       if(out>0)drawMain(ctx,t-H,w,h,bgTime,false);else{setTracking(ctx,0);ctx.textBaseline='alphabetic';drawBackground(ctx,bgTime,w,h,th,pages[0].photo||bgPhoto)}
       if(t<H)drawHook(ctx,t,w,h,th,out>0?1-easeInOut(out/(OVERLAP+.1)):1);
     }
@@ -513,7 +569,7 @@
     }
     function drawMain(ctx,t,w,h,bgTime=t,still=false){
       setTracking(ctx,0);ctx.textBaseline='alphabetic';
-      const th=THEMES[selectedTheme]||THEMES.calm,inEnd=endEnabled.checked&&t>=quoteDuration();
+      const th=currentTheme(),inEnd=endEnabled.checked&&t>=quoteDuration();
       const photoFor=i=>i>=pages.length?(endEnabled.checked?bgPhoto:photoFor(pages.length-1)):(pages[i].photo||bgPhoto);
       const endColors=[th.bg[0],th.bg[1],th.accent,th.text];
       if(inEnd){drawBackground(ctx,bgTime,w,h,th,bgPhoto);drawEndCard(ctx,still?3:t-quoteDuration()+END_LEAD,w,h,endColors)}
@@ -553,7 +609,7 @@
       ctx.textAlign='center';
       if(coverH){const p=appear(0),s=.92+.08*p;ctx.save();ctx.globalAlpha=p;ctx.translate(w/2,y+coverH/2+(1-p)*40);ctx.scale(s,s);ctx.shadowColor='rgba(0,0,0,.45)';ctx.shadowBlur=50;ctx.shadowOffsetY=18;ctx.drawImage(coverImage,-coverW/2,-coverH/2,coverW,coverH);ctx.restore();y+=coverH+gap}
       if(titleLines.length){const p=appear(.25);ctx.save();ctx.globalAlpha=p;ctx.fillStyle=colors[3];ctx.font=`600 ${titleSize}px ${SERIF}`;setTracking(ctx,-.03*titleSize);titleLines.forEach((line,i)=>ctx.fillText(line,w/2,y+titleSize*.85+i*titleLH+(1-p)*30));ctx.restore();y+=titleLines.length*titleLH+gap*.6}
-      {const p=appear(.5),pulse=st>1?1+.035*Math.sin((st-1)*4.2):1,label=endCta.value.trim()||'Get the book';ctx.save();ctx.globalAlpha=p;ctx.font=`700 ${ctaSize}px ${SANS}`;setTracking(ctx,0);const pillW=ctx.measureText(label).width+ctaSize*1.8;ctx.translate(w/2,y+ctaH/2+(1-p)*30);ctx.scale(pulse,pulse);ctx.fillStyle=colors[2];ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-pillW/2,-ctaH/2,pillW,ctaH,ctaH/2);else ctx.rect(-pillW/2,-ctaH/2,pillW,ctaH);ctx.fill();ctx.fillStyle=selectedTheme==='editorial'?'#081c25':'#ffffff';ctx.textBaseline='middle';ctx.fillText(label,0,2);ctx.restore();y+=ctaH}
+      {const p=appear(.5),pulse=st>1?1+.035*Math.sin((st-1)*4.2):1,label=endCta.value.trim()||'Get the book';ctx.save();ctx.globalAlpha=p;ctx.font=`700 ${ctaSize}px ${SANS}`;setTracking(ctx,0);const pillW=ctx.measureText(label).width+ctaSize*1.8;ctx.translate(w/2,y+ctaH/2+(1-p)*30);ctx.scale(pulse,pulse);ctx.fillStyle=colors[2];ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-pillW/2,-ctaH/2,pillW,ctaH,ctaH/2);else ctx.rect(-pillW/2,-ctaH/2,pillW,ctaH);ctx.fill();ctx.fillStyle=luminance(colors[2])>.45?'#081c25':'#ffffff';ctx.textBaseline='middle';ctx.fillText(label,0,2);ctx.restore();y+=ctaH}
       if(sub){const p=appear(.7);ctx.save();ctx.globalAlpha=p*.8;ctx.fillStyle=colors[3];ctx.font=`500 ${subSize}px ${MONO}`;setTracking(ctx,.06*subSize);ctx.fillText(sub,w/2,y+gap*.6+subSize*.8+(1-p)*20);ctx.restore()}
     }
 
@@ -838,6 +894,18 @@ self.onmessage=async e=>{const m=e.data;try{
     function fitPhone(){phone.style.zoom=1;const cs=getComputedStyle(stage),aw=stage.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-16,ah=stage.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-16;if(aw<=0||ah<=0)return;phone.style.zoom=Math.max(.45,Math.min(aw/phone.offsetWidth,ah/phone.offsetHeight,2.6))}
     new ResizeObserver(fitPhone).observe(stage);formatSelect.addEventListener('change',fitPhone);
     $('#playPreview').addEventListener('click',playPreview);renderButton.addEventListener('click',renderVideo);
+    // ---------- Accent colour & atmosphere ----------
+    function setAccent(hex,msg){accentColor=hex;document.querySelectorAll('#accentRow .acc').forEach(b=>b.classList.toggle('active',(b.dataset.accent??null)===hex||(b.classList.contains('pick')&&hex&&!document.querySelector(`#accentRow .acc[data-accent="${hex}"]`))));if(hex)$('#accentPick').value=hex;status.textContent=msg||(hex?'Accent colour updated.':'Accent follows the background.')}
+    document.querySelectorAll('#accentRow button.acc').forEach(b=>b.addEventListener('click',()=>setAccent(b.dataset.accent)));
+    $('#accentPick').addEventListener('input',e=>setAccent(e.target.value));
+    // Picks the most colourful common colour of the cover, then keeps it readable on the background.
+    function coverAccent(img){const c=document.createElement('canvas');c.width=c.height=48;const x=c.getContext('2d');x.drawImage(img,0,0,48,48);const d=x.getImageData(0,0,48,48).data,bins={};
+      for(let i=0;i<d.length;i+=4){const r=d[i],g=d[i+1],b=d[i+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b),sat=mx?(mx-mn)/mx:0,val=mx/255;if(sat<.25||val<.2)continue;
+        let hue=0;const dd=mx-mn;if(dd){hue=mx===r?((g-b)/dd)%6:mx===g?(b-r)/dd+2:(r-g)/dd+4;hue=(hue*60+360)%360}const k=Math.floor(hue/20),wgt=sat*val;const e=bins[k]||(bins[k]={w:0,r:0,g:0,b:0});e.w+=wgt;e.r+=r*wgt;e.g+=g*wgt;e.b+=b*wgt}
+      const list=Object.values(bins).sort((a,b)=>b.w-a.w);if(!list.length)return null;const best=list.filter(e=>e.w>=list[0].w*.15).map(e=>{const r=e.r/e.w,g=e.g/e.w,b=e.b/e.w,mx=Math.max(r,g,b),mn=Math.min(r,g,b);return{e,v:(mx?(mx-mn)/mx:0)*mx/255}}).sort((a,b)=>b.v-a.v)[0].e;let hex=rgbHex(best.r/best.w,best.g/best.w,best.b/best.w);
+      const th=THEMES[selectedTheme]||THEMES.calm,bgL=luminance(th.bg[0]);for(let i=0;i<8;i++){const L=luminance(hex),ratio=(Math.max(L,bgL)+.05)/(Math.min(L,bgL)+.05);if(ratio>=3)break;hex=th.light?mixHex(hex,'#000000',.15):mixHex(hex,'#ffffff',.15)}return hex}
+    $('#accentFromCover').addEventListener('click',()=>{if(!coverImage){status.textContent='Upload your book cover in the Promo tab first.';return}const hex=coverAccent(coverImage);if(!hex){status.textContent='The cover has no strong colour; pick one above instead.';return}setAccent(hex,'Accent colour taken from your book cover.')});
+    document.querySelectorAll('#fxRow button').forEach(b=>b.addEventListener('click',()=>{fxMode=b.dataset.fx;document.querySelectorAll('#fxRow button').forEach(x=>x.classList.toggle('active',x===b));status.textContent=fxMode?`Atmosphere: ${b.textContent.replace(/^\S+\s/,'')}.`:'Atmosphere off.'}));
     // ---------- Opening hook ----------
     function updateHookUI(){$('#hookFields').classList.toggle('off',!hookEnabledInput.checked);updateSummary()}
     hookEnabledInput.addEventListener('change',()=>{updateHookUI();status.textContent=hookEnabledInput.checked?'Opening hook on. Play the preview to see it.':'Opening hook off.'});

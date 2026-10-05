@@ -226,6 +226,21 @@
     .lib2 .lib-actions{display:flex;gap:6px;margin-top:auto;padding-top:4px;flex-wrap:wrap}.lib2 .lib-actions button{padding:7px 12px!important;font-size:13px!important}
     .lib2 .lib-foot{padding:10px 24px!important;font-size:12px!important}
     @media(max-width:760px){.lib2 .lib-cats{flex-wrap:nowrap!important;overflow-x:auto}.lib2{grid-template-columns:1fr;grid-template-rows:auto 1fr}.lib-nav{flex-direction:row!important;overflow-x:auto;padding:10px 12px}.lib-nav-title{display:none}.lib-nav button{flex:0 0 auto;width:auto}.lib-nav small{display:none}.lib2 .lib-list{grid-template-columns:1fr}.lib-filters{flex-wrap:wrap}}
+      /* 0.15 step pages */
+    .sub+.sub{margin-top:30px;padding-top:24px;border-top:1px solid #ece6da}
+    .sec-head{margin-bottom:12px}.sec-head h3{margin:0;font:700 17px var(--ui);color:var(--ink);letter-spacing:-.01em}.sec-head h3 .label-note{font-size:13px}.sec-head p{margin:3px 0 0;font-size:13px;color:#56616a}
+    .step-nav{display:flex;gap:10px;margin-top:30px}.step-nav .next-step{flex:1;margin:0}.back-step{flex:0 0 auto;padding:13px 18px;border:1px solid #e4ded2;border-radius:var(--r-ctl);background:#fff;font:700 15px var(--ui);color:var(--ink);cursor:pointer}.back-step:hover{border-color:var(--ink)}.back-step[hidden]{display:none}
+    .panel[data-panel="quotes"] .sub[data-sub="hook"] .promo-hook{margin:0}
+    .spresets{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.spreset{display:flex;flex-direction:column;gap:6px;padding:6px 6px 8px;border:1px solid #e4ded2;border-radius:var(--r-card);background:#fff;text-align:left;cursor:pointer}.spreset:hover{border-color:#bfb6a6}.spreset.active{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+    .sp-thumb{position:relative;display:block;height:64px;border-radius:10px;overflow:hidden}.sp-thumb i{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font-size:24px;font-style:normal;line-height:1}.sp-thumb u{position:absolute;left:50%;top:74%;width:22px;height:3px;margin-left:-11px;border-radius:2px}.spreset b{padding:0 4px;font:600 13px var(--ui);color:var(--ink)}
+    @media(max-width:860px){
+      .rail{position:sticky!important;top:0;z-index:30}
+      main.stage-wrap{position:sticky!important;top:var(--rail-h,58px);z-index:20;box-shadow:0 8px 20px #0003}
+      .stage{height:34vh!important;padding:8px!important}.stage-foot{display:none!important}.stage-bar{padding:6px 12px!important}
+      .sub-chips{position:static}
+      .side-scroll :is(input,textarea,select,button,summary){scroll-margin-top:calc(var(--rail-h,58px) + 34vh + 70px)}
+    }
+      .panel > .sub:first-of-type{margin-top:16px}
   </style>
 </head>
 <body>
@@ -235,17 +250,17 @@
       <p class="rail-sub">Book quote Shorts</p>
       <div class="rail-group">Make a video</div>
       <div class="rail-list" role="tablist" aria-label="Steps">
-        <button type="button" class="rail-item tab step active" role="tab" aria-selected="true" data-tab="quotes"><span class="step-num">1</span><span class="step-text"><b>Write</b><small>Your quotes</small></span></button>
-        <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="style"><span class="step-num">2</span><span class="step-text"><b>Look</b><small>Background & font</small></span></button>
+        <button type="button" class="rail-item tab step active" role="tab" aria-selected="true" data-tab="quotes"><span class="step-num">1</span><span class="step-text"><b>Write</b><small>Quotes &amp; hook</small></span></button>
+        <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="style"><span class="step-num">2</span><span class="step-text"><b>Look</b><small>Style, font & background</small></span></button>
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="voice"><span class="step-num">3</span><span class="step-text"><b>Sound</b><small>Music & voice</small></span></button>
-        <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="promo"><span class="step-num">4</span><span class="step-text"><b>Promo</b><small>Hook & book</small></span></button>
+        <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="promo"><span class="step-num">4</span><span class="step-text"><b>Promo</b><small>Book & ending</small></span></button>
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
       <button type="button" class="rail-item tab settings-tab" role="tab" aria-selected="false" data-tab="settings"><span class="step-num gear">⚙</span><span class="step-text"><b>Settings</b><small>Voice engine &amp; API key</small></span></button>
-      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.14.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.15.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
-      <div class="panel-head"><p class="step-crumb" id="stepCrumb">Step 1 of 5 · Write</p><h2 id="panelTitle">Quotes &amp; pages</h2><p id="panelDesc">Write or pick your quotes. One quote per page.</p><div class="sub-chips" id="subChips"></div></div>
+      <div class="panel-head"><p class="step-crumb" id="stepCrumb">Step 1 of 5</p><h2 id="panelTitle">Write</h2><p id="panelDesc">Your quotes, the credit line and an optional opening hook.</p><div class="sub-chips" id="subChips"></div></div>
       <div class="side-scroll">
         <section class="panel" data-panel="quotes">
           <div class="page-editor">
@@ -382,7 +397,7 @@
     let voiceProvider='kokoro',elevenVoices=[],sampleAudio=null;
     const voiceEnabled=$('#voiceEnabled'),voiceFields=$('#voiceFields'),voiceSelect=$('#voiceSelect'),voiceSpeed=$('#voiceSpeed'),voiceSpeedValue=$('#voiceSpeedValue'),voiceEndCard=$('#voiceEndCard'),voiceGenerate=$('#voiceGenerate'),voiceStatus=$('#voiceStatus');
     const renderLabel=$('#renderLabel'),panelTitle=$('#panelTitle'),panelDesc=$('#panelDesc');
-    const PANEL_INFO={settings:['Settings','Technical options. Set them once; they are remembered.'],quotes:['1 · Write','Write or pick your quotes. One quote per page.'],style:['2 · Look','Font, background, colour and motion. Videos are 9:16 (1080 × 1920).'],voice:['3 · Sound','Timing, background music and the optional voiceover.'],promo:['4 · Promo','Optional: an opening hook, your book cover and a “get the book” ending.'],export:['5 · Export','Check, render and download your video.']};
+    const PANEL_INFO={settings:['Settings','Technical options. Set them once; they are remembered.'],quotes:['Write','Your quotes, the credit line and an optional opening hook.'],style:['Look','Pick a style, then fine-tune the font, background and effects.'],voice:['Sound','Music, voiceover and timing.'],promo:['Promo','Optional: your book cover and a “get the book” ending.'],export:['Export','Check, render and download your video.']};
     const addPageBtn=$('#addPageBtn'),undoBar=$('#undoBar'),undoText=$('#undoText'),quoteLabel=$('#quoteLabel'),readMeter=$('#readMeter'),sourceOverride=$('#sourceOverride'),pageSourceWrap=$('#pageSourceWrap'),pageSource=$('#pageSource');
     const coverBadge=$('#coverBadge');
     const bgPhotoInput=$('#bgPhoto'),bgPhotoName=$('#bgPhotoName'),photoControls=$('#photoControls'),bgDim=$('#bgDim'),bgDimValue=$('#bgDimValue');
@@ -1060,41 +1075,95 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
     {const savedKey=safeGet('qvs-eleven-key');if(savedKey){elevenKey.value=savedKey;elevenForget.hidden=false}if(safeGet('qvs-voice-provider')==='eleven')setProvider('eleven')}
     quote.addEventListener('input',refreshVoiceStatus);[endCta,endSub].forEach(el=>el.addEventListener('input',refreshVoiceStatus));
     const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
-    function openTab(name){const info=PANEL_INFO[name];if(info){panelTitle.textContent=info[0];panelDesc.textContent=info[1]}tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);if(name==='export')updateExportSummary();if(name==='settings'){$('#stepCrumb').textContent='Settings';$('#subChips').innerHTML=''}else lastStep=name;if(typeof showSub==='function'&&SUBS[name])showSub(name,lastSub[name]||SUBS[name][0][0]);try{localStorage.setItem('qvs-tab',name)}catch(e){}}
+    function openTab(name){const info=PANEL_INFO[name];if(info){panelTitle.textContent=info[0];panelDesc.textContent=info[1]}tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);if(name==='export')updateExportSummary();if(name==='settings'){$('#stepCrumb').textContent='Settings';$('#subChips').innerHTML=''}else lastStep=name;if(typeof onStepOpen==='function')onStepOpen(name);try{localStorage.setItem('qvs-tab',name)}catch(e){}}
     tabs.forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));
-    // ---------- Two-level navigation: steps in the rail, one sub-section at a time in the panel ----------
-    // [key, label, description, index of the panel's first child that belongs to it]
-    const SUBS={
-      quotes:[['pages','Quotes & pages','Write or pick your quotes. One quote per page.',0],['credit','Book & author','The credit line shown under every quote.',2]],
-      style:[['font','Quote font','The typeface of your quotes.',0],['background','Background','Pick a colour theme for the video.',1],['colour','Colour & effects','Accent colour and moving atmosphere.',5],['photo','Background photo','Optional: one photo behind the whole video.',10],['motion','Motion','How the words appear and how pages change.',14]],
-      voice:[['timing','Timing','How long each page stays on screen.',0],['music','Music','Optional background music under the whole video.',1],['voice','Voiceover','Optional: read each quote aloud.',2]],
-      promo:[['hook','Opening hook','Optional: a short first line before page 1.',0],['end','End card','Optional: finish with your cover and a “get the book” button.',1],['badge','Book badge & handle','Optional: your cover in a corner and your channel name.',3]],
-      export:[['export','Render & share','Check, render and download your video.',0]]};
-    const STEP_NAMES={quotes:'Write',style:'Look',voice:'Sound',promo:'Promo',export:'Export'},STEP_ORDER=['quotes','style','voice','promo','export'],lastSub={};
-    for(const [step,list] of Object.entries(SUBS)){
-      const panel=document.querySelector(`.panel[data-panel="${step}"]`),next=panel.querySelector('.next-step'),kids=[...panel.children].filter(c=>c!==next);
-      const wraps=list.map(([key])=>{const d=document.createElement('div');d.className='sub';d.dataset.sub=key;return d});
-      kids.forEach((c,i)=>{let k=0;list.forEach((item,j)=>{if(i>=item[3])k=j});wraps[k].appendChild(c)});
-      wraps.forEach(w=>panel.insertBefore(w,next||null));
-      const btn=document.querySelector(`.rail-item.step[data-tab="${step}"]`);if(!btn||list.length<2&&step!=='quotes')continue;
-      const box=document.createElement('div');box.className='rail-subs';box.dataset.for=step;
-      list.forEach(([key,label])=>{const b=document.createElement('button');b.type='button';b.className='rail-sub-item';b.dataset.step=step;b.dataset.sub=key;b.textContent=label;b.addEventListener('click',()=>{openTab(step);showSub(step,key)});box.appendChild(b)});
-      if(step==='quotes'){[['📚 Quote library',()=>openLibrary()],['📋 Paste many',()=>$('#bulkBtn').click()]].forEach(([label,fn])=>{const b=document.createElement('button');b.type='button';b.className='rail-sub-item action';b.textContent=label;b.addEventListener('click',fn);box.appendChild(b)})}
-      btn.after(box);
+    // ---------- Step pages: each step is one scrolling page; the rail lists its sections as shortcuts ----------
+    const STEP_ORDER=['quotes','style','voice','promo','export'],STEP_NAMES={quotes:'Write',style:'Look',voice:'Sound',promo:'Promo',export:'Export'};
+    // [key, rail label, heading (null = the section already has its own), description, [[panel, original child index], …]]
+    const SECTIONS={
+      quotes:[['pages','Quotes & pages',null,'',[['quotes',0],['quotes',1]]],['credit','Book & author',null,'',[['quotes',2]]],['hook','Opening hook',null,'',[['promo',0]]]],
+      style:[['presets','Style presets','Style presets','Pick a ready-made look, then fine-tune it below.',[]],['font','Font',null,'',[['style',0]]],
+        ['background','Background','Background','',[['style',1],['style',3],['style',4],['style',10],['style',11],['style',12],['style',13]]],['effects','Effects & motion','Effects & motion','',[['style',5],['style',6],['style',7],['style',8],['style',9],['style',14]]]],
+      voice:[['music','Music','Music','Optional background music under the whole video.',[['voice',1]]],['voice','Voiceover',null,'',[['voice',2],['voice',3]]],['timing','Timing','Timing','',[['voice',0]]]],
+      promo:[['end','End card',null,'',[['promo',1],['promo',2]]],['badge','Book badge & handle',null,'',[['promo',3],['promo',4],['promo',5],['promo',6],['promo',7]]]],
+      export:[['export','Render & share',null,'',null]]};
+    const SUBS=SECTIONS,lastSub={};let lastStep='quotes';
+    {
+      const original={};STEP_ORDER.forEach(p=>original[p]=[...document.querySelector(`.panel[data-panel="${p}"]`).children].filter(c=>!c.classList.contains('next-step')));
+      const styleLabel=original.style[2],musicLabel=document.querySelector('.music-block > label[for="musicFile"]');
+      for(const step of STEP_ORDER){
+        const panel=document.querySelector(`.panel[data-panel="${step}"]`),oldNext=panel.querySelector(':scope > .next-step');
+        const nav=document.createElement('div');nav.className='step-nav';
+        const back=document.createElement('button');back.type='button';back.className='back-step';back.textContent='← Back';back.hidden=step===STEP_ORDER[0];back.addEventListener('click',()=>goBack(step));nav.appendChild(back);
+        if(oldNext){oldNext.textContent=`Next: ${STEP_NAMES[STEP_ORDER[STEP_ORDER.indexOf(step)+1]]} →`;nav.appendChild(oldNext)}
+        SECTIONS[step].forEach(([key,label,heading,desc,parts])=>{
+          const sec=document.createElement('div');sec.className='sub';sec.dataset.sub=key;
+          if(heading){const h=document.createElement('div');h.className='sec-head';h.innerHTML=`<h3>${heading}</h3>`+(desc?`<p>${desc}</p>`:'');sec.appendChild(h)}
+          (parts||original[step]).forEach(part=>{const el=Array.isArray(part)?original[part[0]][part[1]]:part;if(el)sec.appendChild(el)});
+          panel.appendChild(sec);
+        });
+        panel.appendChild(nav);
+      }
+      // the background heading carries the theme name
+      const bgHead=document.querySelector('.sub[data-sub="background"] .sec-head h3');if(bgHead)bgHead.appendChild($('#themeName'));styleLabel.remove();if(musicLabel)musicLabel.remove();
+      // rail shortcuts under each step
+      for(const step of STEP_ORDER){
+        const list=SECTIONS[step],btn=document.querySelector(`.rail-item.step[data-tab="${step}"]`);if(!btn||list.length<2)continue;
+        const box=document.createElement('div');box.className='rail-subs';box.dataset.for=step;
+        list.forEach(([key,label])=>{const b=document.createElement('button');b.type='button';b.className='rail-sub-item';b.dataset.step=step;b.dataset.sub=key;b.textContent=label;b.addEventListener('click',()=>{if(document.querySelector('.rail-item.active')?.dataset.tab!==step)openTab(step);scrollToSection(step,key)});box.appendChild(b)});
+        if(step==='quotes'){[['📚 Quote library',()=>openLibrary()],['📋 Paste many',()=>$('#bulkBtn').click()]].forEach(([label,fn])=>{const b=document.createElement('button');b.type='button';b.className='rail-sub-item action';b.textContent=label;b.addEventListener('click',fn);box.appendChild(b)})}
+        btn.after(box);
+      }
     }
-    let lastStep='quotes';
-    function showSub(step,key){
-      const list=SUBS[step];if(!list)return;const item=list.find(x=>x[0]===key)||list[0];key=item[0];lastSub[step]=key;
-      const panel=document.querySelector(`.panel[data-panel="${step}"]`);panel.querySelectorAll(':scope > .sub').forEach(d=>d.hidden=d.dataset.sub!==key);
-      document.querySelectorAll('.rail-sub-item[data-sub]').forEach(b=>b.classList.toggle('active',b.dataset.step===step&&b.dataset.sub===key));
-      panelTitle.textContent=item[1];panelDesc.textContent=item[2];$('#stepCrumb').textContent=`Step ${STEP_ORDER.indexOf(step)+1} of 5 · ${STEP_NAMES[step]}`;
-      const chips=$('#subChips');chips.innerHTML='';if(list.length>1)list.forEach(([k,label])=>{const c=document.createElement('button');c.type='button';c.textContent=label;c.className=k===key?'active':'';c.addEventListener('click',()=>showSub(step,k));chips.appendChild(c)});
-      const i=list.indexOf(item),nb=panel.querySelector('.next-step');if(nb){const nxt=list[i+1];nb.textContent=nxt?`Next: ${nxt[1]} →`:`Next step: ${STEP_NAMES[STEP_ORDER[STEP_ORDER.indexOf(step)+1]]} →`}
-      if(key==='font'){const d=$('#fontPicker');if(d)d.open=true}
-      try{localStorage.setItem('qvs-sub',step+':'+key)}catch(e){}
-      growQuote();const sc=document.querySelector('.side-scroll');if(sc)sc.scrollTop=0;
+    const isPhone=()=>matchMedia('(max-width:860px)').matches,sideScroll=document.querySelector('.side-scroll');
+    function stickyTop(){if(!isPhone())return 0;const r=document.querySelector('.rail'),st=document.querySelector('main.stage-wrap');return (r?r.offsetHeight:0)+(st?st.offsetHeight:0)}
+    function scrollToSection(step,key){const sec=document.querySelector(`.panel[data-panel="${step}"] .sub[data-sub="${key}"]`);if(!sec)return;
+      if(isPhone())window.scrollTo({top:sec.getBoundingClientRect().top+scrollY-stickyTop()-8,behavior:'smooth'});
+      else sideScroll.scrollTo({top:sec.getBoundingClientRect().top-sideScroll.getBoundingClientRect().top+sideScroll.scrollTop-4,behavior:'smooth'});
+      if(key==='font'){const d=$('#fontPicker');if(d)d.open=true}spyLock=Date.now()+900;markSection(step,key)}
+    function markSection(step,key){lastSub[step]=key;document.querySelectorAll('.rail-sub-item[data-sub]').forEach(b=>b.classList.toggle('active',b.dataset.step===step&&b.dataset.sub===key));document.querySelectorAll('#subChips button').forEach(c=>c.classList.toggle('active',c.dataset.sub===key))}
+    // Highlight the section being read while the page scrolls.
+    let spyLock=0;
+    function spySections(){if(Date.now()<spyLock)return;const step=document.querySelector('.rail-item.step.active')?.dataset.tab;if(!step||!SECTIONS[step])return;const top=isPhone()?stickyTop():sideScroll.getBoundingClientRect().top;let cur=SECTIONS[step][0][0];
+      const secs=[...document.querySelectorAll(`.panel[data-panel="${step}"] .sub`)];secs.forEach(sec=>{if(sec.getBoundingClientRect().top-top<90)cur=sec.dataset.sub});
+      const atBottom=isPhone()?innerHeight+scrollY>=document.documentElement.scrollHeight-4:sideScroll.scrollTop+sideScroll.clientHeight>=sideScroll.scrollHeight-4;if(atBottom&&secs.length&&(isPhone()?scrollY:sideScroll.scrollTop)>0)cur=secs[secs.length-1].dataset.sub;if(cur!==lastSub[step]||!document.querySelector('.rail-sub-item.active'))markSection(step,cur)}
+    sideScroll.addEventListener('scroll',spySections,{passive:true});window.addEventListener('scroll',spySections,{passive:true});
+    function setRailH(){const r=document.querySelector('.rail');if(r)document.documentElement.style.setProperty('--rail-h',r.offsetHeight+'px')}setRailH();window.addEventListener('resize',setRailH);
+    function onStepOpen(step){
+      if(!SECTIONS[step])return;$('#stepCrumb').textContent=`Step ${STEP_ORDER.indexOf(step)+1} of 5`;
+      const chips=$('#subChips');chips.innerHTML='';if(SECTIONS[step].length>1)SECTIONS[step].forEach(([key,label])=>{const c=document.createElement('button');c.type='button';c.dataset.sub=key;c.textContent=label;c.addEventListener('click',()=>scrollToSection(step,key));chips.appendChild(c)});
+      if(!isPhone())sideScroll.scrollTop=0;markSection(step,SECTIONS[step][0][0]);growQuote();
     }
-    function goNext(step){if(!SUBS[step])return;const list=SUBS[step],i=list.findIndex(x=>x[0]===(lastSub[step]||list[0][0]));if(i<list.length-1)showSub(step,list[i+1][0]);else{const n=STEP_ORDER[STEP_ORDER.indexOf(step)+1];if(n){openTab(n);showSub(n,SUBS[n][0][0])}}}
+
+    // ---------- Style presets: a finished look in one click, fine-tuned below ----------
+    const STYLE_PRESETS=[
+      {id:'midnight',name:'Midnight Classic',theme:'calm',font:'playfair',accent:'',fx:'',anim:'word',trans:'fade'},
+      {id:'ember',name:'Dark Fantasy Ember',theme:'charcoal',font:'cormorant',accent:'#f1b449',fx:'embers',anim:'line',trans:'fade'},
+      {id:'bloodmoon',name:'Blood Moon',theme:'blood',font:'cormorant',accent:'',fx:'mist',anim:'word',trans:'fade'},
+      {id:'galaxy',name:'Galaxy Dream',theme:'galaxy',font:'dmserif',accent:'',fx:'stars',anim:'fade',trans:'zoom'},
+      {id:'blush',name:'Soft Blush',theme:'blush',font:'lora',accent:'',fx:'',anim:'word',trans:'slide-up'},
+      {id:'minimal',name:'Minimal White',theme:'white',font:'montserrat',accent:'',fx:'',anim:'line',trans:'fade'},
+      {id:'forest',name:'Forest Gold',theme:'forest',font:'baskerville',accent:'',fx:'mist',anim:'word',trans:'fade'},
+      {id:'rain',name:'Rainy Night',theme:'mist',font:'typewriter',accent:'',fx:'rain',anim:'type',trans:'fade'}];
+    {
+      const box=document.createElement('div');box.className='spresets';box.id='stylePresets';
+      STYLE_PRESETS.forEach(pr=>{const th=THEMES[pr.theme],f=QUOTE_FONTS.find(x=>x.id===pr.font)||QUOTE_FONTS[0],acc=pr.accent||th.accent;
+        const b=document.createElement('button');b.type='button';b.className='spreset';b.dataset.preset=pr.id;
+        b.innerHTML=`<span class="sp-thumb" style="background:radial-gradient(circle at 75% 25%,${acc}55,transparent 55%),linear-gradient(160deg,${th.bg[0]},${th.bg[1]})"><i style="font-family:${f.family.replace(/"/g,"'")};font-weight:${f.weight};color:${th.text}${f.upper?';text-transform:uppercase':''}">Aa</i><u style="background:${acc}"></u></span><b>${pr.name}</b>`;
+        b.addEventListener('click',()=>applyPreset(pr));box.appendChild(b)});
+      document.querySelector('.sub[data-sub="presets"]').appendChild(box);
+    }
+    function applyPreset(pr){
+      const tb=document.querySelector(`.preset[data-theme="${pr.theme}"]`);if(tb){tb.click();const g=document.querySelector(`#themeGroups button[data-group="${tb.dataset.group}"]`);if(g)g.click()}
+      const ft=document.querySelector(`.font-tile[data-font="${pr.font}"]`);if(ft)ft.click();
+      setAccent(pr.accent);{const fb=document.querySelector(`#fxRow button[data-fx="${pr.fx}"]`);if(fb)fb.click()}
+      textAnimationSelect.value=pr.anim;textAnimationSelect.dispatchEvent(new Event('change'));transitionSelect.value=pr.trans;transitionSelect.dispatchEvent(new Event('change'));
+      document.querySelectorAll('.spreset').forEach(x=>x.classList.toggle('active',x.dataset.preset===pr.id));status.textContent=`Style: ${pr.name}. Fine-tune it below if you like.`;
+    }
+    function goStep(step){if(!step)return;openTab(step);if(isPhone()){const sb=document.querySelector('.sidebar');window.scrollTo({top:sb.getBoundingClientRect().top+scrollY-stickyTop(),behavior:'smooth'})}}
+    function goNext(step){if(!SECTIONS[step])return;goStep(STEP_ORDER[STEP_ORDER.indexOf(step)+1])}
+    function goBack(step){goStep(STEP_ORDER[STEP_ORDER.indexOf(step)-1])}
+    function showSub(step,key){scrollToSection(step,key)}
 
     const formatButtons=document.querySelectorAll('#formatSeg button');formatButtons.forEach(b=>b.addEventListener('click',()=>{formatSelect.value=b.dataset.value;formatButtons.forEach(x=>x.classList.toggle('active',x===b));formatSelect.dispatchEvent(new Event('change'))}));
     const stage=$('#stage');
@@ -1103,7 +1172,7 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
     $('#playPreview').addEventListener('click',playPreview);renderButton.addEventListener('click',renderVideo);
     // Settings: engine, key and timing live outside the step flow.
     document.querySelectorAll('[data-open-settings]').forEach(b=>b.addEventListener('click',()=>openTab('settings')));
-    $('#settingsDone').addEventListener('click',()=>{openTab(lastStep==='settings'?'voice':lastStep);if(lastStep==='voice')showSub('voice','voice')});
+    $('#settingsDone').addEventListener('click',()=>{openTab(lastStep==='settings'?'voice':lastStep);if(lastStep==='voice')setTimeout(()=>scrollToSection('voice','voice'),50)});
     function updateVoiceBoxes(){const eleven=voiceProvider==='eleven',connected=!elevenConnected.hidden;kokoroFields.hidden=eleven;$('#elevenVoiceBox').hidden=!eleven;$('#elevenVoiceRow').hidden=!connected;$('#elevenNeedKey').hidden=connected;elevenFields.hidden=!eleven}
     new MutationObserver(updateVoiceBoxes).observe(elevenConnected,{attributes:true,attributeFilter:['hidden']});
     providerButtons.forEach(b=>b.addEventListener('click',()=>setTimeout(updateVoiceBoxes)));updateVoiceBoxes();
@@ -1192,7 +1261,7 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
     $('#newProject').addEventListener('click',async()=>{if(!confirm('Start a new video? Your current quotes and settings will be cleared.'))return;restoring=true;try{localStorage.removeItem(PROJECT_KEY);localStorage.removeItem('qvs-tab');localStorage.removeItem('qvs-sub')}catch(e){}await fileSet('bg',null);await fileSet('cover',null);await fileSet('music',null);location.reload()});
     let savedSub='';try{savedSub=localStorage.getItem('qvs-sub')||''}catch(e){}
     try{const saved=localStorage.getItem('qvs-tab');if(saved&&document.querySelector(`.tab[data-tab="${saved}"]`))openTab(saved)}catch(e){}
-    try{const [st,sb]=savedSub.split(':');if(SUBS[st]){if(st!==document.querySelector('.rail-item.active')?.dataset.tab)openTab(st);showSub(st,sb)}else showSub('quotes','pages')}catch(e){showSub('quotes','pages')}
+    if(!document.querySelector('.rail-item.active'))openTab('quotes');else onStepOpen(document.querySelector('.rail-item.active').dataset.tab);
     restoreProject();
     requestAnimationFrame(previewLoop);
   </script>

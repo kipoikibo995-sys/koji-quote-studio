@@ -6,17 +6,19 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 
 ## How it works
 
-The editor follows five steps in the left rail. The open step lists its sections underneath, and the panel shows one section at a time; **Next** walks through the sections and then on to the next step. On phones the sections appear as chips above the panel.
+The editor follows five steps in the left rail. Each step is one scrolling page; the rail lists its sections as shortcuts and highlights the one you are reading. Every step ends with **← Back** and **Next →**.
 
-1. **Write**: the quote for each page, the page list, Paste many, the Quote library and the credit line.
-2. **Look**: quote font, background, accent colour, atmosphere, background photo, text animation and transition.
-3. **Sound**: seconds per page, background music and the optional voiceover (voice, Generate voice).
-4. **Promo** (all optional and off by default): opening hook, book promo end card, book badge and channel handle.
+1. **Write**: Quotes & pages (with Quote library and Paste many), Book & author, Opening hook.
+2. **Look**: Style presets (eight ready-made looks), Font, Background (theme and background photo), Effects & motion (accent colour, atmosphere, text animation, transition).
+3. **Sound**: Music, Voiceover (voice and Generate voice), Timing.
+4. **Promo** (optional, off by default): End card, Book badge & channel handle.
 5. **Export**: a summary of the video, Render video, Save the current page as PNG, and upload tips.
 
 **⚙ Settings** (bottom of the rail, outside the steps) holds the technical options: voice engine (Kokoro or ElevenLabs), ElevenLabs API key, model and expressiveness, voice speed and the pause between pages.
 
-The project (quotes, settings, background photo and book cover) is saved in the browser automatically and restored when the page is opened again. **Start a new video** in the Export step clears it.
+On phones the preview stays pinned at the top while you scroll and type, and the sections appear as chips.
+
+The project (quotes, settings, background photo, book cover and music) is saved in the browser automatically and restored when the page is opened again. **Start a new video** in the Export step clears it.
 
 ## Features
 
@@ -43,6 +45,7 @@ The project (quotes, settings, background photo and book cover) is saved in the 
 - Background music: add your own MP3, WAV or M4A; it fades in and out, loops if shorter than the video, ducks about 10 dB while the voice speaks, plays in the preview and is mixed into the rendered video (use music you have the rights to)
 - Voiceover: each quote (and optionally the end card) is read aloud by Kokoro TTS running in the browser; pages stretch to fit the voice and words appear in time with it. 11 US/UK voices and a speed control, or premium ElevenLabs voices with your own API key
 - Image export: download the current page or end card as a full-resolution PNG (thumbnails, Pinterest, Instagram, community posts)
+- Style presets: Midnight Classic, Dark Fantasy Ember, Blood Moon, Galaxy Dream, Soft Blush, Minimal White, Forest Gold and Rainy Night set the background, font, accent, atmosphere, text animation and transition in one click
 - 22 backgrounds in a compact picker (Dark / Light / Bold tabs, small thumbnails, the chosen name shown next to the label): Dark (Midnight, Blood Moon with a red moon, Night Violet, Mist, Forest, Royal, Ocean Deep, Rose Noir, Galaxy, Charcoal, Emerald), Light (Warm Paper, Pure White, Blush, Sage, Sky, Sand, Lavender) and Bold (Orange Glow, Sunset, Teal Pop, Berry)
 - Accent colour: keep the background's own, pick from 8 swatches or any colour, or take one from the book cover (kept readable on the background)
 - Atmosphere overlays: embers, rain, snow, mist or stars moving over the background (identical in preview and render)
@@ -101,6 +104,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.15.0 (2026-10-05):** Each step is one scrolling page with rail shortcuts and a scroll highlight; Back and Next on every step; Opening hook moves to Write, background photo joins Background, motion joins Effects, Timing follows Music and Voiceover; eight style presets at the top of Look; on phones the preview stays pinned while scrolling and typing.
 - **0.14.0 (2026-10-05):** Technical voice options moved to a new Settings page (engine, API key, model, expressiveness, speed, pause); the Voiceover section keeps only the toggle, voice choice with Sample, end card option and Generate voice.
 - **0.13.2 (2026-10-05):** Voice hints no longer say previewing creates the voice.
 - **0.13.1 (2026-10-05):** Play preview no longer creates the voice by itself (no ElevenLabs characters or 90 MB download just to watch the motion); it plays the voice only once it has been generated, otherwise it previews silently with a hint.

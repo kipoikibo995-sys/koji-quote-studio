@@ -122,6 +122,7 @@
     .preset,.segmented button,.page-editor,.toggle-card{border-radius:var(--r-card)!important}
     .quote-box textarea{border-radius:var(--r-ctl) var(--r-ctl) 0 0!important}
     .local-note{color:#c9d6db!important;font-size:13px!important}.stage-foot .status{font-size:13px!important}
+      #countWrap.count-warn{color:#9a6200;font-weight:700}#countWrap.count-over{color:#c0392b;font-weight:700}
   </style>
 </head>
 <body>
@@ -148,7 +149,7 @@
         <section class="panel" data-panel="quotes">
           <div class="page-editor">
             <div class="quote-tools"><label for="quote" id="quoteLabel">Quote · page 1</label><span class="quote-btns"><button type="button" class="hl-btn" id="libraryBtn" title="Browse ready-made quotes and poems">📚 Library</button><button type="button" class="hl-btn" id="highlightBtn" title="Highlight the selected words (Ctrl/Cmd + B)"><span>A</span> Highlight</button></span></div>
-            <div class="quote-box"><textarea id="quote" maxlength="260" rows="2" placeholder="Paste a line from your book…">“Every chapter you finish is a *promise* you kept to yourself.”</textarea><div class="counter"><span class="read-meter" id="readMeter"></span><span><span id="count">63</span> / 260</span></div></div>
+            <div class="quote-box"><textarea id="quote" maxlength="260" rows="2" placeholder="Paste a line from your book…">“Every chapter you finish is a *promise* you kept to yourself.”</textarea><div class="counter"><span class="read-meter" id="readMeter"></span><span id="countWrap"><span id="count">63</span> / 260</span></div></div>
             <div class="tag-row" id="tagRow" hidden><span>Voice tags</span><button type="button" data-tag="whispers">[whispers]</button><button type="button" data-tag="sighs">[sighs]</button><button type="button" data-tag="exhales">[exhales]</button><button type="button" data-tag="sad">[sad]</button><button type="button" data-tag="crying">[crying]</button><button type="button" data-tag="angry">[angry]</button><button type="button" data-tag="mischievously">[mischievously]</button><button type="button" data-tag="excited">[excited]</button><button type="button" data-tag="laughs">[laughs]</button></div>
             
             <details class="disclosure" id="pageOptions"><summary><span class="disc-title">Page options</span><span class="summary-note" id="pageOptionsNote">Default credit · no photo</span></summary><div class="disc-body">
@@ -247,7 +248,8 @@
 
     // ---------- Editor state ----------
     // Drops quote marks that wrap the whole quote (the video adds its own); quotes inside the text are kept.
-    function cleanQuote(text){let t=text.trim();if(/^[“"]/.test(t)&&/[”"]$/.test(t))t=t.slice(1,-1).trim();return t||'Your words belong here.'}
+    const QUOTE_OPEN=/^["“”„‟'‘’‚‛«»‹›「『〝＂]/,QUOTE_CLOSE=/["“”„‟'‘’‚‛«»‹›」』〞〟＂]$/;
+    function cleanQuote(text){let t=text.trim();for(let i=0;i<2&&t.length>1&&QUOTE_OPEN.test(t)&&QUOTE_CLOSE.test(t);i++)t=t.slice(1,-1).trim();return t||'Your words belong here.'}
     function formatTime(seconds){const m=Math.floor(seconds/60),s=seconds%60;return m+':'+String(s).padStart(2,'0')}
     // Without a voiceover each page lasts the chosen length. With one, the voice sets the pace:
     // ElevenLabs reads the whole video as one continuous take and pages turn when the voice reaches them;
@@ -278,12 +280,12 @@
     function readNeed(page){return .6+parseQuote(page.quote).length/3}
     function readFlag(i){if(pageVoice(i))return'ok';const need=readNeed(pages[i]),have=pageDuration(i)-.6;return need<=have-.5?'ok':need<=have?'tight':'long'}
     function updateReadMeter(){const i=currentPage,flag=readFlag(i);if(pageVoice(i)){readMeter.textContent=`Voice sets this page to ${pageDuration(i).toFixed(1)}s`;readMeter.className='read-meter voice';return}
-      const need=Math.round(readNeed(pages[i])),have=Math.round(pageDuration(i)-.6);readMeter.textContent=`~${need}s to read · on screen ${have}s `+(flag==='ok'?'✓':flag==='tight'?'· a little tight':'· too long — shorten it or use 8s pages');readMeter.className='read-meter '+flag}
+      const need=Math.round(readNeed(pages[i])),have=Math.round(pageDuration(i)-.6);readMeter.textContent=`~${need}s to read · on screen ${have}s `+(flag==='ok'?'✓':flag==='tight'?'· a little tight':'· too long — split it into 2 pages or use 8s pages')+(quote.value.length>150&&flag==='ok'?' · long for a Short, consider 2 pages':'');readMeter.className='read-meter '+flag}
     function updateFontSummary(){const f=quoteFont(),el=$('#fontCurrent');el.textContent=f.label;el.style.fontFamily=f.family;el.style.fontWeight=f.weight;el.style.textTransform=f.upper?'uppercase':'none'}
     function updatePageOptionsNote(){const page=pages[currentPage],parts=[page.source!=null?(page.source?'Own credit':'Credit hidden'):'Default credit',page.photo?'Own photo':'No photo'];$('#pageOptionsNote').textContent=parts.join(' · ')}
     function updatePagePhotoUI(){updatePageOptionsNote();const page=pages[currentPage];pagePhotoName.textContent=page.photo?page.photoName:'Add a photo for this page';pagePhotoRemove.hidden=!page.photo;pagePhotoInput.value=''}
     function growQuote(){if(!quote.offsetParent)return;quote.style.height='auto';quote.style.height=Math.min(240,quote.scrollHeight+2)+'px'}
-    function refresh(){saveCurrent();growQuote();count.textContent=quote.value.length;updateSummary();renderPageStrip();updateReadMeter();updatePageOptionsNote()}
+    function refresh(){saveCurrent();growQuote();count.textContent=quote.value.length;$('#countWrap').className=quote.value.length>220?'count-over':quote.value.length>150?'count-warn':'';updateSummary();renderPageStrip();updateReadMeter();updatePageOptionsNote()}
     function updateSummary(){const total=totalDuration();pageSummary.textContent=`${pages.length} page${pages.length===1?'':'s'}${endEnabled.checked?' + end card':''} · ${formatTime(Math.round(total))} total`;durationLabel.textContent=formatTime(Math.round(total))}
     function updateSetup(showStatus=true){const config=FORMATS[formatSelect.value]||FORMATS.portrait;phone.dataset.format=formatSelect.value;formatLabel.textContent=config.label;updateRenderMeta();previewCanvas.width=Math.round(config.width*PREVIEW_SCALE);previewCanvas.height=Math.round(config.height*PREVIEW_SCALE);if(showStatus)status.textContent=`${config.label} format · ${textAnimationSelect.options[textAnimationSelect.selectedIndex].text} · ${transitionSelect.options[transitionSelect.selectedIndex].text}.`}
     let dragFrom=null,lastDeleted=null,undoTimer=null;
@@ -310,7 +312,7 @@
     }
     function loadPageIntoEditor(){const page=pages[currentPage];quote.value=page.quote;sourceOverride.checked=page.source!=null;pageSourceWrap.hidden=!sourceOverride.checked;pageSource.value=page.source||'';quoteLabel.textContent=`Quote · page ${currentPage+1}`}
     function selectPage(index){saveCurrent();currentPage=index;loadPageIntoEditor();refresh();updatePagePhotoUI();showEnd(false);status.textContent=`Editing page ${index+1} of ${pages.length}.`}
-    function addPage(){if(pages.length>=10)return;saveCurrent();pages.push({quote:'Write the next *quote* here.',source:null,photo:null});currentPage=pages.length-1;loadPageIntoEditor();refresh();updatePagePhotoUI();showEnd(false);quote.focus();quote.select();status.textContent=`Page ${pages.length} added.`}
+    function addPage(){if(pages.length>=10)return;saveCurrent();pages.push({quote:'',source:null,photo:null});currentPage=pages.length-1;loadPageIntoEditor();refresh();updatePagePhotoUI();showEnd(false);quote.focus();quote.select();status.textContent=`Page ${pages.length} added.`}
     function duplicatePage(index){if(pages.length>=10)return;saveCurrent();pages.splice(index+1,0,{...pages[index]});currentPage=index+1;loadPageIntoEditor();refresh();updatePagePhotoUI();showEnd(false);status.textContent=`Page ${index+1} duplicated.`}
     function movePage(from,to){if(from===to)return;saveCurrent();const editing=pages[currentPage],[page]=pages.splice(from,1);pages.splice(to,0,page);currentPage=pages.indexOf(editing);loadPageIntoEditor();refresh();status.textContent=`Moved to position ${to+1}.`}
     function deletePage(index=currentPage){
@@ -416,7 +418,8 @@
     function layoutQuote(ctx,raw,w,h){
       const font=quoteFont(),key=[raw,w,h,fontsVersion,font.id].join('|');if(layoutCache.has(key))return layoutCache.get(key);
       const words=parseQuote(raw).map(word=>font.upper?{...word,text:word.text.toUpperCase()}:word),isLandscape=w>h*1.25,isSquare=Math.abs(w-h)<20,maxWidth=w*(isLandscape?.74:.84),maxHeight=h*(isLandscape||isSquare?.5:.42);
-      let fs=Math.round((isLandscape?96:isSquare?84:108)*font.scale/4)*4,lines;
+      const textLen=words.reduce((n,w)=>n+w.text.length+1,0),boost=textLen<=14?1.45:textLen<=26?1.3:textLen<=42?1.15:1;
+      let fs=Math.round((isLandscape?96:isSquare?84:108)*font.scale*boost/4)*4,lines;
       // With typed line breaks, shrink first so each line stays whole; only wrap inside a line below ~60% size.
       const paragraphs=1+words.filter(w=>w.br).length,keepLinesUntil=paragraphs>1?Math.round(fs*.62):Infinity;
       for(;;fs-=4){ctx.font=`${font.weight} ${fs}px ${font.family}`;setTracking(ctx,font.track*fs);lines=wrapParagraphs(ctx,words,maxWidth);if((lines.length*fs*font.lh<=maxHeight&&(lines.length===paragraphs||fs<=keepLinesUntil))||fs<=40)break}
@@ -438,15 +441,19 @@
       // A still frame shows the page fully revealed.
       if(still)st=1e3;
       ctx.save();ctx.globalAlpha=ga;ctx.translate(w/2+gx,h/2+gy);ctx.scale(gs,gs);ctx.translate(-w/2,-h/2);
-      const blockH=L.lines.length*L.lh,top=h/2-blockH/2,markSize=fs*2.1;
+      const blockH=L.lines.length*L.lh,top=h/2-blockH/2,markSize=Math.min(fs*2.1,250);
       const mark=easeOut(clamp01((st+.2)/.45));ctx.save();ctx.globalAlpha*=mark;ctx.fillStyle=th.accent;ctx.font=`600 ${markSize}px ${SERIF}`;setTracking(ctx,0);ctx.textAlign='center';ctx.translate(w/2,top-fs*.3+markSize*.35);ctx.scale(.7+.3*mark,.7+.3*mark);ctx.fillText('“',0,0);ctx.restore();
       // With a voiceover, words appear in step with the speech (spread by character count over its length).
       const voice=pageVoice(pages.indexOf(page)),vLead=voice?voice.lead:VOICE_LEAD,aligned=voice&&voice.wordStarts&&voice.wordStarts.length===L.words?voice.wordStarts:null;
       // Exact word times when the provider returns them (ElevenLabs), otherwise spread by character count.
       const charTime=c=>vLead+(c/Math.max(1,L.chars))*voice.duration*.92,wordTime=item=>aligned?vLead+aligned[item.index]:charTime(item.charStart);
-      const appearAt=voice?(item,lineIndex)=>mode==='word'?wordTime(item):mode==='line'?wordTime(L.lines[lineIndex].items[0]):mode==='type'?wordTime(item):.25:(item,lineIndex)=>mode==='word'?.05+item.index*.065:mode==='line'?.05+lineIndex*.22:mode==='type'?.05+item.charStart*.03:.05;
-      const span=mode==='word'?.38:mode==='line'?.4:mode==='type'?0:.8,typeRate=voice?voice.duration*.92/Math.max(1,L.chars):.03;
-      const textDone=voice&&mode!=='fade'?vLead+voice.duration*.92+.3:mode==='word'?.05+L.words*.065+.38:mode==='line'?.05+L.lines.length*.22+.4:mode==='type'?.05+L.chars*.03:.85;
+      const span=mode==='word'?.38:mode==='line'?.4:mode==='type'?0:.8;
+      // Without a voice, long quotes reveal faster so the whole text is on screen by ~45% of the page,
+      // leaving the rest for reading and the credit line.
+      const natural=mode==='word'?(L.words-1)*.065:mode==='line'?(L.lines.length-1)*.22:mode==='type'?L.chars*.03:0,pace=voice||natural<=0?1:Math.min(1,Math.max(.05,spp*.45-.05-span)/natural);
+      const appearAt=voice?(item,lineIndex)=>mode==='word'?wordTime(item):mode==='line'?wordTime(L.lines[lineIndex].items[0]):mode==='type'?wordTime(item):.25:(item,lineIndex)=>mode==='word'?.05+item.index*.065*pace:mode==='line'?.05+lineIndex*.22*pace:mode==='type'?.05+item.charStart*.03*pace:.05;
+      const typeRate=voice?voice.duration*.92/Math.max(1,L.chars):.03*pace;
+      const textDone=voice&&mode!=='fade'?vLead+voice.duration*.92+.3:.05+natural*pace+(mode==='fade'?.8:span);
       ctx.font=`${L.font.weight} ${fs}px ${L.font.family}`;setTracking(ctx,L.font.track*fs);ctx.textAlign='left';
       L.lines.forEach((line,lineIndex)=>{
         const baseline=top+lineIndex*L.lh+fs*.82,startX=w/2-line.width/2;
@@ -459,7 +466,7 @@
         });
       });
       const credit=easeOut(clamp01((st-textDone)/.4));
-      if(credit>0&&creditFor(page)){const size=Math.max(h>w*1.25?36:32,Math.round(fs*.36));ctx.save();ctx.globalAlpha*=credit;ctx.font=`600 ${size}px ${MONO}`;setTracking(ctx,.06*size);ctx.fillStyle=th.credit;ctx.textAlign='center';ctx.fillText(('— '+creditFor(page)).toUpperCase(),w/2,top+blockH+fs*.5+size+(1-credit)*20);ctx.restore()}
+      if(credit>0&&creditFor(page)){let size=Math.min(46,Math.max(h>w*1.25?36:32,Math.round(fs*.36)));ctx.save();ctx.globalAlpha*=credit;const creditText=('— '+creditFor(page)).toUpperCase();for(;;size-=2){ctx.font=`600 ${size}px ${MONO}`;setTracking(ctx,.06*size);if(ctx.measureText(creditText).width<=w*.84||size<=24)break}ctx.fillStyle=th.credit;ctx.textAlign='center';ctx.fillText(('— '+creditFor(page)).toUpperCase(),w/2,top+blockH+fs*.5+size+(1-credit)*20);ctx.restore()}
       ctx.restore();
     }
     function drawFrame(ctx,t,w,h,bgTime=t,still=false){
@@ -667,6 +674,7 @@ self.onmessage=async e=>{const m=e.data;try{
     async function renderVideo(){
       if(rendering)return;if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){status.textContent='This browser cannot render video locally. Try Chrome or Edge.';return}
       const done=()=>{rendering=false;renderButton.disabled=false;renderLabel.textContent='Render video'};
+      {saveCurrent();const empty=pages.findIndex(p=>!stripTags(p.quote).replace(/[\s"“”'‘’«»*]/g,''));if(empty>=0){selectPage(empty);status.textContent=`Page ${empty+1} is empty. Write a quote or delete the page before rendering.`;quote.focus();done();return}}
       renderButton.disabled=true;renderLabel.textContent='Rendering…';
       stopPreviewAudio();playStart=null;if(!(await ensureVoices())){done();return}
       status.textContent='Loading fonts…';await loadVideoFonts();saveCurrent();const withVoice=voiceEnabled.checked&&voiceReady(),config=FORMATS[formatSelect.value]||FORMATS.portrait,types=recorderTypes(withVoice);

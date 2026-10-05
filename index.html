@@ -9,6 +9,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600&family=Cormorant+Garamond:wght@600&family=DM+Serif+Display&family=Dancing+Script:wght@700&family=Libre+Baskerville:wght@700&family=Lora:wght@600&family=Montserrat:wght@700&family=Poppins:wght@600&family=Special+Elite&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
     :root{--ink:#081c25;--paper:#faf8f1;--muted:#697378;--line:#e4ded2;--blue:#f05216;--acid:#f05216;--gold:#f1b449;--card:#fffdf8}
     *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",Arial,sans-serif;min-height:100vh}
     button,input,textarea{font:inherit} button{cursor:pointer}.app{max-width:1440px;margin:auto;padding:20px 34px 34px}
@@ -65,6 +66,25 @@
     @media(max-width:860px){.app{padding:0 18px 18px}main{grid-template-columns:1fr}.controls{border-right:0;border-bottom:1px solid #e4ded2}.preview-panel{padding:25px}.phone{width:300px}.row,.setup-grid{grid-template-columns:1fr}.presets{grid-template-columns:repeat(3,1fr)}}
     @media(max-width:860px){.rail{order:-2;position:sticky;top:0;z-index:20;flex-direction:row;align-items:center;gap:6px;padding:8px 10px;overflow-x:auto;border-right:0;border-bottom:1px solid #e2dacb}.rail-sub,.rail-group,.rail-foot{display:none}.rail-list{flex-direction:row;gap:6px}.rail-brand span{display:none}.rail-primary,.rail-item{flex:0 0 auto;width:auto;margin:0;padding:9px 12px;white-space:nowrap}.panel-head{padding:16px 16px 0}}
     @media(max-width:860px){.app{display:flex;flex-direction:column;height:auto;overflow:visible;padding:0}main.stage-wrap{order:-1}.stage{height:min(72vh,620px);flex:none;padding:18px}.stage-bar,.stage-foot{padding:12px 16px}.side-scroll{overflow:visible;padding:0 16px 20px}.side-head{padding:16px}.side-foot{position:sticky;bottom:0;z-index:5;padding:12px 16px;box-shadow:0 -8px 20px #081c2512}.sidebar .row{grid-template-columns:1fr}.local-note{display:none}.side-foot .helper{display:none}}
+    /* Friendly UI pass: one rounded UI font, sentence-case labels, softer fields and preview frame */
+    :root{--ui:"Outfit","DM Sans",Arial,sans-serif}
+    body:before{display:none}
+    .app :is(button,input,textarea,select,label,span,p,small,b,div,h2,h3,summary,a,option):not(.sample):not(#fontCurrent),.lib-panel :not(.lib-text):not(.lib-text *),.toast{font-family:var(--ui)!important}
+    .sidebar label:not(.upload):not(.check-row):not(.toggle-card){font-size:13px!important;font-weight:600!important;text-transform:none!important;letter-spacing:0!important;color:#33434a}
+    .label-note{font-size:12px!important;font-weight:400!important}
+    .disc-title{font-size:13px!important;font-weight:600!important;text-transform:none!important;letter-spacing:0!important;color:#33434a!important}
+    .page-summary,.counter,.read-meter,.summary-note,.hint,.helper{font-size:12px!important;letter-spacing:0!important}.page-summary{color:#8a8f92!important}
+    .segmented small,.font-tile small,.upload span,.lib-tag{text-transform:none!important;letter-spacing:0!important;font-size:11px!important;font-weight:500!important}
+    .page-card .num{font-size:12px!important;font-weight:600!important}.page-card .snippet{font-size:14px}
+    .field select,.field input,textarea{border-radius:12px!important;border-color:#e3ddd1!important;background:#fff}
+    .field select:focus,.field input:focus,textarea:focus,.lib-controls input:focus{outline:none!important;border-color:#f0a27d!important;box-shadow:0 0 0 3px #f0521620!important}
+    .toggle-card,.disclosure,.upload,.page-card,.add-page-btn,.preset,.segmented button,.font-tile,.page-editor{border-radius:14px!important}
+    .hl-btn,.key-btn{border-radius:10px!important}
+    .stage-info{font-size:14px!important;font-weight:600!important;text-transform:none!important;letter-spacing:0!important;gap:10px!important}.stage-info .ratio{font-weight:500;color:#9fb3bb}
+    .local-note,.status{font-size:12px!important;letter-spacing:0!important}
+    .stage .phone{border:0!important;border-radius:22px!important;box-shadow:0 30px 70px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06)!important}
+    .stage-bar .tool-buttons button{border-radius:99px!important;padding:9px 16px!important;font-size:13px!important}
+    .toast{border-radius:14px!important;box-shadow:0 12px 30px rgba(8,28,37,.25)!important}
   </style>
 </head>
 <body>
@@ -154,9 +174,9 @@
       </div>
     </aside>
     <main class="stage-wrap">
-      <div class="stage-bar"><div class="stage-info"><span>Live canvas</span><span class="ratio"><span id="formatLabel">9:16</span> / <span id="durationLabel">0:06</span></span></div><div class="tool-buttons"><button id="playPreview">▶ Play preview</button></div></div>
+      <div class="stage-bar"><div class="stage-info"><span>Preview</span><span class="ratio"><span id="formatLabel">9:16</span> / <span id="durationLabel">0:06</span></span></div><div class="tool-buttons"><button id="playPreview">▶ Play preview</button></div></div>
       <div class="stage" id="stage"><div class="phone" id="phone" data-format="portrait" data-theme="calm"><canvas id="previewCanvas" width="648" height="1152" aria-label="Live video preview"></canvas></div></div>
-      <div class="stage-foot"><span class="local-note" id="localNote">No cloud AI · 100% local render</span><div class="status" id="status">Ready to render a real video.</div></div>
+      <div class="stage-foot"><span class="local-note" id="localNote">No cloud AI · renders on your device</span><div class="status" id="status">Ready to render a real video.</div></div>
     </main>
   </div><div class="lib-overlay" id="libOverlay" hidden>
     <div class="lib-panel" role="dialog" aria-modal="true" aria-labelledby="libTitle">
@@ -503,7 +523,7 @@ self.onmessage=async e=>{const m=e.data;try{
     function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
     function safeSet(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
     function setProvider(name){voiceProvider=name;providerButtons.forEach(b=>b.classList.toggle('active',b.dataset.value===name));kokoroFields.hidden=name!=='kokoro';elevenFields.hidden=name!=='eleven';safeSet('qvs-voice-provider',name);updateRenderMeta();updateSummary();refreshVoiceStatus()}
-    function updateRenderMeta(){const config=FORMATS[formatSelect.value]||FORMATS.portrait;const cloudVoice=voiceEnabled.checked&&voiceProvider==='eleven';renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · `+(cloudVoice?'voice by ElevenLabs':'nothing is uploaded');$('#localNote').textContent=cloudVoice?'Local render · voice by ElevenLabs':'No cloud AI · 100% local render'}
+    function updateRenderMeta(){const config=FORMATS[formatSelect.value]||FORMATS.portrait;const cloudVoice=voiceEnabled.checked&&voiceProvider==='eleven';renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · `+(cloudVoice?'voice by ElevenLabs':'nothing is uploaded');$('#localNote').textContent=cloudVoice?'Renders on your device · voice by ElevenLabs':'No cloud AI · renders on your device'}
 
     // Schedules every voice clip on an audio graph, starting `when` seconds from now (audio clock).
     function scheduleVoices(ctx,destination,when){const sources=[];const play=(text,at)=>{const v=voiceFor(text);if(!v)return;const src=ctx.createBufferSource();src.buffer=v.buffer;src.connect(destination);src.start(ctx.currentTime+when+at);sources.push(src)};pages.forEach((page,i)=>play(pageSpeech(page),pageStart(i)+VOICE_LEAD));if(endEnabled.checked)play(endSpeech(),quoteDuration()+.6);return sources}

@@ -184,6 +184,14 @@
     .page-card{background:#fbf9f4;border-color:#e8e2d6}.page-card.active{background:#fff;border-color:var(--ink)!important;box-shadow:0 1px 3px #081c2514!important}
     .page-card.drop-before{box-shadow:0 -3px 0 var(--ink)!important}.page-card.drop-after{box-shadow:0 3px 0 var(--ink)!important}
     .add-row .add-page-btn,.add-page-btn.alt{border:1px solid #e4ded2!important;border-style:solid!important;background:#fff!important;color:var(--ink)!important;font-weight:600}.add-row .add-page-btn:hover{border-color:var(--ink)!important}
+      /* 0.10.2 quick fixes */
+    .toast{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s,transform .25s,visibility 0s .25s}.toast.show{opacity:1;visibility:visible;transition:opacity .25s,transform .25s}
+    @media(max-width:860px){.rail .rail-brand{display:none!important}.rail .rail-list{display:grid!important;grid-template-columns:repeat(5,1fr);gap:4px;width:100%}.rail{overflow-x:visible!important;padding:6px 8px!important}
+      .rail-item.step{flex-direction:column;justify-content:center;gap:3px!important;padding:6px 2px!important;width:auto!important;min-width:0}.rail-item.step .step-num{width:24px;height:24px;font-size:12px}.rail-item.step .step-text{align-items:center}.rail-item.step .step-text b{font-size:12px!important;font-weight:600}}
+    .voice-bar{height:6px;margin-top:12px;border-radius:99px;background:#ece6da;overflow:hidden}.voice-bar i{display:block;height:100%;width:0;border-radius:99px;background:var(--ink);transition:width .2s}
+    .quote-box{position:relative}.quote-hl{position:absolute;left:0;top:0;pointer-events:none;white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;overflow:hidden;color:var(--ink);box-sizing:border-box}
+    .quote-hl mark{background:none;color:var(--blue);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}.quote-hl .ast{color:#c9c2b4}.quote-hl .tag{color:#7a8387;background:#f1ece2;border-radius:4px}
+    .quote-box textarea{position:relative;z-index:1;background:transparent!important;color:transparent!important;caret-color:var(--ink)}.quote-box textarea::placeholder{color:#9aa2a6}.quote-box textarea::selection{background:#4f7cff40;color:transparent}
   </style>
 </head>
 <body>
@@ -199,7 +207,7 @@
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="promo"><span class="step-num">4</span><span class="step-text"><b>Promo</b><small>Hook & book</small></span></button>
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
-      <div class="rail-foot"><p class="app-version" id="appVersion" title="0.10.1: Write step redesigned: no orange frames or stripes, flat quote editor, neutral page list. 0.10.0: The editor is now 5 steps (Write, Look, Sound, Promo, Export) with Next buttons; Promo features start off; the project is saved in the browser automatically. 0.9.10: Fixed videos that froze on the first frame on some computers (the hidden render canvas stopped sending frames); frames are now pushed explicitly and timed by a worker. 0.9.9: The rendered file is no longer a fraction of a second shorter than the video (a 10 s video showed 0:09). 0.9.8: New library collections: Vows, Unsent letters, She asked me, Three lines (90 original pieces). 0.9.7: Format picker removed; every video is 9:16 (1080 × 1920) for Shorts, Reels and TikTok. 0.9.6: Background picker is compact: Dark / Light / Bold tabs and small thumbnails; the chosen name shows next to the label. 0.9.5: 14 new backgrounds (Royal, Ocean Deep, Rose Noir, Galaxy, Charcoal, Emerald, Blush, Sage, Sky, Sand, Lavender, Sunset, Teal Pop, Berry), grouped as Dark, Light and Bold. 0.9.4: Per-page photos removed; one background photo is used for the whole video. 0.9.3: Backgrounds Blood Moon, Night Violet, Mist, Forest and Pure White; accent colour picker with a colour from your book cover; atmosphere overlays (embers, rain, snow, mist, stars); Seconds per page moved to the Quotes tab.">Version 0.10.1 · 05/10/2026<br><span>Cleaner Write step</span></p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.10.2</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><h2 id="panelTitle">1 · Write</h2><p id="panelDesc">Write or pick your quotes. One quote per page.</p></div>
@@ -207,7 +215,7 @@
         <section class="panel" data-panel="quotes">
           <div class="page-editor">
             <div class="quote-tools"><label for="quote" id="quoteLabel">Quote · page 1</label><span class="quote-btns"><button type="button" class="hl-btn" id="libraryBtn" title="Browse ready-made quotes and poems">📚 Library</button><button type="button" class="hl-btn" id="highlightBtn" title="Highlight the selected words (Ctrl/Cmd + B)"><span>A</span> Highlight</button></span></div>
-            <div class="quote-box"><textarea id="quote" maxlength="260" rows="2" placeholder="Paste a line from your book…">“Every chapter you finish is a *promise* you kept to yourself.”</textarea><div class="counter"><span class="read-meter" id="readMeter"></span><span id="countWrap"><span id="count">63</span> / 260</span></div></div>
+            <div class="quote-box"><div class="quote-hl" id="quoteHl" aria-hidden="true"></div><textarea id="quote" maxlength="260" rows="2" placeholder="Paste a line from your book…">“Every chapter you finish is a *promise* you kept to yourself.”</textarea><div class="counter"><span class="read-meter" id="readMeter"></span><span id="countWrap"><span id="count">63</span> / 260</span></div></div>
             <div class="tag-row" id="tagRow" hidden><span>Voice tags</span><button type="button" data-tag="whispers">[whispers]</button><button type="button" data-tag="sighs">[sighs]</button><button type="button" data-tag="exhales">[exhales]</button><button type="button" data-tag="sad">[sad]</button><button type="button" data-tag="crying">[crying]</button><button type="button" data-tag="angry">[angry]</button><button type="button" data-tag="mischievously">[mischievously]</button><button type="button" data-tag="excited">[excited]</button><button type="button" data-tag="laughs">[laughs]</button></div>
             
             <details class="disclosure" id="pageOptions"><summary><span class="disc-title">Different credit for this page</span><span class="summary-note" id="pageOptionsNote">Default credit · no photo</span></summary><div class="disc-body">
@@ -285,7 +293,7 @@
             <label class="range-label" for="voicePause"><span>Pause between pages</span><span id="voicePauseValue">0.4 s</span></label><input type="range" id="voicePause" min="0" max="2.5" step="0.1" value="0.4" /></div></details>
             <label class="check-row" for="voiceEndCard"><input type="checkbox" id="voiceEndCard" checked /> Also read the end card button and small line</label>
             <button type="button" class="secondary-btn" id="voiceGenerate">Generate voice</button>
-            <div class="voice-status" id="voiceStatus">The first time, the voice model (about 90 MB) downloads once, then your browser keeps it.</div>
+            <div class="voice-bar" id="voiceBar" hidden><i></i></div><div class="voice-status" id="voiceStatus">The first time, the free voice downloads about 90 MB (Wi-Fi recommended). After that it works offline.</div>
             <p class="hint">Pages stretch to fit the voice when needed, and words appear in time with it.</p>
           </div>
         <button type="button" class="next-step" data-next="promo">Next: Promo →</button>
@@ -375,7 +383,12 @@
     function updateFontSummary(){const f=quoteFont(),el=$('#fontCurrent');el.textContent=f.label;el.style.fontFamily=f.family;el.style.fontWeight=f.weight;el.style.textTransform=f.upper?'uppercase':'none'}
     function updatePageOptionsNote(){const page=pages[currentPage],parts=[page.source!=null?(page.source?'Own credit':'Credit hidden'):'Same as all pages'];$('#pageOptionsNote').textContent=parts.join(' · ')}
     function updatePagePhotoUI(){updatePageOptionsNote()}
-    function growQuote(){if(!quote.offsetParent)return;quote.style.height='auto';quote.style.height=Math.min(240,quote.scrollHeight+2)+'px'}
+    function growQuote(){if(!quote.offsetParent)return;quote.style.height='auto';quote.style.height=Math.min(240,quote.scrollHeight+2)+'px';paintQuote()}
+    // The quote box shows *highlights* in colour: the text is drawn by a layer under a transparent textarea.
+    const HL_STYLE=['fontFamily','fontSize','fontWeight','fontStyle','lineHeight','letterSpacing','wordSpacing','paddingTop','paddingRight','paddingBottom','paddingLeft','textIndent','tabSize'];
+    function paintQuote(){const hl=$('#quoteHl');if(!hl||!quote.offsetParent)return;const cs=getComputedStyle(quote);HL_STYLE.forEach(k=>hl.style[k]=cs[k]);hl.style.width=quote.clientWidth+'px';hl.style.height=quote.clientHeight+'px';hl.style.top=quote.offsetTop+'px';hl.style.left=quote.offsetLeft+'px';
+      const esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+      hl.innerHTML=esc(quote.value).replace(/\[[^\]\n]{1,40}\]/g,m=>`<span class="tag">${m}</span>`).replace(/\*([^*\n]+)\*/g,'<span class="ast">*</span><mark>$1</mark><span class="ast">*</span>')+'\n';hl.scrollTop=quote.scrollTop}
     function refresh(){saveCurrent();growQuote();count.textContent=quote.value.length;$('#countWrap').className=quote.value.length>220?'count-over':quote.value.length>150?'count-warn':'';updateSummary();renderPageStrip();updateReadMeter();updatePageOptionsNote()}
     function updateSummary(){const total=totalDuration();pageSummary.textContent=`${hookOn()?'Hook + ':''}${pages.length} page${pages.length===1?'':'s'}${endEnabled.checked?' + end card':''} · ${formatTime(Math.round(total))} total`;durationLabel.textContent=formatTime(Math.round(total))}
     function updateSetup(showStatus=true){const config=FORMATS[formatSelect.value]||FORMATS.portrait;phone.dataset.format=formatSelect.value;formatLabel.textContent=config.label;updateRenderMeta();previewCanvas.width=Math.round(config.width*PREVIEW_SCALE);previewCanvas.height=Math.round(config.height*PREVIEW_SCALE);if(showStatus)status.textContent=`${config.label} format · ${textAnimationSelect.options[textAnimationSelect.selectedIndex].text} · ${transitionSelect.options[transitionSelect.selectedIndex].text}.`}
@@ -692,10 +705,16 @@ self.onmessage=async e=>{const m=e.data;try{
     const voicePending=new Map(),voiceCache=new Map();
     function getAudioContext(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();return audioCtx}
     function voiceCall(message){
-      if(!voiceWorker){voiceWorker=new Worker(URL.createObjectURL(new Blob([WORKER_SOURCE],{type:'text/javascript'})),{type:'module'});voiceWorker.onmessage=e=>{const m=e.data;if(m.type==='progress'){setVoiceStatus(`Downloading voice model… ${Math.round(m.loaded/m.total*100)}% (${(m.loaded/1048576).toFixed(0)} of ${(m.total/1048576).toFixed(0)} MB)`);return}const job=voicePending.get(m.id);if(!job)return;voicePending.delete(m.id);m.type==='error'?job.reject(new Error(m.message)):job.resolve(m)};voiceWorker.onerror=e=>{voicePending.forEach(job=>job.reject(new Error(e.message||'Voice engine failed to start.')));voicePending.clear()}}
+      if(!voiceWorker){voiceWorker=new Worker(URL.createObjectURL(new Blob([WORKER_SOURCE],{type:'text/javascript'})),{type:'module'});voiceWorker.onmessage=e=>{const m=e.data;if(m.type==='progress'){const pct=Math.round(m.loaded/m.total*100),bar=$('#voiceBar');bar.hidden=false;bar.firstChild.style.width=pct+'%';setVoiceStatus(`Downloading the free voice (one time only)… ${pct}% · ${(m.loaded/1048576).toFixed(0)} of ${(m.total/1048576).toFixed(0)} MB`);status.textContent=`Downloading voice… ${pct}%`;return}const job=voicePending.get(m.id);if(!job)return;voicePending.delete(m.id);m.type==='error'?job.reject(new Error(m.message)):job.resolve(m)};voiceWorker.onerror=e=>{voicePending.forEach(job=>job.reject(new Error(e.message||'Voice engine failed to start.')));voicePending.clear()}}
       return new Promise((resolve,reject)=>{const id=++voiceRequest;voicePending.set(id,{resolve,reject});voiceWorker.postMessage({...message,id})});
     }
-    function loadVoiceModel(){if(!voiceModelReady)voiceModelReady=voiceCall({type:'load',url:KOKORO_URL,model:KOKORO_MODEL}).catch(err=>{voiceModelReady=null;throw err});return voiceModelReady}
+    function onMobileData(){const c=navigator.connection;return !!c&&(c.saveData||c.type==='cellular'||/(^|-)(2g|3g)$/.test(c.effectiveType||''))}
+    function loadVoiceModel(){
+      if(!voiceModelReady){
+        if(!safeGet('qvs-kokoro-ok')&&onMobileData()&&!confirm('The free voice downloads about 90 MB the first time. You seem to be on mobile data. Download it now?'))return Promise.reject(new Error('Download cancelled. Connect to Wi-Fi and try again.'));
+        voiceModelReady=voiceCall({type:'load',url:KOKORO_URL,model:KOKORO_MODEL}).then(r=>{safeSet('qvs-kokoro-ok','1');$('#voiceBar').hidden=true;return r}).catch(err=>{voiceModelReady=null;$('#voiceBar').hidden=true;throw err});
+      }
+      return voiceModelReady}
     function tagsSpoken(){return voiceProvider==='eleven'&&elevenModel.value==='eleven_v3'}
     function speechText(text){if(!tagsSpoken())text=stripTags(text);return text.replace(/\*/g,'').replace(/[“”"↓↑→←]/g,' ').replace(/\s+/g,' ').replace(/\s+([,.!?;:…])/g,'$1').trim()}
     function pageSpeech(page){return page?speechText(cleanQuote(page.quote)):''}
@@ -873,7 +892,7 @@ self.onmessage=async e=>{const m=e.data;try{
     }
 
     // ---------- Wiring ----------
-    quote.addEventListener('input',refresh);source.addEventListener('input',refresh);pageSource.addEventListener('input',refresh);durationSelect.addEventListener('change',()=>{refresh();status.textContent='Page duration updated.'});formatSelect.addEventListener('change',updateSetup);textAnimationSelect.addEventListener('change',()=>updateSetup());transitionSelect.addEventListener('change',()=>updateSetup());
+    quote.addEventListener('input',refresh);quote.addEventListener('scroll',()=>{const hl=$('#quoteHl');if(hl)hl.scrollTop=quote.scrollTop});source.addEventListener('input',refresh);pageSource.addEventListener('input',refresh);durationSelect.addEventListener('change',()=>{refresh();status.textContent='Page duration updated.'});formatSelect.addEventListener('change',updateSetup);textAnimationSelect.addEventListener('change',()=>updateSetup());transitionSelect.addEventListener('change',()=>updateSetup());
     document.querySelectorAll('.preset').forEach(p=>p.addEventListener('click',()=>{document.querySelector('.preset.active').classList.remove('active');p.classList.add('active');selectedTheme=p.dataset.theme;phone.dataset.theme=selectedTheme;$('#themeName').textContent='· '+p.querySelector('b').textContent;status.textContent=`Background: ${p.querySelector('b').textContent}.`}));
     [endTitle,endCta,endSub].forEach(el=>el.addEventListener('input',()=>{updateEndCard();showEnd(endEnabled.checked)}));
     endSeconds.addEventListener('change',()=>{updateEndCard();showEnd(endEnabled.checked)});
@@ -1013,7 +1032,7 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
       loadPageIntoEditor();refresh();updatePagePhotoUI();showEnd(false);bulkText.value='';closeBulk();status.textContent=`${made.length} page${made.length===1?'':'s'} created from your list.`});
     const stageRender=$('#stageRender'),stageRenderLabel=$('#stageRenderLabel');stageRender.addEventListener('click',()=>renderButton.click());
     new MutationObserver(()=>{stageRender.disabled=renderButton.disabled;stageRenderLabel.textContent=renderLabel.textContent}).observe(renderButton,{attributes:true,childList:true,subtree:true,characterData:true});
-    window.addEventListener('resize',growQuote);document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>requestAnimationFrame(growQuote)));
+    window.addEventListener('resize',growQuote);if(document.fonts)document.fonts.addEventListener('loadingdone',()=>paintQuote());document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>requestAnimationFrame(growQuote)));
     renderPageStrip();updateSetup(false);refresh();updateEndCard();fitPhone();updateTagUI();
 
     // ---------- Autosave: the project is kept in this browser (text in localStorage, images in IndexedDB) ----------

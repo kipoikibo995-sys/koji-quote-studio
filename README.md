@@ -96,8 +96,9 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 ## Changelog
 
-The current version is shown at the bottom of the left rail.
+The current version number is shown at the bottom of the left rail.
 
+- **0.10.2 (2026-10-05):** The render toast no longer shows on phones before a render; *highlighted* words are coloured inside the quote box (stars faded, voice tags tinted); the rail shows only the version number; the 5 steps always fit on phones; the free voice download shows a progress bar and asks before downloading 90 MB on mobile data.
 - **0.10.1 (2026-10-05):** Write step redesigned: no orange frames or stripes, flat quote editor, neutral page list and buttons.
 - **0.10.0 (2026-10-05):** Five-step flow (Write, Look, Sound, Promo, Export) with Next buttons; Promo features start off; the project is saved automatically (images in IndexedDB) and restored on reload; Start a new video; Render and PNG export live in the Export step.
 - **0.9.10 (2026-10-05):** Fixed videos that froze on the first frame on some computers: the render canvas is no longer display:none, every frame is pushed to the recorder explicitly, and a worker clock keeps rendering when the window is covered.

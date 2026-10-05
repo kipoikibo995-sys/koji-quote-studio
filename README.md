@@ -4,6 +4,18 @@ Turn lines from your book into scroll-stopping YouTube Shorts that send viewers 
 
 Built for KDP authors: paste a quote from your book, add your cover, and render a ready-to-upload vertical video that ends with a "get the book" call to action. Video renders locally in the browser: no external rendering API, no server-side processing and no subscription. The optional voiceover runs on the device (Kokoro) or uses ElevenLabs with the user's own API key.
 
+## How it works
+
+The editor follows five steps in the left rail; each step ends with a **Next** button.
+
+1. **Write**: the quote for each page, the page list, Paste many, the Quote library and the credit line.
+2. **Look**: quote font, background, accent colour, atmosphere, background photo, text animation and transition.
+3. **Sound**: seconds per page and the optional voiceover (advanced voice settings are folded away).
+4. **Promo** (all optional and off by default): opening hook, book promo end card, book badge and channel handle.
+5. **Export**: a summary of the video, Render video, Save the current page as PNG, and upload tips.
+
+The project (quotes, settings, background photo and book cover) is saved in the browser automatically and restored when the page is opened again. **Start a new video** in the Export step clears it.
+
 ## Features
 
 - Multi-page quote videos (up to 10 quotes, one per page): page cards with a text preview, drag (or Alt + ↑/↓) to reorder, duplicate, and delete with undo
@@ -86,6 +98,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version is shown at the bottom of the left rail.
 
+- **0.10.0 (2026-10-05):** Five-step flow (Write, Look, Sound, Promo, Export) with Next buttons; Promo features start off; the project is saved automatically (images in IndexedDB) and restored on reload; Start a new video; Render and PNG export live in the Export step.
 - **0.9.10 (2026-10-05):** Fixed videos that froze on the first frame on some computers: the render canvas is no longer display:none, every frame is pushed to the recorder explicitly, and a worker clock keeps rendering when the window is covered.
 - **0.9.9 (2026-10-05):** The rendered file is no longer a fraction of a second short (a 10 s video showed 0:09); the last frame is held briefly.
 - **0.9.8 (2026-10-05):** Four new library collections: Vows, Unsent letters, She asked me and Three lines (90 original pieces, 407 in total).

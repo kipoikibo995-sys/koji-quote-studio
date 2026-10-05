@@ -29,6 +29,7 @@
     .sidebar{display:flex;flex-direction:column;min-height:0;background:#fffdf7;border-right:1px solid #e4ded2}.side-head{display:flex;flex-direction:column;gap:5px;padding:20px 24px 16px;border-bottom:1px solid #e4ded2}.side-head .appmeta{color:var(--blue)}.side-scroll{flex:1;min-height:0;overflow-y:auto;padding:0 24px 26px}.side-foot{padding:16px 24px 18px;border-top:1px solid #e4ded2;background:#fffdf7}.side-foot .generate{margin-top:0}.side-foot .helper{margin-top:9px}.sidebar .setup-grid{grid-template-columns:1fr}.sidebar .setup-grid label{margin:12px 0 7px}
     main.stage-wrap{display:flex;flex-direction:column;min-width:0;min-height:0;border:0;border-radius:0;box-shadow:none;background:radial-gradient(circle at 50% 45%,#12323e 0,#0b2530 45%,#061820 100%);color:#fff}.stage-bar,.stage-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 28px}.stage-bar{border-bottom:1px solid #ffffff14}.stage-foot{border-top:1px solid #ffffff14}.stage-info{display:flex;gap:16px;font:500 11px "DM Mono";text-transform:uppercase;letter-spacing:.07em}.stage-bar .tool-buttons button{padding:9px 15px}.stage-bar #export{background:linear-gradient(110deg,#fc601c,#e7450c);border-color:#fc601c}.stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:28px;overflow:hidden}.stage .phone{flex:0 0 auto;width:335px;transition:none}.stage .phone[data-format="landscape"]{width:520px}.stage .phone[data-format="square"]{width:390px}.local-note{font:500 11px "DM Mono";color:#b8c8cf;white-space:nowrap}.stage-foot .status{margin:0;text-align:right}
     .phone canvas{position:absolute;inset:0;width:100%;height:100%;display:block}.counter{display:flex;justify-content:space-between;gap:10px}.counter .tip{font:400 11px "DM Sans",Arial,sans-serif;color:#7a8387}.counter .tip b{color:var(--blue);font-weight:600}
+    .photo-controls{display:flex;flex-direction:column;gap:4px;margin-top:4px}.photo-controls[hidden]{display:none}.range-label{display:flex!important;justify-content:space-between}.photo-controls input[type=range]{width:100%;accent-color:var(--blue)}.link-btn{align-self:flex-start;border:0;background:none;padding:4px 0;color:#b73a15;font:600 12px "DM Sans",Arial,sans-serif;text-decoration:underline}
     .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:14px 24px 2px;padding:4px;background:#f1ece2;border-radius:12px}.tab{border:0;background:transparent;border-radius:9px;padding:9px 4px;font:600 13px "DM Sans",Arial,sans-serif;color:#5d6a70}.tab b{display:inline-grid;place-items:center;width:18px;height:18px;margin-right:4px;border-radius:50%;background:#e2dccf;font:600 10px "DM Mono";color:#5d6a70}.tab.active{background:#fff;color:var(--ink);box-shadow:0 1px 3px #081c2522}.tab.active b{background:var(--blue);color:#fff}.tab:focus-visible{outline:2px solid var(--blue)}
     .panel[hidden]{display:none}.panel>label:first-child,.panel>.pages-head:first-child{margin-top:20px}.sidebar label{margin:18px 0 8px}.sidebar .pages-head{margin-top:20px}.sidebar .pages-head label{margin:0}.field:after{content:"▾";font-size:13px;bottom:14px;color:#8a9499}.field.text:after{content:""}
     .segmented{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.segmented button{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid #ded8cc;border-radius:11px;background:#fcfaf4;padding:11px 6px;font:700 15px "DM Sans",Arial,sans-serif;color:var(--ink)}.segmented small{font:500 9px "DM Mono";letter-spacing:.06em;text-transform:uppercase;opacity:.65}.segmented button:hover{border-color:var(--ink)}.segmented button.active{background:var(--ink);border-color:var(--ink);color:#fff}
@@ -53,6 +54,8 @@
           <label>Format</label><div class="segmented" id="formatSeg"><button class="active" data-value="portrait">9:16<small>Shorts</small></button><button data-value="landscape">16:9<small>YouTube</small></button><button data-value="square">1:1<small>Square</small></button></div>
           <select id="format" hidden><option value="portrait">9:16 · Shorts</option><option value="landscape">16:9 · YouTube</option><option value="square">1:1 · Square</option></select>
           <label>Background</label><div class="presets"><button class="preset calm active" data-theme="calm"><span class="swatch"></span><b>Midnight</b><small>navy · orange</small></button><button class="preset noir" data-theme="noir"><span class="swatch"></span><b>Warm Paper</b><small>cream · ink</small></button><button class="preset editorial" data-theme="editorial"><span class="swatch"></span><b>Orange Glow</b><small>orange · gold</small></button></div>
+          <label for="bgPhoto">Background photo</label><label class="upload" for="bgPhoto"><b id="bgPhotoName">Upload a photo (optional)</b><span>Browse</span></label><input type="file" id="bgPhoto" accept="image/*" hidden />
+          <div class="photo-controls" id="photoControls" hidden><label class="range-label" for="bgDim"><span>Darken photo</span><span id="bgDimValue">45%</span></label><input type="range" id="bgDim" min="0" max="85" value="45" /><button type="button" class="link-btn" id="bgRemove">Remove photo</button></div>
           <div class="row"><div><label for="textAnimation">Text animation</label><div class="field"><select id="textAnimation"><option value="word">Word cascade</option><option value="line">Line rise</option><option value="type">Typewriter</option><option value="fade">Soft fade</option></select></div></div><div><label for="transition">Transition</label><div class="field"><select id="transition"><option value="slide-left">Slide left</option><option value="slide-up">Slide up</option><option value="fade">Fade out</option><option value="zoom">Zoom out</option></select></div></div></div>
           <label for="duration">Seconds per page</label><div class="field"><select id="duration"><option value="4">4 seconds</option><option value="6" selected>6 seconds</option><option value="8">8 seconds</option></select></div>
         </section>
@@ -71,7 +74,7 @@
       <div class="side-foot"><button class="generate" id="generate">Render & download video <span>↗</span></button><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </aside>
     <main class="stage-wrap">
-      <div class="stage-bar"><div class="stage-info"><span>Live canvas</span><span class="ratio"><span id="formatLabel">9:16</span> / <span id="durationLabel">0:06</span></span></div><div class="tool-buttons"><button id="playPreview">▶ Play preview</button><button id="export">Render</button></div></div>
+      <div class="stage-bar"><div class="stage-info"><span>Live canvas</span><span class="ratio"><span id="formatLabel">9:16</span> / <span id="durationLabel">0:06</span></span></div><div class="tool-buttons"><button id="playPreview">▶ Play preview</button><button id="exportPng" title="Download the current frame as a PNG image">⤓ Image</button><button id="export">Render</button></div></div>
       <div class="stage" id="stage"><div class="phone" id="phone" data-format="portrait" data-theme="calm"><canvas id="previewCanvas" width="648" height="1152" aria-label="Live video preview"></canvas></div></div>
       <div class="stage-foot"><span class="local-note">No AI · 100% local render</span><div class="status" id="status">Ready to render a real video.</div></div>
     </main>
@@ -79,8 +82,10 @@
   <script>
     const $=selector=>document.querySelector(selector);
     const quote=$('#quote'),count=$('#count'),source=$('#source'),phone=$('#phone'),status=$('#status'),toast=$('#toast'),durationSelect=$('#duration'),durationLabel=$('#durationLabel'),formatSelect=$('#format'),formatLabel=$('#formatLabel'),textAnimationSelect=$('#textAnimation'),transitionSelect=$('#transition'),renderMeta=$('#renderMeta'),renderButton=$('#generate'),exportButton=$('#export'),pageStrip=$('#pageStrip'),pageSummary=$('#pageSummary'),previewCanvas=$('#previewCanvas'),renderCanvas=$('#renderCanvas');
+    const bgPhotoInput=$('#bgPhoto'),bgPhotoName=$('#bgPhotoName'),photoControls=$('#photoControls'),bgDim=$('#bgDim'),bgDimValue=$('#bgDimValue');
     const endEnabled=$('#endEnabled'),endFields=$('#endFields'),endCoverInput=$('#endCover'),coverName=$('#coverName'),endTitle=$('#endTitle'),endCta=$('#endCta'),endSub=$('#endSub'),endSeconds=$('#endSeconds'),handleInput=$('#handle');
     const FORMATS={portrait:{label:'9:16',width:1080,height:1920},landscape:{label:'16:9',width:1920,height:1080},square:{label:'1:1',width:1080,height:1080}};
+    let bgPhoto=null;
     let pages=[{quote:'“Every chapter you finish is a *promise* you kept to yourself.”',source:'The Quiet Work · J. Rivers'}],currentPage=0,selectedTheme='calm',rendering=false,coverImage=null,playStart=null,previewEnd=false;
 
     // ---------- Editor state ----------
@@ -103,9 +108,9 @@
     // ---------- Drawing ----------
     const SERIF='"Playfair Display", Georgia, serif',SANS='"DM Sans", Arial, sans-serif',MONO='"DM Mono", "Courier New", monospace';
     const THEMES={
-      calm:{bg:['#12323e','#030d17'],accent:'#f05216',text:'#ffffff',glow2:'#2f8fa3',glow:.42,particle:'#ffd9c2',scan:.05,grain:.06,vignette:.55},
-      noir:{bg:['#fffdf7','#e6d9c2'],accent:'#f05216',text:'#081c25',glow2:'#f1b449',glow:.2,particle:'#b8873f',scan:.03,grain:.05,vignette:.14},
-      editorial:{bg:['#f05216','#7d2209'],accent:'#f1b449',text:'#faf8f1',glow2:'#ffcf6e',glow:.32,particle:'#fff2d0',scan:.04,grain:.06,vignette:.42}
+      calm:{bg:['#12323e','#030d17'],overlay:'#030d17',accent:'#f05216',text:'#ffffff',glow2:'#2f8fa3',glow:.42,particle:'#ffd9c2',scan:.05,grain:.06,vignette:.55},
+      noir:{bg:['#fffdf7','#e6d9c2'],overlay:'#fffdf7',accent:'#f05216',text:'#081c25',glow2:'#f1b449',glow:.2,particle:'#b8873f',scan:.03,grain:.05,vignette:.14},
+      editorial:{bg:['#f05216','#7d2209'],overlay:'#3a1004',accent:'#f1b449',text:'#faf8f1',glow2:'#ffcf6e',glow:.32,particle:'#fff2d0',scan:.04,grain:.06,vignette:.42}
     };
     const PREVIEW_SCALE=.6;
     function clamp01(v){return Math.max(0,Math.min(1,v))}
@@ -116,36 +121,42 @@
     function setTracking(ctx,px){if('letterSpacing' in ctx)ctx.letterSpacing=px+'px'}
     function loadVideoFonts(){const specs=['600 76px "Playfair Display"','500 30px "DM Mono"','700 40px "DM Sans"'];if(!document.fonts)return Promise.resolve();return Promise.race([Promise.all(specs.map(f=>document.fonts.load(f))).catch(()=>{}),new Promise(r=>setTimeout(r,4000))])}
 
-    // The static part of the background (gradient, scanlines, grain, vignette) is painted once per size and theme.
+    // Static background layers are painted once per size and theme: the theme gradient, and a transparent texture layer (scanlines, grain, vignette) drawn on top of the gradient or the photo.
     const layerCache=new Map();
-    function staticLayer(w,h,th){
-      const key=w+'x'+h+'|'+selectedTheme;if(layerCache.has(key))return layerCache.get(key);
-      const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d'),big=Math.max(w,h);
-      const base=ctx.createLinearGradient(0,0,w*.6,h);base.addColorStop(0,th.bg[0]);base.addColorStop(1,th.bg[1]);ctx.fillStyle=base;ctx.fillRect(0,0,w,h);
+    function cachedLayer(key,w,h,paint){if(layerCache.has(key))return layerCache.get(key);const c=document.createElement('canvas');c.width=w;c.height=h;paint(c.getContext('2d'));if(layerCache.size>12)layerCache.clear();layerCache.set(key,c);return c}
+    function baseLayer(w,h,th){return cachedLayer(`base|${w}x${h}|${selectedTheme}`,w,h,ctx=>{const g=ctx.createLinearGradient(0,0,w*.6,h);g.addColorStop(0,th.bg[0]);g.addColorStop(1,th.bg[1]);ctx.fillStyle=g;ctx.fillRect(0,0,w,h)})}
+    function textureLayer(w,h,th){return cachedLayer(`texture|${w}x${h}|${selectedTheme}`,w,h,ctx=>{
       const scan=document.createElement('canvas');scan.width=4;scan.height=6;const sc=scan.getContext('2d');sc.fillStyle='#fff';sc.fillRect(0,4,4,2);
       ctx.globalAlpha=th.scan;ctx.fillStyle=ctx.createPattern(scan,'repeat');ctx.fillRect(0,0,w,h);
       const noise=document.createElement('canvas');noise.width=noise.height=256;const n=noise.getContext('2d'),img=n.createImageData(256,256);
       for(let i=0;i<img.data.length;i+=4){const v=Math.random()*255;img.data[i]=img.data[i+1]=img.data[i+2]=v;img.data[i+3]=255}
       n.putImageData(img,0,0);ctx.globalAlpha=th.grain;ctx.fillStyle=ctx.createPattern(noise,'repeat');ctx.fillRect(0,0,w,h);ctx.globalAlpha=1;
-      const v=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.35,w/2,h/2,big*.75);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,`rgba(0,0,0,${th.vignette})`);ctx.fillStyle=v;ctx.fillRect(0,0,w,h);
-      if(layerCache.size>8)layerCache.clear();layerCache.set(key,c);return c;
+      const big=Math.max(w,h),v=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.35,w/2,h/2,big*.75);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,`rgba(0,0,0,${th.vignette})`);ctx.fillStyle=v;ctx.fillRect(0,0,w,h);
+    })}
+    // The uploaded photo fills the frame with a slow drift, under a theme-coloured wash so the text stays readable.
+    // The photo is resized once to slightly larger than the frame, with the wash baked in; each frame then pans it by whole pixels, which is a plain copy.
+    let photoVersion=0;
+    function photoLayer(w,h,th){const fit=Math.max(w/bgPhoto.width,h/bgPhoto.height)*1.08,lw=Math.round(bgPhoto.width*fit),lh=Math.round(bgPhoto.height*fit);return cachedLayer(`photo|${photoVersion}|${w}x${h}|${selectedTheme}|${bgDim.value}`,lw,lh,ctx=>{ctx.drawImage(bgPhoto,0,0,lw,lh);ctx.globalAlpha=Number(bgDim.value)/100;ctx.fillStyle=th.overlay;ctx.fillRect(0,0,lw,lh)})}
+    function drawPhoto(ctx,t,w,h,th){
+      const layer=photoLayer(w,h,th),slackX=(layer.width-w)/2,slackY=(layer.height-h)/2;
+      ctx.drawImage(layer,Math.round(-slackX+Math.sin(t*.09)*slackX*.9),Math.round(-slackY+Math.cos(t*.07)*slackY*.9));
     }
     // Soft light sprites, scaled up when drawn.
     const glowCache=new Map();
     function glowSprite(color){if(glowCache.has(color))return glowCache.get(color);const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d'),grad=g.createRadialGradient(64,64,0,64,64,64);grad.addColorStop(0,rgba(color,1));grad.addColorStop(.45,rgba(color,.45));grad.addColorStop(1,rgba(color,0));g.fillStyle=grad;g.fillRect(0,0,128,128);glowCache.set(color,c);return c}
     function glow(ctx,x,y,r,color,alpha){ctx.globalAlpha=alpha;ctx.drawImage(glowSprite(color),x-r,y-r,r*2,r*2);ctx.globalAlpha=1}
     function drawBackground(ctx,t,w,h,th){
-      ctx.drawImage(staticLayer(w,h,th),0,0,w,h);
-      const big=Math.max(w,h);
-      glow(ctx,w*(.74+.08*Math.sin(t*.35)),h*(.2+.05*Math.cos(t*.27)),big*.42,th.accent,th.glow);
-      glow(ctx,w*(.18+.07*Math.cos(t*.3)),h*(.86+.04*Math.sin(t*.38)),big*.36,th.glow2,th.glow*.6);
+      if(bgPhoto)drawPhoto(ctx,t,w,h,th);else ctx.drawImage(baseLayer(w,h,th),0,0,w,h);
+      const big=Math.max(w,h),glowAlpha=bgPhoto?th.glow*.55:th.glow;
+      glow(ctx,w*(.74+.08*Math.sin(t*.35)),h*(.2+.05*Math.cos(t*.27)),big*.42,th.accent,glowAlpha);
+      glow(ctx,w*(.18+.07*Math.cos(t*.3)),h*(.86+.04*Math.sin(t*.38)),big*.36,th.glow2,glowAlpha*.6);
       // Soft bokeh drifting upwards.
       const s=Math.min(w,h)/1080;ctx.fillStyle=th.particle;
       for(let i=0;i<44;i++){
         const speed=(18+hash(i+100)*42)*s,y=((hash(i+50)*(h+80)-t*speed)%(h+80)+h+80)%(h+80)-40,x=hash(i)*w+Math.sin(t*.4+i)*24*s,r=(1.5+Math.pow(hash(i+150),2)*7)*s;
         ctx.globalAlpha=(.1+.35*hash(i+200))*(.65+.35*Math.sin(t*1.3+i*1.7));ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
       }
-      ctx.globalAlpha=1;
+      ctx.globalAlpha=1;ctx.drawImage(textureLayer(w,h,th),0,0,w,h);
     }
 
     // Words wrapped in *asterisks* are highlighted; a run can span several words.
@@ -170,11 +181,13 @@
       const layout={fs,lh:fs*1.1,lines:laid,words:words.length,chars};
       if(layoutCache.size>200)layoutCache.clear();layoutCache.set(key,layout);return layout;
     }
-    function drawQuoteScene(ctx,page,st,spp,w,h,th){
-      const L=layoutQuote(ctx,page.quote,w,h),fs=L.fs,mode=textAnimationSelect.value,transition=transitionSelect.value,exit=clamp01((st-(spp-.6))/.6),curve=nudgeCurve(exit);
+    function drawQuoteScene(ctx,page,st,spp,w,h,th,still=false){
+      const L=layoutQuote(ctx,page.quote,w,h),fs=L.fs,mode=textAnimationSelect.value,transition=transitionSelect.value,exit=still?0:clamp01((st-(spp-.6))/.6),curve=nudgeCurve(exit);
       // Slow push-in for the whole page, then the exit transition.
-      let gx=0,gy=0,gs=1+.04*clamp01(st/spp),ga=1;
+      let gx=0,gy=0,gs=still?1:1+.04*clamp01(st/spp),ga=1;
       if(transition==='slide-left')gx=-w*1.18*curve;else if(transition==='slide-up')gy=-h*1.08*curve;else if(transition==='fade')ga=1-curve;else if(transition==='zoom'){gs*=1-.45*curve;ga=1-curve*.78}
+      // A still frame shows the page fully revealed.
+      if(still)st=1e3;
       ctx.save();ctx.globalAlpha=ga;ctx.translate(w/2+gx,h/2+gy);ctx.scale(gs,gs);ctx.translate(-w/2,-h/2);
       const blockH=L.lines.length*L.lh,top=h/2-blockH/2,markSize=fs*2.1;
       const mark=easeOut(clamp01(st/.45));ctx.save();ctx.globalAlpha*=mark;ctx.fillStyle=th.accent;ctx.font=`600 ${markSize}px ${SERIF}`;setTracking(ctx,0);ctx.textAlign='center';ctx.translate(w/2,top-fs*.3+markSize*.35);ctx.scale(.7+.3*mark,.7+.3*mark);ctx.fillText('“',0,0);ctx.restore();
@@ -196,14 +209,14 @@
       if(credit>0){const size=Math.max(24,Math.round(fs*.3));ctx.save();ctx.globalAlpha*=credit;ctx.font=`500 ${size}px ${MONO}`;setTracking(ctx,.08*size);ctx.fillStyle=th.accent;ctx.textAlign='center';ctx.fillText(('— '+page.source).toUpperCase(),w/2,top+blockH+fs*.5+size+(1-credit)*20);ctx.restore()}
       ctx.restore();
     }
-    function drawFrame(ctx,t,w,h,bgTime=t){
+    function drawFrame(ctx,t,w,h,bgTime=t,still=false){
       setTracking(ctx,0);ctx.textBaseline='alphabetic';
       const th=THEMES[selectedTheme]||THEMES.calm,spp=Number(durationSelect.value)||6;
       drawBackground(ctx,bgTime,w,h,th);
-      if(endEnabled.checked&&t>=quoteDuration())drawEndCard(ctx,t-quoteDuration(),w,h,[th.bg[0],th.bg[1],th.accent,th.text]);
-      else{const index=Math.max(0,Math.min(pages.length-1,Math.floor(t/spp)));drawQuoteScene(ctx,pages[index]||pages[0],t-index*spp,spp,w,h,th)}
+      if(endEnabled.checked&&t>=quoteDuration())drawEndCard(ctx,still?3:t-quoteDuration(),w,h,[th.bg[0],th.bg[1],th.accent,th.text]);
+      else{const index=Math.max(0,Math.min(pages.length-1,Math.floor(t/spp)));drawQuoteScene(ctx,pages[index]||pages[0],t-index*spp,spp,w,h,th,still)}
       const handle=handleInput.value.trim(),small=w>h*1.25;if(handle){ctx.save();ctx.globalAlpha=.72;ctx.fillStyle=th.text;ctx.textAlign='center';ctx.font=`500 ${small?28:32}px ${MONO}`;setTracking(ctx,.07*(small?28:32));ctx.fillText(handle,w/2,small?70:110);ctx.restore()}
-      ctx.save();ctx.globalAlpha=.28;ctx.fillStyle=th.text;ctx.fillRect(78,h-78,w-156,5);ctx.restore();ctx.fillStyle=th.accent;ctx.fillRect(78,h-78,(w-156)*Math.min(1,t/totalDuration()),5);
+      if(!still){ctx.save();ctx.globalAlpha=.28;ctx.fillStyle=th.text;ctx.fillRect(78,h-78,w-156,5);ctx.restore();ctx.fillStyle=th.accent;ctx.fillRect(78,h-78,(w-156)*Math.min(1,t/totalDuration()),5)}
     }
     function drawEndCard(ctx,st,w,h,colors){
       const isLandscape=w>h*1.25,isSquare=Math.abs(w-h)<20,appear=d=>easeOut(clamp01((st-d)/.5));
@@ -221,19 +234,28 @@
 
     // ---------- Live preview: the same renderer, drawn small ----------
     const previewCtx=previewCanvas.getContext('2d');let lastMirror=0;
+    function stillTime(){const spp=Number(durationSelect.value);return previewEnd&&endEnabled.checked?quoteDuration():currentPage*spp+spp/2}
     function previewTime(now){
       if(playStart!==null){const t=(now-playStart)/1000;if(t<totalDuration())return t;playStart=null;status.textContent='Preview finished. Ready to render.'}
       const spp=Number(durationSelect.value);
-      if(previewEnd&&endEnabled.checked)return quoteDuration()+Math.min(2.2,endDuration()-.05);
-      return currentPage*spp+spp-.65;
+      return stillTime();
     }
     function previewLoop(now){
       requestAnimationFrame(previewLoop);
       if(rendering){if(now-lastMirror>400){lastMirror=now;previewCtx.setTransform(1,0,0,1,0,0);previewCtx.drawImage(renderCanvas,0,0,previewCanvas.width,previewCanvas.height)}return}
-      const config=FORMATS[formatSelect.value]||FORMATS.portrait;previewCtx.setTransform(previewCanvas.width/config.width,0,0,previewCanvas.height/config.height,0,0);drawFrame(previewCtx,previewTime(now),config.width,config.height,now/1000);
+      const config=FORMATS[formatSelect.value]||FORMATS.portrait;previewCtx.setTransform(previewCanvas.width/config.width,0,0,previewCanvas.height/config.height,0,0);const t=previewTime(now);drawFrame(previewCtx,t,config.width,config.height,now/1000,playStart===null);
     }
     function playPreview(){saveCurrent();previewEnd=false;playStart=performance.now();status.textContent=`Playing ${pages.length}-page preview…`}
 
+    function fileStem(){return endTitle.value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'quote-video'}
+    async function exportImage(){
+      if(rendering)return;status.textContent='Loading fonts…';await loadVideoFonts();saveCurrent();playStart=null;
+      const config=FORMATS[formatSelect.value]||FORMATS.portrait,canvas=document.createElement('canvas');canvas.width=config.width;canvas.height=config.height;
+      drawFrame(canvas.getContext('2d'),stillTime(),config.width,config.height,performance.now()/1000,true);
+      const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob){status.textContent='Could not create the image in this browser.';return}
+      const url=URL.createObjectURL(blob),a=document.createElement('a'),part=previewEnd&&endEnabled.checked?'end-card':'page-'+String(currentPage+1).padStart(2,'0');a.href=url;a.download=`${fileStem()}-${part}-${config.label.replace(':','x')}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+      status.textContent=`Image downloaded · ${config.width} × ${config.height} PNG`;
+    }
     async function renderVideo(){
       if(rendering)return;if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){status.textContent='This browser cannot render video locally. Try Chrome or Edge.';return}
       renderButton.disabled=true;exportButton.disabled=true;renderButton.firstChild.textContent='Rendering video… ';
@@ -243,7 +265,7 @@
       rendering=true;drawFrame(ctx,0,canvas.width,canvas.height);
       const chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};const finished=new Promise(resolve=>recorder.onstop=resolve);recorder.start(250);const start=performance.now();
       await new Promise(resolve=>{function frame(now){const elapsed=Math.min(duration,(now-start)/1000);drawFrame(ctx,elapsed,canvas.width,canvas.height);const pct=Math.round(elapsed/duration*100),scene=Math.min(pages.length,Math.floor(elapsed/secondsPerPage)+1);status.textContent=elapsed>=quoteDuration()&&endEnabled.checked?`Rendering end card… ${pct}%`:`Rendering page ${scene}/${pages.length}… ${pct}%`;if(elapsed<duration)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)});
-      recorder.stop();await finished;const actualType=recorder.mimeType||mimeType||'video/webm',ext=actualType.includes('mp4')?'mp4':'webm',blob=new Blob(chunks,{type:actualType}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(endTitle.value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'quote-video')+'-short-'+Date.now()+'.'+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+      recorder.stop();await finished;const actualType=recorder.mimeType||mimeType||'video/webm',ext=actualType.includes('mp4')?'mp4':'webm',blob=new Blob(chunks,{type:actualType}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=fileStem()+'-short-'+Date.now()+'.'+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
       status.textContent=`Video downloaded · ${ext.toUpperCase()} · ${(blob.size/1048576).toFixed(1)} MB`;toast.textContent='Real video rendered and downloaded.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2800);rendering=false;renderButton.disabled=false;exportButton.disabled=false;renderButton.firstChild.textContent='Render & download video ';
     }
 
@@ -255,6 +277,11 @@
     endEnabled.addEventListener('change',()=>{updateEndCard();showEnd(endEnabled.checked);status.textContent=endEnabled.checked?'End card on.':'End card off.'});
     [quote,source].forEach(el=>el.addEventListener('focus',()=>showEnd(false)));
     endCoverInput.addEventListener('change',()=>{const file=endCoverInput.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{coverImage=img;coverName.textContent=file.name.length>24?file.name.slice(0,21)+'…':file.name;showEnd(endEnabled.checked);status.textContent='Book cover added.'};img.src=reader.result};reader.readAsDataURL(file)});
+    // Large photos are scaled down once so every frame stays cheap to draw.
+    bgPhotoInput.addEventListener('change',()=>{const file=bgPhotoInput.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const scale=Math.min(1,2400/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*scale);c.height=Math.round(img.naturalHeight*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);bgPhoto=c;photoVersion++;bgPhotoName.textContent=file.name.length>24?file.name.slice(0,21)+'…':file.name;photoControls.hidden=false;status.textContent='Background photo added.'};img.src=reader.result};reader.readAsDataURL(file)});
+    bgDim.addEventListener('input',()=>bgDimValue.textContent=bgDim.value+'%');
+    $('#bgRemove').addEventListener('click',()=>{bgPhoto=null;bgPhotoInput.value='';bgPhotoName.textContent='Upload a photo (optional)';photoControls.hidden=true;status.textContent='Background photo removed.'});
+    $('#exportPng').addEventListener('click',exportImage);
     const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
     function openTab(name){tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);try{localStorage.setItem('qvs-tab',name)}catch(e){}}
     tabs.forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));

@@ -209,21 +209,35 @@
     // Drops quote marks that wrap the whole quote (the video adds its own); quotes inside the text are kept.
     function cleanQuote(text){let t=text.trim();if(/^[“"]/.test(t)&&/[”"]$/.test(t))t=t.slice(1,-1).trim();return t||'Your words belong here.'}
     function formatTime(seconds){const m=Math.floor(seconds/60),s=seconds%60;return m+':'+String(s).padStart(2,'0')}
-    // Each page lasts the chosen length, or longer when its voiceover needs it.
-    const VOICE_LEAD=.35,VOICE_TAIL=.9;
-    function pageDuration(i){const base=Number(durationSelect.value)||6,v=voiceFor(pageSpeech(pages[i]));return v?Math.max(base,VOICE_LEAD+v.duration+VOICE_TAIL):base}
-    function pageStart(i){let t=0;for(let k=0;k<i;k++)t+=pageDuration(k);return t}
+    // Without a voiceover each page lasts the chosen length. With one, the voice sets the pace:
+    // ElevenLabs reads the whole video as one continuous take and pages turn when the voice reaches them;
+    // Kokoro voices each page and the page lasts as long as its clip plus a short breath.
+    const VOICE_LEAD=.35,VOICE_TAIL=.7,TAKE_LEAD=.2,END_VOICE_LEAD=.45;
+    function narrationTiming(){
+      const n=narration();if(!n)return null;const P=pages.length,offset=VOICE_LEAD-n.segs[0].start,hasEnd=n.segs.length>P;
+      const starts=n.segs.slice(0,P).map((seg,i)=>i===0?0:offset+seg.start-TAKE_LEAD);
+      return{n,offset,starts,hasEnd,quoteEnd:hasEnd?offset+n.segs[P].start-END_VOICE_LEAD:offset+n.segs[P-1].end+.8};
+    }
+    function pageDuration(i){const take=narrationTiming();if(take)return(i+1<pages.length?take.starts[i+1]:take.quoteEnd)-take.starts[i];const base=Number(durationSelect.value)||6,v=voiceFor(pageSpeech(pages[i]));return v?VOICE_LEAD+v.duration+VOICE_TAIL:base}
+    function pageStart(i){const take=narrationTiming();if(take)return take.starts[i];let t=0;for(let k=0;k<i;k++)t+=pageDuration(k);return t}
+    // The voice for one page: start lead (seconds into the page), length and per-word start times.
+    function pageVoice(i){
+      const take=narrationTiming();
+      if(take){const seg=take.n.segs[i];return{lead:take.offset+seg.start-take.starts[i],duration:seg.end-seg.start,wordStarts:seg.wordStarts}}
+      const v=voiceFor(pageSpeech(pages[i]));return v?{lead:VOICE_LEAD,duration:v.duration,wordStarts:v.wordStarts||null}:null;
+    }
+    function endVoice(){const take=narrationTiming();if(take)return take.hasEnd?{duration:take.n.segs[pages.length].end-take.n.segs[pages.length].start}:null;return voiceFor(endSpeech())}
     function pageAt(t){let start=0;for(let i=0;i<pages.length;i++){const d=pageDuration(i);if(t<start+d||i===pages.length-1)return{index:i,start,duration:d};start+=d}return{index:0,start:0,duration:pageDuration(0)}}
-    function quoteDuration(){let t=0;for(let i=0;i<pages.length;i++)t+=pageDuration(i);return t}
-    function endDuration(){if(!endEnabled.checked)return 0;const base=Number(endSeconds.value),v=voiceFor(endSpeech());return v?Math.max(base,.6+v.duration+.8):base}
+    function quoteDuration(){const take=narrationTiming();if(take)return take.quoteEnd;let t=0;for(let i=0;i<pages.length;i++)t+=pageDuration(i);return t}
+    function endDuration(){if(!endEnabled.checked)return 0;const base=Number(endSeconds.value),v=endVoice();return v?Math.max(base,END_VOICE_LEAD+v.duration+.8):base}
     function totalDuration(){return quoteDuration()+endDuration()}
     function saveCurrent(){Object.assign(pages[currentPage],{quote:quote.value,source:sourceOverride.checked?pageSource.value.trim():null})}
     // A page's credit line: its own override when set, otherwise the video-wide book & author (empty hides it).
     function creditFor(page){return(page.source!=null?page.source:source.value).trim()}
     // Seconds a viewer needs to read a page (reveal plus ~3 words a second), compared with how long it stays on screen.
     function readNeed(page){return .6+parseQuote(page.quote).length/3}
-    function readFlag(i){if(voiceFor(pageSpeech(pages[i])))return'ok';const need=readNeed(pages[i]),have=pageDuration(i)-.6;return need<=have-.5?'ok':need<=have?'tight':'long'}
-    function updateReadMeter(){const i=currentPage,flag=readFlag(i);if(voiceFor(pageSpeech(pages[i]))){readMeter.textContent=`Voice sets this page to ${pageDuration(i).toFixed(1)}s`;readMeter.className='read-meter voice';return}
+    function readFlag(i){if(pageVoice(i))return'ok';const need=readNeed(pages[i]),have=pageDuration(i)-.6;return need<=have-.5?'ok':need<=have?'tight':'long'}
+    function updateReadMeter(){const i=currentPage,flag=readFlag(i);if(pageVoice(i)){readMeter.textContent=`Voice sets this page to ${pageDuration(i).toFixed(1)}s`;readMeter.className='read-meter voice';return}
       const need=Math.round(readNeed(pages[i])),have=Math.round(pageDuration(i)-.6);readMeter.textContent=`~${need}s to read · on screen ${have}s `+(flag==='ok'?'✓':flag==='tight'?'· a little tight':'· too long — shorten it or use 8s pages');readMeter.className='read-meter '+flag}
     function updateFontSummary(){const f=quoteFont(),el=$('#fontCurrent');el.textContent=f.label;el.style.fontFamily=f.family;el.style.fontWeight=f.weight;el.style.textTransform=f.upper?'uppercase':'none'}
     function updatePageOptionsNote(){const page=pages[currentPage],parts=[page.source!=null?(page.source?'Own credit':'Credit hidden'):'Default credit',page.photo?'Own photo':'No photo'];$('#pageOptionsNote').textContent=parts.join(' · ')}
@@ -383,18 +397,18 @@
       const blockH=L.lines.length*L.lh,top=h/2-blockH/2,markSize=fs*2.1;
       const mark=easeOut(clamp01((st+.2)/.45));ctx.save();ctx.globalAlpha*=mark;ctx.fillStyle=th.accent;ctx.font=`600 ${markSize}px ${SERIF}`;setTracking(ctx,0);ctx.textAlign='center';ctx.translate(w/2,top-fs*.3+markSize*.35);ctx.scale(.7+.3*mark,.7+.3*mark);ctx.fillText('“',0,0);ctx.restore();
       // With a voiceover, words appear in step with the speech (spread by character count over its length).
-      const voice=voiceFor(pageSpeech(page)),aligned=voice&&voice.wordStarts&&voice.wordStarts.length===L.words?voice.wordStarts:null;
+      const voice=pageVoice(pages.indexOf(page)),vLead=voice?voice.lead:VOICE_LEAD,aligned=voice&&voice.wordStarts&&voice.wordStarts.length===L.words?voice.wordStarts:null;
       // Exact word times when the provider returns them (ElevenLabs), otherwise spread by character count.
-      const charTime=c=>VOICE_LEAD+(c/Math.max(1,L.chars))*voice.duration*.92,wordTime=item=>aligned?VOICE_LEAD+aligned[item.index]:charTime(item.charStart);
+      const charTime=c=>vLead+(c/Math.max(1,L.chars))*voice.duration*.92,wordTime=item=>aligned?vLead+aligned[item.index]:charTime(item.charStart);
       const appearAt=voice?(item,lineIndex)=>mode==='word'?wordTime(item):mode==='line'?wordTime(L.lines[lineIndex].items[0]):mode==='type'?wordTime(item):.25:(item,lineIndex)=>mode==='word'?.05+item.index*.065:mode==='line'?.05+lineIndex*.22:mode==='type'?.05+item.charStart*.03:.05;
       const span=mode==='word'?.38:mode==='line'?.4:mode==='type'?0:.8,typeRate=voice?voice.duration*.92/Math.max(1,L.chars):.03;
-      const textDone=voice&&mode!=='fade'?VOICE_LEAD+voice.duration*.92+.3:mode==='word'?.05+L.words*.065+.38:mode==='line'?.05+L.lines.length*.22+.4:mode==='type'?.05+L.chars*.03:.85;
+      const textDone=voice&&mode!=='fade'?vLead+voice.duration*.92+.3:mode==='word'?.05+L.words*.065+.38:mode==='line'?.05+L.lines.length*.22+.4:mode==='type'?.05+L.chars*.03:.85;
       ctx.font=`${L.font.weight} ${fs}px ${L.font.family}`;setTracking(ctx,L.font.track*fs);ctx.textAlign='left';
       L.lines.forEach((line,lineIndex)=>{
         const baseline=top+lineIndex*L.lh+fs*.82,startX=w/2-line.width/2;
         line.items.forEach(item=>{
           const start=appearAt(item,lineIndex);let text=item.text,p;
-          if(mode==='type'){const shown=aligned?Math.floor((st-start)/Math.max(.02,((item.index+1<L.words?aligned[item.index+1]+VOICE_LEAD:VOICE_LEAD+voice.duration)-start)/Math.max(1,item.text.length+1))):Math.floor((st-(voice?VOICE_LEAD:.05))/typeRate)-item.charStart;if(shown<=0)return;text=item.text.slice(0,shown);p=1}else{p=clamp01((st-start)/span);if(p<=0)return}
+          if(mode==='type'){const shown=aligned?Math.floor((st-start)/Math.max(.02,((item.index+1<L.words?aligned[item.index+1]+vLead:vLead+voice.duration)-start)/Math.max(1,item.text.length+1))):Math.floor((st-(voice?vLead:.05))/typeRate)-item.charStart;if(shown<=0)return;text=item.text.slice(0,shown);p=1}else{p=clamp01((st-start)/span);if(p<=0)return}
           const e=easeOut(p);ctx.save();ctx.globalAlpha*=e;
           if(item.hl){const u=easeOut(clamp01((st-start-.25)/.35));if(u>0){ctx.fillStyle=th.accent;ctx.globalAlpha*=.85;ctx.fillRect(startX+item.x,baseline+fs*.14,item.width*u,Math.max(4,fs*.07));ctx.globalAlpha/=.85}}
           ctx.fillStyle=item.hl?th.accent:th.text;ctx.fillText(text,startX+item.x,baseline+(1-e)*fs*.35);ctx.restore();
@@ -465,29 +479,47 @@ self.onmessage=async e=>{const m=e.data;try{
       return new Promise((resolve,reject)=>{const id=++voiceRequest;voicePending.set(id,{resolve,reject});voiceWorker.postMessage({...message,id})});
     }
     function loadVoiceModel(){if(!voiceModelReady)voiceModelReady=voiceCall({type:'load',url:KOKORO_URL,model:KOKORO_MODEL}).catch(err=>{voiceModelReady=null;throw err});return voiceModelReady}
-    function speechText(text){return text.replace(/[*“”"↓↑→←]/g,' ').replace(/\s+/g,' ').trim()}
+    function speechText(text){return text.replace(/\*/g,'').replace(/[“”"↓↑→←]/g,' ').replace(/\s+/g,' ').replace(/\s+([,.!?;:…])/g,'$1').trim()}
     function pageSpeech(page){return page?speechText(cleanQuote(page.quote)):''}
     function endSpeech(){return voiceEndCard.checked?[endCta.value,endSub.value].map(speechText).filter(Boolean).map(t=>/[.!?]$/.test(t)?t:t+'.').join(' '):''}
     function voiceKey(text){return (voiceProvider==='eleven'?['eleven',elevenVoice.value,elevenModel.value]:['kokoro',voiceSelect.value]).concat(voiceSpeed.value,text).join('|')}
     function voiceFor(text){return voiceEnabled.checked&&text?voiceCache.get(voiceKey(text))||null:null}
+    // ElevenLabs: one script for the whole video (pages, then the end card line), read in a single take.
+    function narrationParts(){const parts=pages.map(pageSpeech),end=endEnabled.checked?endSpeech():'';return end?parts.concat(end):parts}
+    function narrationKey(){return 'take|'+voiceKey(narrationParts().join(' '))}
+    function narration(){return voiceEnabled.checked&&voiceProvider==='eleven'?voiceCache.get(narrationKey())||null:null}
+    function voiceReady(){return voiceProvider==='eleven'?!!narration():voiceSegments().some(t=>voiceFor(t))}
     function voiceSegments(){const list=pages.map(pageSpeech);if(endEnabled.checked&&endSpeech())list.push(endSpeech());return list.filter(Boolean)}
     function setVoiceStatus(text,kind=''){voiceStatus.textContent=text;voiceStatus.className='voice-status'+(kind?' '+kind:'')}
-    function refreshVoiceStatus(){if(!voiceEnabled.checked)return;const segments=voiceSegments(),ready=segments.filter(t=>voiceCache.has(voiceKey(t))).length;if(segments.length&&ready===segments.length)setVoiceStatus(`Voice ready for ${ready} part${ready===1?'':'s'}.`,'ok');else if(ready)setVoiceStatus(`Voice ready for ${ready} of ${segments.length} parts — text or settings changed. It regenerates when you preview or render.`);else setVoiceStatus('Not generated yet. Click Generate voice, or just preview or render.')}
+    function refreshVoiceStatus(){if(!voiceEnabled.checked)return;if(voiceProvider==='eleven'){narration()?setVoiceStatus(`Voice ready · one continuous take across ${pages.length} page${pages.length===1?'':'s'}${endEnabled.checked&&endSpeech()?' and the end card':''}.`,'ok'):setVoiceStatus('Not generated yet. Click Generate voice, or just preview or render. The whole video is read in one take.');return}const segments=voiceSegments(),ready=segments.filter(t=>voiceCache.has(voiceKey(t))).length;if(segments.length&&ready===segments.length)setVoiceStatus(`Voice ready for ${ready} part${ready===1?'':'s'}.`,'ok');else if(ready)setVoiceStatus(`Voice ready for ${ready} of ${segments.length} parts — text or settings changed. It regenerates when you preview or render.`);else setVoiceStatus('Not generated yet. Click Generate voice, or just preview or render.')}
     async function ensureVoices(){
       if(!voiceEnabled.checked)return true;saveCurrent();
+      if(voiceProvider==='eleven')return ensureTake();
       const missing=[...new Set(voiceSegments())].filter(t=>!voiceCache.has(voiceKey(t)));if(!missing.length){refreshVoiceStatus();return true}
-      if(voiceProvider==='eleven'){const chars=missing.reduce((n,t)=>n+t.length,0);status.textContent=`Creating ElevenLabs voice · about ${chars} characters…`}
       voiceGenerate.disabled=true;
       try{
-        if(voiceProvider==='eleven'){if(!elevenKey.value.trim()||!elevenVoice.value)throw new Error('Connect your ElevenLabs key and pick a voice first.')}
-        else{setVoiceStatus('Loading the voice engine…');status.textContent='Preparing voiceover…';await loadVoiceModel()}
+        setVoiceStatus('Loading the voice engine…');status.textContent='Preparing voiceover…';await loadVoiceModel();
         for(let i=0;i<missing.length;i++){const text=missing[i],key=voiceKey(text);setVoiceStatus(`Generating voice ${i+1} of ${missing.length}…`);status.textContent=`Generating voice ${i+1} of ${missing.length}…`;
-          if(voiceProvider==='eleven'){voiceCache.set(key,await elevenGenerate(text));continue}
           const {data,rate}=await voiceCall({type:'generate',text,voice:voiceSelect.value,speed:Number(voiceSpeed.value)});const buffer=getAudioContext().createBuffer(1,data.length,rate);buffer.copyToChannel(data,0);voiceCache.set(key,{buffer,duration:buffer.duration})}
-        if(voiceProvider==='eleven')elevenLoadAccount();
         if(voiceCache.size>80)[...voiceCache.keys()].slice(0,voiceCache.size-80).forEach(k=>voiceCache.delete(k));
         updateSummary();refreshVoiceStatus();status.textContent='Voiceover ready.';return true;
-      }catch(err){setVoiceStatus('Could not create the voice: '+err.message+(voiceProvider==='eleven'?'':' Check your internet connection for the first download, or turn Voiceover off.'),'err');status.textContent='Voiceover failed — see the Voice tab.';return false}
+      }catch(err){setVoiceStatus('Could not create the voice: '+err.message+' Check your internet connection for the first download, or turn Voiceover off.','err');status.textContent='Voiceover failed — see the Voice tab.';return false}
+      finally{voiceGenerate.disabled=false}
+    }
+    // One ElevenLabs request for the whole script; its character timings give each part's start, end and word times.
+    async function ensureTake(){
+      const key=narrationKey();if(voiceCache.has(key)){refreshVoiceStatus();return true}
+      const parts=narrationParts(),script=parts.join(' ');
+      if(!elevenKey.value.trim()||!elevenVoice.value){setVoiceStatus('Connect your ElevenLabs key and pick a voice first.','err');status.textContent='Voiceover needs an ElevenLabs key — see the Voice tab.';return false}
+      voiceGenerate.disabled=true;setVoiceStatus(`Reading the whole video in one take · ${script.length} characters…`);status.textContent='Creating ElevenLabs voice…';
+      try{
+        const take=await elevenGenerate(script),segs=[];let pos=0;
+        const at=(arr,i,fallback)=>arr&&arr[i]!=null?arr[i]:fallback;
+        parts.forEach(part=>{const end=pos+part.length-1,start=at(take.starts,pos,take.duration*pos/script.length),stop=at(take.ends,end,take.duration*(end+1)/script.length);let w=pos;const wordStarts=part.split(' ').map(word=>{const t=at(take.starts,w,take.duration*w/script.length)-start;w+=word.length+1;return Math.max(0,t)});segs.push({start,end:stop,wordStarts});pos+=part.length+1});
+        voiceCache.set(key,{buffer:take.buffer,duration:take.duration,segs});
+        if(voiceCache.size>80)[...voiceCache.keys()].slice(0,voiceCache.size-80).forEach(k=>voiceCache.delete(k));
+        elevenLoadAccount();updateSummary();refresh();refreshVoiceStatus();status.textContent='Voiceover ready.';return true;
+      }catch(err){setVoiceStatus('Could not create the voice: '+err.message,'err');status.textContent='Voiceover failed — see the Voice tab.';return false}
       finally{voiceGenerate.disabled=false}
     }
     // ElevenLabs: called straight from the browser with the user's own key.
@@ -526,7 +558,7 @@ self.onmessage=async e=>{const m=e.data;try{
       const body=await res.json(),bytes=Uint8Array.from(atob(body.audio_base64),c=>c.charCodeAt(0)),buffer=await getAudioContext().decodeAudioData(bytes.buffer);
       const starts=(body.alignment&&body.alignment.character_start_times_seconds)||null,wordStarts=[];
       if(starts&&starts.length>=text.length){let pos=0;for(const word of text.split(' ')){wordStarts.push(starts[pos]);pos+=word.length+1}}
-      return{buffer,duration:buffer.duration,wordStarts:wordStarts.length?wordStarts:null};
+      return{buffer,duration:buffer.duration,wordStarts:wordStarts.length?wordStarts:null,starts,ends:(body.alignment&&body.alignment.character_end_times_seconds)||null};
     }
     function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
     function safeSet(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
@@ -534,7 +566,7 @@ self.onmessage=async e=>{const m=e.data;try{
     function updateRenderMeta(){const config=FORMATS[formatSelect.value]||FORMATS.portrait;const cloudVoice=voiceEnabled.checked&&voiceProvider==='eleven';renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · `+(cloudVoice?'voice by ElevenLabs':'nothing is uploaded');$('#localNote').textContent=cloudVoice?'Renders on your device · voice by ElevenLabs':'No cloud AI · renders on your device'}
 
     // Schedules every voice clip on an audio graph, starting `when` seconds from now (audio clock).
-    function scheduleVoices(ctx,destination,when){const sources=[];const play=(text,at)=>{const v=voiceFor(text);if(!v)return;const src=ctx.createBufferSource();src.buffer=v.buffer;src.connect(destination);src.start(ctx.currentTime+when+at);sources.push(src)};pages.forEach((page,i)=>play(pageSpeech(page),pageStart(i)+VOICE_LEAD));if(endEnabled.checked)play(endSpeech(),quoteDuration()+.6);return sources}
+    function scheduleVoices(ctx,destination,when){const sources=[],take=narrationTiming();if(take){const src=ctx.createBufferSource();src.buffer=take.n.buffer;src.connect(destination);src.start(ctx.currentTime+when+Math.max(0,take.offset));return[src]}const play=(text,at)=>{const v=voiceFor(text);if(!v)return;const src=ctx.createBufferSource();src.buffer=v.buffer;src.connect(destination);src.start(ctx.currentTime+when+at);sources.push(src)};pages.forEach((page,i)=>play(pageSpeech(page),pageStart(i)+VOICE_LEAD));if(endEnabled.checked)play(endSpeech(),quoteDuration()+END_VOICE_LEAD);return sources}
     function stopPreviewAudio(){previewSources.forEach(src=>{try{src.stop()}catch(e){}});previewSources=[]}
 
     // ---------- Live preview: the same renderer, drawn small ----------
@@ -581,7 +613,7 @@ self.onmessage=async e=>{const m=e.data;try{
       const done=()=>{rendering=false;renderButton.disabled=false;renderLabel.textContent='Render video'};
       renderButton.disabled=true;renderLabel.textContent='Rendering…';
       stopPreviewAudio();playStart=null;if(!(await ensureVoices())){done();return}
-      status.textContent='Loading fonts…';await loadVideoFonts();saveCurrent();const withVoice=voiceEnabled.checked&&voiceSegments().some(t=>voiceFor(t)),config=FORMATS[formatSelect.value]||FORMATS.portrait,types=recorderTypes(withVoice);
+      status.textContent='Loading fonts…';await loadVideoFonts();saveCurrent();const withVoice=voiceEnabled.checked&&voiceReady(),config=FORMATS[formatSelect.value]||FORMATS.portrait,types=recorderTypes(withVoice);
       if(!types.length){status.textContent='This browser has no video encoder for local rendering. Try Chrome or Edge.';done();return}
       rendering=true;let take=null,note='';
       for(let i=0;i<types.length;i++){

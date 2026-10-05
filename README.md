@@ -86,6 +86,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version is shown at the bottom of the left rail.
 
+- **0.9.9 (2026-10-05):** The rendered file is no longer a fraction of a second short (a 10 s video showed 0:09); the last frame is held briefly.
 - **0.9.8 (2026-10-05):** Four new library collections: Vows, Unsent letters, She asked me and Three lines (90 original pieces, 407 in total).
 - **0.9.7 (2026-10-05):** Format picker removed; every video is 9:16 (1080 × 1920).
 - **0.9.6 (2026-10-05):** Compact background picker with Dark / Light / Bold tabs.

@@ -10,7 +10,10 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - One book & author line for the whole video, with an optional per-page override (leave it empty to hide the credit)
 - Reading-time check: each page shows whether viewers can read it in the time it is on screen
 - Quote fonts: 11 Google Fonts for the quote text (Playfair, Cormorant, Lora, Baskerville, DM Serif, Montserrat, Poppins, Bebas Neue, Dancing Script, Caveat, Typewriter), each with its own size, spacing and line height so quotes still fit the frame
-- Quote library: 184 ready-to-use quotes and poems across 14 topics (love, heartbreak & healing, self-love, life, meaning & purpose, motivation, courage, hope, peace & mindfulness, gratitude, friendship & family, time & change, growth, books & reading), with search, topic filters and "Surprise me"; poems can be split into one page per two lines
+- Quote library with two collections and 287 entries, with search, topic filters and "Surprise me"; multi-line poems can be split into one page per two lines
+  - Everyday (184): quotes and poems across 14 topics (love, heartbreak & healing, self-love, life, meaning & purpose, motivation, courage, hope, peace & mindfulness, gratitude, friendship & family, time & change, growth, books & reading)
+  - Dark fantasy (103): short poems across 15 topics (night & shadows, curses & hexes, witches & spells, vampires & blood, ghosts & hauntings, death & the reaper, fallen kingdoms, dragons & ancient beasts, forsaken gods, cursed forests, wolves & the moon, dark romance, villains & vengeance, prophecy & fate, the abyss & the sea)
+- Line breaks typed in a quote are kept in the video; each line is balanced on its own, and the text shrinks before it breaks a typed line
 - Book promo end card: your cover, book title, call to action (e.g. "Get the book on Amazon") and a small line (e.g. "Link in description ↓")
 - Channel handle shown on every frame (e.g. `@yourchannel`)
 - Keyword highlights: select words and click Highlight (or Ctrl/Cmd + B) to colour and underline them in the video; this wraps them in `*asterisks*`
@@ -28,8 +31,8 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 
 ## Quote library licensing
 
-- **Originals** (141) are written for Quote Video Studio and may be used freely in videos, including commercially.
-- **Classics** (29) and **poems** (14) come from public-domain works published before 1929 (Shakespeare, Thoreau, Emerson, Austen, the Brontës, Dickens, Gibran, Tagore, Dickinson, Frost, Blake, Yeats and others). Translated works use public-domain translations, which are named in the credit line.
+- **Originals** (141 everyday quotes and 90 dark fantasy poems) are written for Quote Video Studio and may be used freely in videos, including commercially.
+- **Classics** (29) and **poems** (27) come from public-domain works published before 1929 (Shakespeare, Thoreau, Emerson, Austen, the Brontës, Dickens, Gibran, Tagore, Dickinson, Frost, Blake, Yeats, Poe, Shelley, Keats, Byron, Coleridge, Milton and others). Translated works use public-domain translations, which are named in the credit line.
 - The library is stored inside `index.html` (a JSON block with the id `quoteLibraryData`) and is easy to extend.
 
 ## Voiceover notes

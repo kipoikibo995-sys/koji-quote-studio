@@ -29,10 +29,10 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Atmosphere overlays: embers, rain, snow, mist or stars moving over the background (identical in preview and render)
 - Animated backgrounds (drifting light, bokeh, film texture) and a slow push-in so every frame has motion
 - Quote text auto-sizes to fit the frame, and the live preview uses the same renderer as the exported video
-- Formats: 9:16 (Shorts / Reels / TikTok), 16:9, 1:1
+- Format: 9:16 vertical (Shorts / Reels / TikTok)
 - Text animations, page transitions and background presets
 - Live preview before rendering
-- Renders at full HD (1080 × 1920, 1920 × 1080 or 1080 × 1080) and downloads directly
+- Renders at full HD (1080 × 1920) and downloads directly
 
 ## Quote library licensing
 
@@ -55,7 +55,7 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 
 1. Pick a strong line from your book and paste it as a page quote (add 2–4 pages for a longer Short).
 2. Upload your book cover and set your call to action.
-3. Render in 9:16 and upload as a YouTube Short.
+3. Render the video and upload it as a YouTube Short.
 4. Put your Amazon book link in the video description and in a pinned comment.
 
 ## Files
@@ -82,6 +82,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version is shown at the bottom of the left rail.
 
+- **0.9.7 (2026-10-05):** Format picker removed; every video is 9:16 (1080 × 1920).
 - **0.9.6 (2026-10-05):** Compact background picker with Dark / Light / Bold tabs.
 - **0.9.5 (2026-10-05):** 14 new backgrounds (22 in total), grouped as Dark, Light and Bold in a compact 4-column grid.
 - **0.9.4 (2026-10-05):** Per-page photos removed; one background photo is used for the whole video.

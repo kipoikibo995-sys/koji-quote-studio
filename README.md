@@ -10,9 +10,11 @@ The editor follows five steps in the left rail. The open step lists its sections
 
 1. **Write**: the quote for each page, the page list, Paste many, the Quote library and the credit line.
 2. **Look**: quote font, background, accent colour, atmosphere, background photo, text animation and transition.
-3. **Sound**: seconds per page, background music and the optional voiceover (advanced voice settings are folded away).
+3. **Sound**: seconds per page, background music and the optional voiceover (voice, Generate voice).
 4. **Promo** (all optional and off by default): opening hook, book promo end card, book badge and channel handle.
 5. **Export**: a summary of the video, Render video, Save the current page as PNG, and upload tips.
+
+**⚙ Settings** (bottom of the rail, outside the steps) holds the technical options: voice engine (Kokoro or ElevenLabs), ElevenLabs API key, model and expressiveness, voice speed and the pause between pages.
 
 The project (quotes, settings, background photo and book cover) is saved in the browser automatically and restored when the page is opened again. **Start a new video** in the Export step clears it.
 
@@ -99,6 +101,8 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.14.0 (2026-10-05):** Technical voice options moved to a new Settings page (engine, API key, model, expressiveness, speed, pause); the Voiceover section keeps only the toggle, voice choice with Sample, end card option and Generate voice.
+- **0.13.2 (2026-10-05):** Voice hints no longer say previewing creates the voice.
 - **0.13.1 (2026-10-05):** Play preview no longer creates the voice by itself (no ElevenLabs characters or 90 MB download just to watch the motion); it plays the voice only once it has been generated, otherwise it previews silently with a hint.
 - **0.13.0 (2026-10-05):** 218 new, deeper and more abstract original pieces across every topic of all seven collections (625 in total).
 - **0.12.3 (2026-10-05):** Library collection list without icons.

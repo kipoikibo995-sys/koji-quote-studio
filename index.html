@@ -192,7 +192,11 @@
     .quote-box{position:relative}.quote-hl{position:absolute;left:0;top:0;pointer-events:none;white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;overflow:hidden;color:var(--ink);box-sizing:border-box}
     .quote-hl mark{background:none;color:var(--blue);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}.quote-hl .ast{color:#c9c2b4}.quote-hl .tag{color:#7a8387;background:#f1ece2;border-radius:4px}
     .quote-box textarea{position:relative;z-index:1;background:transparent!important;color:transparent!important;caret-color:var(--ink)}.quote-box textarea::placeholder{color:#9aa2a6}.quote-box textarea::selection{background:#4f7cff40;color:transparent}
-      .music-block{margin-top:4px}.music-block .upload{margin-top:0}
+      .music-block{margin-top:4px}
+    .set-group{margin-bottom:22px;padding:16px;border:1px solid #e8e2d6;border-radius:var(--r-card);background:#fff}.set-group h4{margin:0 0 4px;font:700 15px var(--ui);color:var(--ink)}.set-group>label:first-of-type{margin-top:6px}
+    .need-key{display:flex;flex-direction:column;gap:6px;margin-top:14px;padding:14px;border-radius:var(--r-ctl);background:#f6f2ea}.need-key[hidden]{display:none}.need-key b{font:700 14px var(--ui)}.need-key span{font-size:13px;color:#56616a}.need-key .key-btn{align-self:flex-start;height:36px}
+    .rail-item.settings-tab{display:flex!important;align-items:center;gap:12px;margin-top:14px;padding:9px 10px!important;border-top:1px solid #e2dacb!important;border-radius:0 0 14px 14px}.step-num.gear{font-size:15px}.rail-item.settings-tab.active .step-num{background:var(--ink);color:#fff}
+    @media(max-width:860px){.rail .rail-list{grid-template-columns:repeat(5,1fr)}.rail-item.settings-tab{margin:0;border:0!important;padding:6px 8px!important;flex-direction:column;gap:3px!important}.rail-item.settings-tab .step-text small{display:none}.rail-item.settings-tab .step-text b{font-size:12px}.rail{display:flex!important}}.music-block .upload{margin-top:0}
       /* Two-level navigation */
     .rail-subs{display:none;flex-direction:column;gap:1px;margin:2px 0 8px 23px;padding-left:16px;border-left:2px solid #e2dacb}.rail-item.step.active+.rail-subs{display:flex}
     .rail-sub-item{border:0;background:none;text-align:left;padding:7px 10px;border-radius:9px;font:500 14px var(--ui);color:#5f6468;cursor:pointer}.rail-sub-item:hover{background:#e7e0d4;color:var(--ink)}.rail-sub-item.active{background:#fff;color:var(--ink);font-weight:700;box-shadow:0 1px 2px #3a2f1f14}.rail-sub-item.action{color:#7a6f60;font-size:13px}
@@ -237,7 +241,8 @@
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="promo"><span class="step-num">4</span><span class="step-text"><b>Promo</b><small>Hook & book</small></span></button>
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
-      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.13.2</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <button type="button" class="rail-item tab settings-tab" role="tab" aria-selected="false" data-tab="settings"><span class="step-num gear">⚙</span><span class="step-text"><b>Settings</b><small>Voice engine &amp; API key</small></span></button>
+      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.14.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><p class="step-crumb" id="stepCrumb">Step 1 of 5 · Write</p><h2 id="panelTitle">Quotes &amp; pages</h2><p id="panelDesc">Write or pick your quotes. One quote per page.</p><div class="sub-chips" id="subChips"></div></div>
@@ -300,6 +305,23 @@
           <div class="divider"></div>
           <button type="button" class="link-btn" id="newProject">Start a new video</button><p class="hint">Your work is saved in this browser automatically.</p>
         </section>
+        <section class="panel" data-panel="settings" hidden>
+          <div class="set-group"><h4>Voice engine</h4><div class="segmented two" id="providerSeg"><button class="active" data-value="kokoro">Kokoro<small>Free · on this device</small></button><button data-value="eleven">ElevenLabs<small>Premium · your API key</small></button></div><p class="hint">Kokoro is free and runs on this device. ElevenLabs sounds more natural and uses your own API key.</p></div>
+          <div class="set-group" id="elevenFields" hidden><h4>ElevenLabs</h4>
+              <label for="elevenKey">API key</label><div class="key-row"><div class="field text"><input id="elevenKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your API key" /></div><button type="button" class="key-btn" id="elevenConnect">Connect</button></div>
+              <p class="hint">Get a key at elevenlabs.io → Developers → API keys. It is saved only in this browser and sent only to ElevenLabs. Quote text is sent to ElevenLabs to create the voice, and characters count against your ElevenLabs plan. <button type="button" class="link-btn inline" id="elevenForget" hidden>Forget key</button></p>
+              <div id="elevenConnected" hidden>
+                
+                <label for="elevenModel">Model</label><div class="field"><select id="elevenModel"><option value="eleven_multilingual_v2">Multilingual v2 · best quality</option><option value="eleven_flash_v2_5">Flash v2.5 · faster, uses fewer credits</option><option value="eleven_v3">Eleven v3 · most expressive, audio tags</option></select></div>
+                <label class="range-label" for="elevenExpr"><span>Expressiveness</span><span id="elevenExprValue">50%</span></label><input type="range" id="elevenExpr" min="0" max="100" step="5" value="50" />
+                
+                <div class="voice-status" id="elevenAccount"></div>
+              </div>
+            </div>
+          <div class="set-group"><h4>Voice timing</h4><label class="range-label" for="voiceSpeed"><span>Speed</span><span id="voiceSpeedValue">1.00×</span></label><input type="range" id="voiceSpeed" min="0.8" max="1.2" step="0.05" value="1" />
+            <label class="range-label" for="voicePause"><span>Pause between pages</span><span id="voicePauseValue">0.4 s</span></label><input type="range" id="voicePause" min="0" max="2.5" step="0.1" value="0.4" /></div>
+          <button type="button" class="next-step" id="settingsDone">Done</button>
+        </section>
         <section class="panel" data-panel="voice" hidden>
           <div class="dur-row"><label for="duration">Seconds per page <span class="label-note">· when there is no voiceover</span></label><div class="field"><select id="duration"><option value="4">4 seconds</option><option value="6" selected>6 seconds</option><option value="8">8 seconds</option></select></div></div>
           <div class="music-block"><label for="musicFile">Background music <span class="label-note">· optional</span></label><label class="upload" for="musicFile"><b id="musicName">Add music (MP3, WAV or M4A)</b><span>Browse</span></label><input type="file" id="musicFile" accept="audio/*" hidden />
@@ -308,27 +330,19 @@
             <p class="hint">Use music you have the rights to, for example the free YouTube Audio Library. It fades in and out, and loops if it is shorter than the video.</p></div>
           <label class="toggle-card" for="voiceEnabled"><span><b>Voiceover</b><small>Read each quote aloud with a natural voice</small></span><input type="checkbox" id="voiceEnabled" /></label>
           <div class="end-fields off" id="voiceFields">
-            <label>Voice provider</label><div class="segmented two" id="providerSeg"><button class="active" data-value="kokoro">Kokoro<small>Free · on this device</small></button><button data-value="eleven">ElevenLabs<small>Premium · your API key</small></button></div>
+            
             <div id="kokoroFields">
-              <label for="voiceSelect">Kokoro voice</label><div class="field"><select id="voiceSelect"><option value="af_heart">Heart · US female, warm</option><option value="af_bella">Bella · US female, bright</option><option value="af_nicole">Nicole · US female, soft</option><option value="af_sarah">Sarah · US female, calm</option><option value="am_michael">Michael · US male, steady</option><option value="am_fenrir">Fenrir · US male, deep</option><option value="am_puck">Puck · US male, lively</option><option value="bf_emma">Emma · UK female</option><option value="bf_isabella">Isabella · UK female</option><option value="bm_george">George · UK male</option><option value="bm_fable">Fable · UK male, storyteller</option></select></div>
+              <label for="voiceSelect">Voice</label><div class="field"><select id="voiceSelect"><option value="af_heart">Heart · US female, warm</option><option value="af_bella">Bella · US female, bright</option><option value="af_nicole">Nicole · US female, soft</option><option value="af_sarah">Sarah · US female, calm</option><option value="am_michael">Michael · US male, steady</option><option value="am_fenrir">Fenrir · US male, deep</option><option value="am_puck">Puck · US male, lively</option><option value="bf_emma">Emma · UK female</option><option value="bf_isabella">Isabella · UK female</option><option value="bm_george">George · UK male</option><option value="bm_fable">Fable · UK male, storyteller</option></select></div>
             </div>
-            <div id="elevenFields" hidden>
-              <label for="elevenKey">ElevenLabs API key</label><div class="key-row"><div class="field text"><input id="elevenKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your API key" /></div><button type="button" class="key-btn" id="elevenConnect">Connect</button></div>
-              <p class="hint">Get a key at elevenlabs.io → Developers → API keys. It is saved only in this browser and sent only to ElevenLabs. Quote text is sent to ElevenLabs to create the voice, and characters count against your ElevenLabs plan. <button type="button" class="link-btn inline" id="elevenForget" hidden>Forget key</button></p>
-              <div id="elevenConnected" hidden>
-                <label for="elevenVoice">Voice</label><div class="key-row"><div class="field"><select id="elevenVoice"></select></div><button type="button" class="key-btn" id="elevenSample" title="Play the voice sample (free)">▶ Sample</button></div>
-                <label for="elevenModel">Model</label><div class="field"><select id="elevenModel"><option value="eleven_multilingual_v2">Multilingual v2 · best quality</option><option value="eleven_flash_v2_5">Flash v2.5 · faster, uses fewer credits</option><option value="eleven_v3">Eleven v3 · most expressive, audio tags</option></select></div>
-                <label class="range-label" for="elevenExpr"><span>Expressiveness</span><span id="elevenExprValue">50%</span></label><input type="range" id="elevenExpr" min="0" max="100" step="5" value="50" />
-                <p class="hint" id="v3Hint" hidden>Eleven v3 understands audio tags like <b>[whispers]</b> or <b>[sighs]</b> in your quotes. They shape the voice and are hidden in the video.</p>
-                <div class="voice-status" id="elevenAccount"></div>
-              </div>
-            </div>
-            <details class="disclosure adv" id="voiceAdvanced"><summary><span class="disc-title">Advanced voice settings</span><span class="summary-note">speed · pause between pages</span></summary><div class="disc-body"><label class="range-label" for="voiceSpeed"><span>Speed</span><span id="voiceSpeedValue">1.00×</span></label><input type="range" id="voiceSpeed" min="0.8" max="1.2" step="0.05" value="1" />
-            <label class="range-label" for="voicePause"><span>Pause between pages</span><span id="voicePauseValue">0.4 s</span></label><input type="range" id="voicePause" min="0" max="2.5" step="0.1" value="0.4" /></div></details>
+            <div id="elevenVoiceBox" hidden><div id="elevenVoiceRow" hidden><label for="elevenVoice">Voice</label><div class="key-row"><div class="field"><select id="elevenVoice"></select></div><button type="button" class="key-btn" id="elevenSample" title="Play the voice sample (free)">▶ Sample</button></div></div>
+              <div class="need-key" id="elevenNeedKey"><b>Connect ElevenLabs first</b><span>Add your API key in Settings to choose an ElevenLabs voice.</span><button type="button" class="key-btn" data-open-settings>⚙ Open settings</button></div>
+              <p class="hint" id="v3Hint" hidden>Eleven v3 understands audio tags like <b>[whispers]</b> or <b>[sighs]</b> in your quotes. They shape the voice and are hidden in the video.</p></div>
+            
+            
             <label class="check-row" for="voiceEndCard"><input type="checkbox" id="voiceEndCard" checked /> Also read the end card button and small line</label>
             <button type="button" class="secondary-btn" id="voiceGenerate">Generate voice</button>
             <div class="voice-bar" id="voiceBar" hidden><i></i></div><div class="voice-status" id="voiceStatus">The first time, the free voice downloads about 90 MB (Wi-Fi recommended). After that it works offline.</div>
-            <p class="hint">Pages stretch to fit the voice when needed, and words appear in time with it.</p>
+            <p class="hint">Engine, API key, speed and pauses are in <button type="button" class="link-btn inline" data-open-settings>⚙ Settings</button>.</p>
           </div>
         <button type="button" class="next-step" data-next="promo">Next: Promo →</button>
         </section>
@@ -368,7 +382,7 @@
     let voiceProvider='kokoro',elevenVoices=[],sampleAudio=null;
     const voiceEnabled=$('#voiceEnabled'),voiceFields=$('#voiceFields'),voiceSelect=$('#voiceSelect'),voiceSpeed=$('#voiceSpeed'),voiceSpeedValue=$('#voiceSpeedValue'),voiceEndCard=$('#voiceEndCard'),voiceGenerate=$('#voiceGenerate'),voiceStatus=$('#voiceStatus');
     const renderLabel=$('#renderLabel'),panelTitle=$('#panelTitle'),panelDesc=$('#panelDesc');
-    const PANEL_INFO={quotes:['1 · Write','Write or pick your quotes. One quote per page.'],style:['2 · Look','Font, background, colour and motion. Videos are 9:16 (1080 × 1920).'],voice:['3 · Sound','Timing, background music and the optional voiceover.'],promo:['4 · Promo','Optional: an opening hook, your book cover and a “get the book” ending.'],export:['5 · Export','Check, render and download your video.']};
+    const PANEL_INFO={settings:['Settings','Technical options. Set them once; they are remembered.'],quotes:['1 · Write','Write or pick your quotes. One quote per page.'],style:['2 · Look','Font, background, colour and motion. Videos are 9:16 (1080 × 1920).'],voice:['3 · Sound','Timing, background music and the optional voiceover.'],promo:['4 · Promo','Optional: an opening hook, your book cover and a “get the book” ending.'],export:['5 · Export','Check, render and download your video.']};
     const addPageBtn=$('#addPageBtn'),undoBar=$('#undoBar'),undoText=$('#undoText'),quoteLabel=$('#quoteLabel'),readMeter=$('#readMeter'),sourceOverride=$('#sourceOverride'),pageSourceWrap=$('#pageSourceWrap'),pageSource=$('#pageSource');
     const coverBadge=$('#coverBadge');
     const bgPhotoInput=$('#bgPhoto'),bgPhotoName=$('#bgPhotoName'),photoControls=$('#photoControls'),bgDim=$('#bgDim'),bgDimValue=$('#bgDimValue');
@@ -849,7 +863,7 @@ self.onmessage=async e=>{const m=e.data;try{
     }
     function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
     function safeSet(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
-    function setProvider(name){voiceProvider=name;providerButtons.forEach(b=>b.classList.toggle('active',b.dataset.value===name));kokoroFields.hidden=name!=='kokoro';elevenFields.hidden=name!=='eleven';safeSet('qvs-voice-provider',name);updateRenderMeta();updateSummary();refreshVoiceStatus()}
+    function setProvider(name){voiceProvider=name;providerButtons.forEach(b=>b.classList.toggle('active',b.dataset.value===name));kokoroFields.hidden=name!=='kokoro';elevenFields.hidden=name!=='eleven';safeSet('qvs-voice-provider',name);updateRenderMeta();updateSummary();refreshVoiceStatus();try{updateVoiceBoxes()}catch(e){}}
     function updateRenderMeta(){const config=FORMATS[formatSelect.value]||FORMATS.portrait;const cloudVoice=voiceEnabled.checked&&voiceProvider==='eleven';renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · `+(cloudVoice?'voice by ElevenLabs':'nothing is uploaded');$('#localNote').textContent=cloudVoice?'Renders on your device · voice by ElevenLabs':'No cloud AI · renders on your device'}
 
     // Schedules every voice clip on an audio graph, starting `when` seconds from now (audio clock).
@@ -1046,7 +1060,7 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
     {const savedKey=safeGet('qvs-eleven-key');if(savedKey){elevenKey.value=savedKey;elevenForget.hidden=false}if(safeGet('qvs-voice-provider')==='eleven')setProvider('eleven')}
     quote.addEventListener('input',refreshVoiceStatus);[endCta,endSub].forEach(el=>el.addEventListener('input',refreshVoiceStatus));
     const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
-    function openTab(name){const info=PANEL_INFO[name];if(info){panelTitle.textContent=info[0];panelDesc.textContent=info[1]}tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);if(name==='export')updateExportSummary();if(typeof showSub==='function'&&SUBS[name])showSub(name,lastSub[name]||SUBS[name][0][0]);try{localStorage.setItem('qvs-tab',name)}catch(e){}}
+    function openTab(name){const info=PANEL_INFO[name];if(info){panelTitle.textContent=info[0];panelDesc.textContent=info[1]}tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);if(name==='export')updateExportSummary();if(name==='settings'){$('#stepCrumb').textContent='Settings';$('#subChips').innerHTML=''}else lastStep=name;if(typeof showSub==='function'&&SUBS[name])showSub(name,lastSub[name]||SUBS[name][0][0]);try{localStorage.setItem('qvs-tab',name)}catch(e){}}
     tabs.forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));
     // ---------- Two-level navigation: steps in the rail, one sub-section at a time in the panel ----------
     // [key, label, description, index of the panel's first child that belongs to it]
@@ -1068,6 +1082,7 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
       if(step==='quotes'){[['📚 Quote library',()=>openLibrary()],['📋 Paste many',()=>$('#bulkBtn').click()]].forEach(([label,fn])=>{const b=document.createElement('button');b.type='button';b.className='rail-sub-item action';b.textContent=label;b.addEventListener('click',fn);box.appendChild(b)})}
       btn.after(box);
     }
+    let lastStep='quotes';
     function showSub(step,key){
       const list=SUBS[step];if(!list)return;const item=list.find(x=>x[0]===key)||list[0];key=item[0];lastSub[step]=key;
       const panel=document.querySelector(`.panel[data-panel="${step}"]`);panel.querySelectorAll(':scope > .sub').forEach(d=>d.hidden=d.dataset.sub!==key);
@@ -1079,13 +1094,19 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
       try{localStorage.setItem('qvs-sub',step+':'+key)}catch(e){}
       growQuote();const sc=document.querySelector('.side-scroll');if(sc)sc.scrollTop=0;
     }
-    function goNext(step){const list=SUBS[step],i=list.findIndex(x=>x[0]===(lastSub[step]||list[0][0]));if(i<list.length-1)showSub(step,list[i+1][0]);else{const n=STEP_ORDER[STEP_ORDER.indexOf(step)+1];if(n){openTab(n);showSub(n,SUBS[n][0][0])}}}
+    function goNext(step){if(!SUBS[step])return;const list=SUBS[step],i=list.findIndex(x=>x[0]===(lastSub[step]||list[0][0]));if(i<list.length-1)showSub(step,list[i+1][0]);else{const n=STEP_ORDER[STEP_ORDER.indexOf(step)+1];if(n){openTab(n);showSub(n,SUBS[n][0][0])}}}
 
     const formatButtons=document.querySelectorAll('#formatSeg button');formatButtons.forEach(b=>b.addEventListener('click',()=>{formatSelect.value=b.dataset.value;formatButtons.forEach(x=>x.classList.toggle('active',x===b));formatSelect.dispatchEvent(new Event('change'))}));
     const stage=$('#stage');
     function fitPhone(){phone.style.zoom=1;const cs=getComputedStyle(stage),aw=stage.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-16,ah=stage.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-16;if(aw<=0||ah<=0)return;phone.style.zoom=Math.max(.45,Math.min(aw/phone.offsetWidth,ah/phone.offsetHeight,2.6))}
     new ResizeObserver(fitPhone).observe(stage);formatSelect.addEventListener('change',fitPhone);
     $('#playPreview').addEventListener('click',playPreview);renderButton.addEventListener('click',renderVideo);
+    // Settings: engine, key and timing live outside the step flow.
+    document.querySelectorAll('[data-open-settings]').forEach(b=>b.addEventListener('click',()=>openTab('settings')));
+    $('#settingsDone').addEventListener('click',()=>{openTab(lastStep==='settings'?'voice':lastStep);if(lastStep==='voice')showSub('voice','voice')});
+    function updateVoiceBoxes(){const eleven=voiceProvider==='eleven',connected=!elevenConnected.hidden;kokoroFields.hidden=eleven;$('#elevenVoiceBox').hidden=!eleven;$('#elevenVoiceRow').hidden=!connected;$('#elevenNeedKey').hidden=connected;elevenFields.hidden=!eleven}
+    new MutationObserver(updateVoiceBoxes).observe(elevenConnected,{attributes:true,attributeFilter:['hidden']});
+    providerButtons.forEach(b=>b.addEventListener('click',()=>setTimeout(updateVoiceBoxes)));updateVoiceBoxes();
     const musicInput=$('#musicFile');
     function updateMusicUI(){$('#musicControls').hidden=!musicBuffer;$('#musicName').textContent=musicBuffer?`${shortName(musicFileName)} · ${formatTime(Math.round(musicBuffer.duration))}`:'Add music (MP3, WAV or M4A)';$('#musicVolValue').textContent=$('#musicVol').value+'%'}
     musicInput.addEventListener('change',async()=>{const file=musicInput.files[0];if(!file)return;status.textContent='Loading music…';

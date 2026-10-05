@@ -24,14 +24,14 @@ The project (quotes, settings, background photo and book cover) is saved in the 
 - One book & author line for the whole video, with an optional per-page override (leave it empty to hide the credit)
 - Reading-time check: each page shows whether viewers can read it in the time it is on screen
 - Quote fonts: 11 Google Fonts for the quote text (Playfair, Cormorant, Lora, Baskerville, DM Serif, Montserrat, Poppins, Bebas Neue, Dancing Script, Caveat, Typewriter), each with its own size, spacing and line height so quotes still fit the frame
-- Quote library with seven collections and 407 entries, with search, topic filters and "Surprise me"; multi-line poems can be split into one page per two lines
-  - Everyday (184): quotes and poems across 14 topics (love, heartbreak & healing, self-love, life, meaning & purpose, motivation, courage, hope, peace & mindfulness, gratitude, friendship & family, time & change, growth, books & reading)
-  - Old tongues (30): multi-page dark fantasy pieces in the "In English, we say … But in <the tongue of dragons / the old tongue of the knights / the court of the night …>, we say …" format, each four pages long; use one as the whole video or insert its pages
-  - Vows (22): multi-page oaths sworn by knights, witches, vampires, dragons, gods and lovers ("I swear it on the broken sword…")
-  - Unsent letters (20): multi-page letters to a younger self, the one who left, a mother, a father, someone lost, a future self, a lover and the reader ("Dear seventeen, …")
-  - She asked me (18): multi-page conversations, from love and healing to dark fantasy ("She asked me why… I said…")
-  - Three lines (30): short three-line verses about night, love, heartbreak, healing, courage, time, dark fantasy and books
-  - Dark fantasy (103): short poems across 15 topics (night & shadows, curses & hexes, witches & spells, vampires & blood, ghosts & hauntings, death & the reaper, fallen kingdoms, dragons & ancient beasts, forsaken gods, cursed forests, wolves & the moon, dark romance, villains & vengeance, prophecy & fate, the abyss & the sea)
+- Quote library with seven collections and 625 entries, with search, topic filters and "Surprise me"; multi-line poems can be split into one page per two lines
+  - Everyday (240): quotes and poems across 14 topics (love, heartbreak & healing, self-love, life, meaning & purpose, motivation, courage, hope, peace & mindfulness, gratitude, friendship & family, time & change, growth, books & reading)
+  - In English, we say… (46): multi-page dark fantasy pieces in the "In English, we say … But in <the tongue of dragons / the old tongue of the knights / the court of the night …>, we say …" format, each four pages long; use one as the whole video or insert its pages
+  - Vows (38): multi-page oaths sworn by knights, witches, vampires, dragons, gods and lovers ("I swear it on the broken sword…")
+  - Unsent letters (38): multi-page letters to a younger self, the one who left, a mother, a father, someone lost, a future self, a lover and the reader ("Dear seventeen, …")
+  - She asked me (38): multi-page conversations, from love and healing to dark fantasy ("She asked me why… I said…")
+  - Three lines (62): short three-line verses about night, love, heartbreak, healing, courage, time, dark fantasy and books
+  - Dark fantasy (163): short poems across 15 topics (night & shadows, curses & hexes, witches & spells, vampires & blood, ghosts & hauntings, death & the reaper, fallen kingdoms, dragons & ancient beasts, forsaken gods, cursed forests, wolves & the moon, dark romance, villains & vengeance, prophecy & fate, the abyss & the sea)
 - Line breaks typed in a quote are kept in the video; each line is balanced on its own, and the text shrinks before it breaks a typed line
 - Book promo end card: your cover, book title, call to action (e.g. "Get the book on Amazon") and a small line (e.g. "Link in description ↓")
 - Channel handle shown on every frame (e.g. `@yourchannel`)
@@ -53,7 +53,7 @@ The project (quotes, settings, background photo and book cover) is saved in the 
 
 ## Quote library licensing
 
-- **Originals** (141 everyday quotes, 90 dark fantasy poems, 30 Old tongues pieces, 22 Vows, 20 Unsent letters, 18 She asked me and 30 Three lines) are written for Quote Video Studio and may be used freely in videos, including commercially.
+- **Originals** (197 everyday quotes and poems, 150 dark fantasy poems, 46 In English, we say… pieces, 38 Vows, 38 Unsent letters, 38 She asked me and 62 Three lines) are written for Quote Video Studio and may be used freely in videos, including commercially.
 - **Classics** (29) and **poems** (27) come from public-domain works published before 1929 (Shakespeare, Thoreau, Emerson, Austen, the Brontës, Dickens, Gibran, Tagore, Dickinson, Frost, Blake, Yeats, Poe, Shelley, Keats, Byron, Coleridge, Milton and others). Translated works use public-domain translations, which are named in the credit line.
 - The library is stored inside `index.html` (a JSON block with the id `quoteLibraryData`) and is easy to extend.
 
@@ -99,6 +99,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.13.0 (2026-10-05):** 218 new, deeper and more abstract original pieces across every topic of all seven collections (625 in total).
 - **0.12.3 (2026-10-05):** Library collection list without icons.
 - **0.12.2 (2026-10-05):** Library cards use the clean sans-serif UI font (regular weight, 16.5 px, more line spacing) instead of bold Playfair, so quotes are easier to read.
 - **0.12.1 (2026-10-05):** Quote library redesigned: collections on the left grouped as Short quotes and Story videos (2–4 pages) with counts, a title and description per collection, wrapped topic chips, a two-column card grid with topic and page badges, long stories folded behind Show all, and search that also matches topics.

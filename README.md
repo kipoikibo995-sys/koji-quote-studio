@@ -20,6 +20,7 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - The voice engine is [kokoro-js](https://www.npmjs.com/package/kokoro-js) 1.2.1, loaded from jsDelivr, with the Kokoro-82M model (`onnx-community/Kokoro-82M-v1.0-ONNX`, q8, about 90 MB) loaded from Hugging Face. Both are Apache-2.0 licensed.
 - The model downloads the first time someone uses Voiceover and is then cached by their browser. Text never leaves the device.
 - Voice generation runs in a web worker; it is fast on desktop computers and slower on older phones.
+- **ElevenLabs (premium, bring your own key):** in the Voice tab choose ElevenLabs, paste an API key (elevenlabs.io → Developers → API keys) and click Connect. The app lists the voices on that account, shows remaining characters, and calls the ElevenLabs API directly from the browser. The key is stored only in that browser (localStorage) and is sent only to `api.elevenlabs.io`; quote text is sent to ElevenLabs and characters count against the user's ElevenLabs plan. ElevenLabs returns per-character timings, so words appear exactly when they are spoken.
 - Image export: download the current page or end card as a full-resolution PNG (thumbnails, Pinterest, Instagram, community posts)
 - Animated backgrounds (drifting light, bokeh, film texture) and a slow push-in so every frame has motion
 - Quote text auto-sizes to fit the frame, and the live preview uses the same renderer as the exported video

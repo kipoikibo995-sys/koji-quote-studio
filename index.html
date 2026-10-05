@@ -32,6 +32,7 @@
     .photo-controls{display:flex;flex-direction:column;gap:4px;margin-top:4px}.photo-controls[hidden]{display:none}.range-label{display:flex!important;justify-content:space-between}.photo-controls input[type=range]{width:100%;accent-color:var(--blue)}.link-btn{align-self:flex-start;border:0;background:none;padding:4px 0;color:#b73a15;font:600 12px "DM Sans",Arial,sans-serif;text-decoration:underline}
     .page-chip.has-photo:after{content:"";display:inline-block;width:6px;height:6px;margin-left:6px;border-radius:50%;background:var(--blue);vertical-align:middle}
     .sidebar input[type=range]{width:100%;accent-color:var(--blue)}.check-row{display:flex!important;align-items:center;gap:9px;text-transform:none!important;letter-spacing:0!important;font:500 13px "DM Sans",Arial,sans-serif!important;color:var(--ink)!important;cursor:pointer}.check-row input{width:16px;height:16px;margin:0;accent-color:var(--blue)}.secondary-btn{width:100%;margin-top:20px;padding:12px 16px;border:1px solid var(--ink);border-radius:99px;background:#fff;font:700 14px "DM Sans",Arial,sans-serif;color:var(--ink)}.secondary-btn:hover{background:var(--ink);color:#fff}.secondary-btn:disabled{opacity:.5;cursor:wait}.voice-status{margin-top:10px;font-size:12px;line-height:1.45;color:#4f5b60;min-height:18px}.voice-status.ok{color:#1d7a46}.voice-status.err{color:#b73a15}
+    .segmented.two{grid-template-columns:1fr 1fr}.key-row{display:flex;gap:8px;align-items:stretch}.key-row .field{flex:1}.key-btn{flex:0 0 auto;border:1px solid var(--ink);border-radius:10px;background:#fff;padding:0 14px;font:700 13px "DM Sans",Arial,sans-serif;color:var(--ink)}.key-btn:hover{background:var(--ink);color:#fff}.key-btn:disabled{opacity:.5;cursor:wait}.link-btn.inline{display:inline;padding:0;font-size:11px}
     .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:14px 24px 2px;padding:4px;background:#f1ece2;border-radius:12px}.tab{border:0;background:transparent;border-radius:9px;padding:9px 4px;font:600 13px "DM Sans",Arial,sans-serif;color:#5d6a70}.tab b{display:inline-grid;place-items:center;width:18px;height:18px;margin-right:4px;border-radius:50%;background:#e2dccf;font:600 10px "DM Mono";color:#5d6a70}.tab.active{background:#fff;color:var(--ink);box-shadow:0 1px 3px #081c2522}.tab.active b{background:var(--blue);color:#fff}.tab:focus-visible{outline:2px solid var(--blue)}
     .panel[hidden]{display:none}.panel>label:first-child,.panel>.pages-head:first-child{margin-top:20px}.sidebar label{margin:18px 0 8px}.sidebar .pages-head{margin-top:20px}.sidebar .pages-head label{margin:0}.field:after{content:"▾";font-size:13px;bottom:14px;color:#8a9499}.field.text:after{content:""}
     .segmented{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.segmented button{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid #ded8cc;border-radius:11px;background:#fcfaf4;padding:11px 6px;font:700 15px "DM Sans",Arial,sans-serif;color:var(--ink)}.segmented small{font:500 9px "DM Mono";letter-spacing:.06em;text-transform:uppercase;opacity:.65}.segmented button:hover{border-color:var(--ink)}.segmented button.active{background:var(--ink);border-color:var(--ink);color:#fff}
@@ -76,9 +77,21 @@
           <label for="handle">Channel handle</label><div class="field text"><input id="handle" placeholder="@yourchannel (optional)" maxlength="40" /></div><p class="hint">Shown at the top of every frame.</p>
         </section>
         <section class="panel" data-panel="voice" hidden>
-          <label class="toggle-card" for="voiceEnabled"><span><b>Voiceover</b><small>Read each quote aloud with a natural voice generated on this device</small></span><input type="checkbox" id="voiceEnabled" /></label>
+          <label class="toggle-card" for="voiceEnabled"><span><b>Voiceover</b><small>Read each quote aloud with a natural voice</small></span><input type="checkbox" id="voiceEnabled" /></label>
           <div class="end-fields off" id="voiceFields">
-            <label for="voiceSelect">Voice</label><div class="field"><select id="voiceSelect"><option value="af_heart">Heart · US female, warm</option><option value="af_bella">Bella · US female, bright</option><option value="af_nicole">Nicole · US female, soft</option><option value="af_sarah">Sarah · US female, calm</option><option value="am_michael">Michael · US male, steady</option><option value="am_fenrir">Fenrir · US male, deep</option><option value="am_puck">Puck · US male, lively</option><option value="bf_emma">Emma · UK female</option><option value="bf_isabella">Isabella · UK female</option><option value="bm_george">George · UK male</option><option value="bm_fable">Fable · UK male, storyteller</option></select></div>
+            <label>Voice provider</label><div class="segmented two" id="providerSeg"><button class="active" data-value="kokoro">Kokoro<small>Free · on this device</small></button><button data-value="eleven">ElevenLabs<small>Premium · your API key</small></button></div>
+            <div id="kokoroFields">
+              <label for="voiceSelect">Kokoro voice</label><div class="field"><select id="voiceSelect"><option value="af_heart">Heart · US female, warm</option><option value="af_bella">Bella · US female, bright</option><option value="af_nicole">Nicole · US female, soft</option><option value="af_sarah">Sarah · US female, calm</option><option value="am_michael">Michael · US male, steady</option><option value="am_fenrir">Fenrir · US male, deep</option><option value="am_puck">Puck · US male, lively</option><option value="bf_emma">Emma · UK female</option><option value="bf_isabella">Isabella · UK female</option><option value="bm_george">George · UK male</option><option value="bm_fable">Fable · UK male, storyteller</option></select></div>
+            </div>
+            <div id="elevenFields" hidden>
+              <label for="elevenKey">ElevenLabs API key</label><div class="key-row"><div class="field text"><input id="elevenKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your API key" /></div><button type="button" class="key-btn" id="elevenConnect">Connect</button></div>
+              <p class="hint">Get a key at elevenlabs.io → Developers → API keys. It is saved only in this browser and sent only to ElevenLabs. Quote text is sent to ElevenLabs to create the voice, and characters count against your ElevenLabs plan. <button type="button" class="link-btn inline" id="elevenForget" hidden>Forget key</button></p>
+              <div id="elevenConnected" hidden>
+                <label for="elevenVoice">Voice</label><div class="key-row"><div class="field"><select id="elevenVoice"></select></div><button type="button" class="key-btn" id="elevenSample" title="Play the voice sample (free)">▶ Sample</button></div>
+                <label for="elevenModel">Model</label><div class="field"><select id="elevenModel"><option value="eleven_multilingual_v2">Multilingual v2 · best quality</option><option value="eleven_flash_v2_5">Flash v2.5 · faster, uses fewer credits</option></select></div>
+                <div class="voice-status" id="elevenAccount"></div>
+              </div>
+            </div>
             <label class="range-label" for="voiceSpeed"><span>Speed</span><span id="voiceSpeedValue">1.00×</span></label><input type="range" id="voiceSpeed" min="0.8" max="1.2" step="0.05" value="1" />
             <label class="check-row" for="voiceEndCard"><input type="checkbox" id="voiceEndCard" checked /> Also read the end card button and small line</label>
             <button type="button" class="secondary-btn" id="voiceGenerate">Generate voice</button>
@@ -92,12 +105,14 @@
     <main class="stage-wrap">
       <div class="stage-bar"><div class="stage-info"><span>Live canvas</span><span class="ratio"><span id="formatLabel">9:16</span> / <span id="durationLabel">0:06</span></span></div><div class="tool-buttons"><button id="playPreview">▶ Play preview</button><button id="exportPng" title="Download the current frame as a PNG image">⤓ Image</button><button id="export">Render</button></div></div>
       <div class="stage" id="stage"><div class="phone" id="phone" data-format="portrait" data-theme="calm"><canvas id="previewCanvas" width="648" height="1152" aria-label="Live video preview"></canvas></div></div>
-      <div class="stage-foot"><span class="local-note">No AI · 100% local render</span><div class="status" id="status">Ready to render a real video.</div></div>
+      <div class="stage-foot"><span class="local-note" id="localNote">No cloud AI · 100% local render</span><div class="status" id="status">Ready to render a real video.</div></div>
     </main>
   </div><canvas id="renderCanvas" width="1080" height="1920" hidden></canvas><div class="toast" id="toast">Video rendered and downloaded.</div>
   <script>
     const $=selector=>document.querySelector(selector);
     const quote=$('#quote'),count=$('#count'),source=$('#source'),phone=$('#phone'),status=$('#status'),toast=$('#toast'),durationSelect=$('#duration'),durationLabel=$('#durationLabel'),formatSelect=$('#format'),formatLabel=$('#formatLabel'),textAnimationSelect=$('#textAnimation'),transitionSelect=$('#transition'),renderMeta=$('#renderMeta'),renderButton=$('#generate'),exportButton=$('#export'),pageStrip=$('#pageStrip'),pageSummary=$('#pageSummary'),previewCanvas=$('#previewCanvas'),renderCanvas=$('#renderCanvas');
+    const providerButtons=document.querySelectorAll('#providerSeg button'),kokoroFields=$('#kokoroFields'),elevenFields=$('#elevenFields'),elevenKey=$('#elevenKey'),elevenConnect=$('#elevenConnect'),elevenForget=$('#elevenForget'),elevenConnected=$('#elevenConnected'),elevenVoice=$('#elevenVoice'),elevenSample=$('#elevenSample'),elevenModel=$('#elevenModel'),elevenAccount=$('#elevenAccount');
+    let voiceProvider='kokoro',elevenVoices=[],sampleAudio=null;
     const voiceEnabled=$('#voiceEnabled'),voiceFields=$('#voiceFields'),voiceSelect=$('#voiceSelect'),voiceSpeed=$('#voiceSpeed'),voiceSpeedValue=$('#voiceSpeedValue'),voiceEndCard=$('#voiceEndCard'),voiceGenerate=$('#voiceGenerate'),voiceStatus=$('#voiceStatus');
     const pagePhotoInput=$('#pagePhoto'),pagePhotoName=$('#pagePhotoName'),pagePhotoRemove=$('#pagePhotoRemove'),coverBadge=$('#coverBadge');
     const bgPhotoInput=$('#bgPhoto'),bgPhotoName=$('#bgPhotoName'),photoControls=$('#photoControls'),bgDim=$('#bgDim'),bgDimValue=$('#bgDimValue');
@@ -121,7 +136,7 @@
     function updatePagePhotoUI(){const page=pages[currentPage];pagePhotoName.textContent=page.photo?page.photoName:'Add a photo for this page';pagePhotoRemove.hidden=!page.photo;pagePhotoInput.value=''}
     function refresh(){saveCurrent();count.textContent=quote.value.length;updateSummary()}
     function updateSummary(){const total=totalDuration();pageSummary.textContent=`${pages.length} page${pages.length===1?'':'s'}${endEnabled.checked?' + end card':''} · ${formatTime(Math.round(total))} total`;durationLabel.textContent=formatTime(Math.round(total))}
-    function updateSetup(showStatus=true){const config=FORMATS[formatSelect.value]||FORMATS.portrait;phone.dataset.format=formatSelect.value;formatLabel.textContent=config.label;renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · nothing is uploaded`;previewCanvas.width=Math.round(config.width*PREVIEW_SCALE);previewCanvas.height=Math.round(config.height*PREVIEW_SCALE);if(showStatus)status.textContent=`${config.label} format · ${textAnimationSelect.options[textAnimationSelect.selectedIndex].text} · ${transitionSelect.options[transitionSelect.selectedIndex].text}.`}
+    function updateSetup(showStatus=true){const config=FORMATS[formatSelect.value]||FORMATS.portrait;phone.dataset.format=formatSelect.value;formatLabel.textContent=config.label;updateRenderMeta();previewCanvas.width=Math.round(config.width*PREVIEW_SCALE);previewCanvas.height=Math.round(config.height*PREVIEW_SCALE);if(showStatus)status.textContent=`${config.label} format · ${textAnimationSelect.options[textAnimationSelect.selectedIndex].text} · ${transitionSelect.options[transitionSelect.selectedIndex].text}.`}
     function renderPageStrip(){pageStrip.innerHTML='';pages.forEach((page,index)=>{const b=document.createElement('button');b.className='page-chip'+(index===currentPage?' active':'')+(page.photo?' has-photo':'');if(page.photo)b.title='Has its own photo';b.textContent='PAGE '+String(index+1).padStart(2,'0');b.addEventListener('click',()=>selectPage(index));pageStrip.appendChild(b)});const add=document.createElement('button');add.className='page-add';add.textContent='＋';add.title='Add page';add.disabled=pages.length>=10;add.addEventListener('click',addPage);pageStrip.appendChild(add);if(pages.length>1){const del=document.createElement('button');del.className='page-delete';del.textContent='Delete';del.addEventListener('click',deletePage);pageStrip.appendChild(del)}updateSummary()}
     function selectPage(index){saveCurrent();currentPage=index;quote.value=pages[index].quote;source.value=pages[index].source;renderPageStrip();refresh();updatePagePhotoUI();showEnd(false);status.textContent=`Editing page ${index+1} of ${pages.length}.`}
     function addPage(){if(pages.length>=10)return;saveCurrent();pages.push({quote:'Write the next *quote* here.',source:pages[currentPage].source,photo:null});currentPage=pages.length-1;quote.value=pages[currentPage].quote;source.value=pages[currentPage].source;renderPageStrip();refresh();updatePagePhotoUI();showEnd(false);status.textContent=`Page ${pages.length} added.`}
@@ -218,8 +233,10 @@
       const blockH=L.lines.length*L.lh,top=h/2-blockH/2,markSize=fs*2.1;
       const mark=easeOut(clamp01(st/.45));ctx.save();ctx.globalAlpha*=mark;ctx.fillStyle=th.accent;ctx.font=`600 ${markSize}px ${SERIF}`;setTracking(ctx,0);ctx.textAlign='center';ctx.translate(w/2,top-fs*.3+markSize*.35);ctx.scale(.7+.3*mark,.7+.3*mark);ctx.fillText('“',0,0);ctx.restore();
       // With a voiceover, words appear in step with the speech (spread by character count over its length).
-      const voice=voiceFor(pageSpeech(page)),charTime=c=>VOICE_LEAD+(c/Math.max(1,L.chars))*voice.duration*.92;
-      const appearAt=voice?(item,lineIndex)=>mode==='word'?charTime(item.charStart):mode==='line'?charTime(L.lines[lineIndex].items[0].charStart):mode==='type'?charTime(item.charStart):.25:(item,lineIndex)=>mode==='word'?.25+item.index*.065:mode==='line'?.25+lineIndex*.22:mode==='type'?.25+item.charStart*.03:.25;
+      const voice=voiceFor(pageSpeech(page)),aligned=voice&&voice.wordStarts&&voice.wordStarts.length===L.words?voice.wordStarts:null;
+      // Exact word times when the provider returns them (ElevenLabs), otherwise spread by character count.
+      const charTime=c=>VOICE_LEAD+(c/Math.max(1,L.chars))*voice.duration*.92,wordTime=item=>aligned?VOICE_LEAD+aligned[item.index]:charTime(item.charStart);
+      const appearAt=voice?(item,lineIndex)=>mode==='word'?wordTime(item):mode==='line'?wordTime(L.lines[lineIndex].items[0]):mode==='type'?wordTime(item):.25:(item,lineIndex)=>mode==='word'?.25+item.index*.065:mode==='line'?.25+lineIndex*.22:mode==='type'?.25+item.charStart*.03:.25;
       const span=mode==='word'?.32:mode==='line'?.4:mode==='type'?0:.8,typeRate=voice?voice.duration*.92/Math.max(1,L.chars):.03;
       const textDone=voice&&mode!=='fade'?VOICE_LEAD+voice.duration*.92+.3:mode==='word'?.25+L.words*.065+.32:mode==='line'?.25+L.lines.length*.22+.4:mode==='type'?.25+L.chars*.03:1.05;
       ctx.font=`600 ${fs}px ${SERIF}`;setTracking(ctx,-.035*fs);ctx.textAlign='left';
@@ -227,7 +244,7 @@
         const baseline=top+lineIndex*L.lh+fs*.82,startX=w/2-line.width/2;
         line.items.forEach(item=>{
           const start=appearAt(item,lineIndex);let text=item.text,p;
-          if(mode==='type'){const shown=Math.floor((st-(voice?VOICE_LEAD:.25))/typeRate)-item.charStart;if(shown<=0)return;text=item.text.slice(0,shown);p=1}else{p=clamp01((st-start)/span);if(p<=0)return}
+          if(mode==='type'){const shown=aligned?Math.floor((st-start)/Math.max(.02,((item.index+1<L.words?aligned[item.index+1]+VOICE_LEAD:VOICE_LEAD+voice.duration)-start)/Math.max(1,item.text.length+1))):Math.floor((st-(voice?VOICE_LEAD:.25))/typeRate)-item.charStart;if(shown<=0)return;text=item.text.slice(0,shown);p=1}else{p=clamp01((st-start)/span);if(p<=0)return}
           const e=easeOut(p);ctx.save();ctx.globalAlpha*=e;
           if(item.hl){const u=easeOut(clamp01((st-start-.25)/.35));if(u>0){ctx.fillStyle=th.accent;ctx.globalAlpha*=.85;ctx.fillRect(startX+item.x,baseline+fs*.14,item.width*u,Math.max(4,fs*.07));ctx.globalAlpha/=.85}}
           ctx.fillStyle=item.hl?th.accent:th.text;ctx.fillText(text,startX+item.x,baseline+(1-e)*fs*.5);ctx.restore();
@@ -297,8 +314,8 @@ self.onmessage=async e=>{const m=e.data;try{
     function loadVoiceModel(){if(!voiceModelReady)voiceModelReady=voiceCall({type:'load',url:KOKORO_URL,model:KOKORO_MODEL}).catch(err=>{voiceModelReady=null;throw err});return voiceModelReady}
     function speechText(text){return text.replace(/[*“”"↓↑→←]/g,' ').replace(/\s+/g,' ').trim()}
     function pageSpeech(page){return page?speechText(cleanQuote(page.quote)):''}
-    function endSpeech(){return voiceEndCard.checked?speechText([endCta.value.trim(),endSub.value.trim()].filter(Boolean).map(t=>/[.!?]$/.test(t)?t:t+'.').join(' ')):''}
-    function voiceKey(text){return [voiceSelect.value,voiceSpeed.value,text].join('|')}
+    function endSpeech(){return voiceEndCard.checked?[endCta.value,endSub.value].map(speechText).filter(Boolean).map(t=>/[.!?]$/.test(t)?t:t+'.').join(' '):''}
+    function voiceKey(text){return (voiceProvider==='eleven'?['eleven',elevenVoice.value,elevenModel.value]:['kokoro',voiceSelect.value]).concat(voiceSpeed.value,text).join('|')}
     function voiceFor(text){return voiceEnabled.checked&&text?voiceCache.get(voiceKey(text))||null:null}
     function voiceSegments(){const list=pages.map(pageSpeech);if(endEnabled.checked&&endSpeech())list.push(endSpeech());return list.filter(Boolean)}
     function setVoiceStatus(text,kind=''){voiceStatus.textContent=text;voiceStatus.className='voice-status'+(kind?' '+kind:'')}
@@ -306,16 +323,57 @@ self.onmessage=async e=>{const m=e.data;try{
     async function ensureVoices(){
       if(!voiceEnabled.checked)return true;saveCurrent();
       const missing=[...new Set(voiceSegments())].filter(t=>!voiceCache.has(voiceKey(t)));if(!missing.length){refreshVoiceStatus();return true}
+      if(voiceProvider==='eleven'){const chars=missing.reduce((n,t)=>n+t.length,0);status.textContent=`Creating ElevenLabs voice · about ${chars} characters…`}
       voiceGenerate.disabled=true;
       try{
-        setVoiceStatus('Loading the voice engine…');status.textContent='Preparing voiceover…';await loadVoiceModel();
+        if(voiceProvider==='eleven'){if(!elevenKey.value.trim()||!elevenVoice.value)throw new Error('Connect your ElevenLabs key and pick a voice first.')}
+        else{setVoiceStatus('Loading the voice engine…');status.textContent='Preparing voiceover…';await loadVoiceModel()}
         for(let i=0;i<missing.length;i++){const text=missing[i],key=voiceKey(text);setVoiceStatus(`Generating voice ${i+1} of ${missing.length}…`);status.textContent=`Generating voice ${i+1} of ${missing.length}…`;
+          if(voiceProvider==='eleven'){voiceCache.set(key,await elevenGenerate(text));continue}
           const {data,rate}=await voiceCall({type:'generate',text,voice:voiceSelect.value,speed:Number(voiceSpeed.value)});const buffer=getAudioContext().createBuffer(1,data.length,rate);buffer.copyToChannel(data,0);voiceCache.set(key,{buffer,duration:buffer.duration})}
+        if(voiceProvider==='eleven')elevenLoadAccount();
         if(voiceCache.size>80)[...voiceCache.keys()].slice(0,voiceCache.size-80).forEach(k=>voiceCache.delete(k));
         updateSummary();refreshVoiceStatus();status.textContent='Voiceover ready.';return true;
-      }catch(err){setVoiceStatus('Could not create the voice: '+err.message+' Check your internet connection for the first download, or turn Voiceover off.','err');status.textContent='Voiceover failed — see the Voice tab.';return false}
+      }catch(err){setVoiceStatus('Could not create the voice: '+err.message+(voiceProvider==='eleven'?'':' Check your internet connection for the first download, or turn Voiceover off.'),'err');status.textContent='Voiceover failed — see the Voice tab.';return false}
       finally{voiceGenerate.disabled=false}
     }
+    // ElevenLabs: called straight from the browser with the user's own key.
+    const ELEVEN_API='https://api.elevenlabs.io';
+    async function elevenFetch(path,options={}){
+      let res;try{res=await fetch(ELEVEN_API+path,{...options,headers:{'xi-api-key':elevenKey.value.trim(),...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}})}catch(e){throw new Error('Could not reach ElevenLabs. Check your internet connection.')}
+      if(!res.ok){let detail='';try{const body=await res.json(),d=body.detail;detail=typeof d==='string'?d:(d&&(d.message||d.status))||''}catch(e){}
+        if(res.status===401)throw new Error('ElevenLabs did not accept this API key'+(detail?` (${detail})`:'')+'.');
+        if(res.status===429||/quota/i.test(detail))throw new Error('Your ElevenLabs plan is out of characters or busy'+(detail?` (${detail})`:'')+'.');
+        throw new Error(`ElevenLabs error ${res.status}${detail?': '+detail:''}.`)}
+      return res;
+    }
+    async function elevenConnectKey(){
+      if(!elevenKey.value.trim()){elevenAccount.textContent='';return}
+      elevenConnect.disabled=true;elevenConnect.textContent='Connecting…';
+      try{
+        const {voices=[]}=await (await elevenFetch('/v1/voices')).json();
+        elevenVoices=voices;const previous=elevenVoice.value||safeGet('qvs-eleven-voice');elevenVoice.innerHTML='';
+        voices.forEach(v=>{const o=document.createElement('option'),l=v.labels||{};o.value=v.voice_id;o.textContent=[v.name,[l.accent,l.gender,l.age].filter(Boolean).join(', ')].filter(Boolean).join(' · ');elevenVoice.appendChild(o)});
+        if(previous&&voices.some(v=>v.voice_id===previous))elevenVoice.value=previous;
+        safeSet('qvs-eleven-key',elevenKey.value.trim());elevenConnected.hidden=false;elevenForget.hidden=false;elevenConnect.textContent='Connected';
+        setVoiceStatus(`Connected to ElevenLabs · ${voices.length} voices.`,'ok');elevenLoadAccount();refreshVoiceStatus();
+      }catch(err){elevenConnected.hidden=true;elevenConnect.textContent='Connect';setVoiceStatus(err.message,'err')}
+      finally{elevenConnect.disabled=false}
+    }
+    async function elevenLoadAccount(){try{const sub=await (await elevenFetch('/v1/user/subscription')).json();if(sub&&sub.character_limit)elevenAccount.textContent=`ElevenLabs plan: ${sub.tier||'account'} · ${Math.max(0,sub.character_limit-sub.character_count).toLocaleString()} of ${sub.character_limit.toLocaleString()} characters left this period.`}catch(e){elevenAccount.textContent=''}}
+    // Returns a decoded clip plus the start time of every word, from ElevenLabs' character alignment.
+    async function elevenGenerate(text){
+      const res=await elevenFetch(`/v1/text-to-speech/${encodeURIComponent(elevenVoice.value)}/with-timestamps?output_format=mp3_44100_128`,{method:'POST',body:JSON.stringify({text,model_id:elevenModel.value,voice_settings:{stability:.5,similarity_boost:.75,speed:Number(voiceSpeed.value)}})});
+      const body=await res.json(),bytes=Uint8Array.from(atob(body.audio_base64),c=>c.charCodeAt(0)),buffer=await getAudioContext().decodeAudioData(bytes.buffer);
+      const starts=(body.alignment&&body.alignment.character_start_times_seconds)||null,wordStarts=[];
+      if(starts&&starts.length>=text.length){let pos=0;for(const word of text.split(' ')){wordStarts.push(starts[pos]);pos+=word.length+1}}
+      return{buffer,duration:buffer.duration,wordStarts:wordStarts.length?wordStarts:null};
+    }
+    function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+    function safeSet(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
+    function setProvider(name){voiceProvider=name;providerButtons.forEach(b=>b.classList.toggle('active',b.dataset.value===name));kokoroFields.hidden=name!=='kokoro';elevenFields.hidden=name!=='eleven';safeSet('qvs-voice-provider',name);updateRenderMeta();updateSummary();refreshVoiceStatus()}
+    function updateRenderMeta(){const config=FORMATS[formatSelect.value]||FORMATS.portrait;const cloudVoice=voiceEnabled.checked&&voiceProvider==='eleven';renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · `+(cloudVoice?'voice by ElevenLabs':'nothing is uploaded');$('#localNote').textContent=cloudVoice?'Local render · voice by ElevenLabs':'No cloud AI · 100% local render'}
+
     // Schedules every voice clip on an audio graph, starting `when` seconds from now (audio clock).
     function scheduleVoices(ctx,destination,when){const sources=[];const play=(text,at)=>{const v=voiceFor(text);if(!v)return;const src=ctx.createBufferSource();src.buffer=v.buffer;src.connect(destination);src.start(ctx.currentTime+when+at);sources.push(src)};pages.forEach((page,i)=>play(pageSpeech(page),pageStart(i)+VOICE_LEAD));if(endEnabled.checked)play(endSpeech(),quoteDuration()+.6);return sources}
     function stopPreviewAudio(){previewSources.forEach(src=>{try{src.stop()}catch(e){}});previewSources=[]}
@@ -378,10 +436,17 @@ self.onmessage=async e=>{const m=e.data;try{
     bgDim.addEventListener('input',()=>bgDimValue.textContent=bgDim.value+'%');
     $('#bgRemove').addEventListener('click',()=>{bgPhoto=null;bgPhotoInput.value='';bgPhotoName.textContent='Upload a photo (optional)';photoControls.hidden=true;status.textContent='Background photo removed.'});
     $('#exportPng').addEventListener('click',exportImage);
-    voiceEnabled.addEventListener('change',()=>{voiceFields.classList.toggle('off',!voiceEnabled.checked);if(voiceEnabled.checked)refreshVoiceStatus();else stopPreviewAudio();updateSummary();status.textContent=voiceEnabled.checked?'Voiceover on.':'Voiceover off.'});
+    voiceEnabled.addEventListener('change',()=>{voiceFields.classList.toggle('off',!voiceEnabled.checked);updateRenderMeta();if(voiceEnabled.checked&&voiceProvider==='eleven'&&elevenKey.value.trim()&&!elevenVoices.length)elevenConnectKey();if(voiceEnabled.checked)refreshVoiceStatus();else stopPreviewAudio();updateSummary();status.textContent=voiceEnabled.checked?'Voiceover on.':'Voiceover off.'});
     [voiceSelect,voiceEndCard].forEach(el=>el.addEventListener('change',()=>{updateSummary();refreshVoiceStatus()}));
     voiceSpeed.addEventListener('input',()=>{voiceSpeedValue.textContent=Number(voiceSpeed.value).toFixed(2)+'×';updateSummary();refreshVoiceStatus()});
     voiceGenerate.addEventListener('click',()=>ensureVoices());
+    providerButtons.forEach(b=>b.addEventListener('click',()=>{setProvider(b.dataset.value);if(b.dataset.value==='eleven'&&elevenKey.value.trim()&&!elevenVoices.length)elevenConnectKey()}));
+    elevenConnect.addEventListener('click',elevenConnectKey);elevenKey.addEventListener('keydown',e=>{if(e.key==='Enter')elevenConnectKey()});
+    elevenKey.addEventListener('input',()=>{elevenConnect.textContent='Connect'});
+    elevenForget.addEventListener('click',()=>{safeSet('qvs-eleven-key',null);elevenKey.value='';elevenVoices=[];elevenVoice.innerHTML='';elevenConnected.hidden=true;elevenForget.hidden=true;elevenConnect.textContent='Connect';elevenAccount.textContent='';setVoiceStatus('ElevenLabs key removed from this browser.')});
+    elevenVoice.addEventListener('change',()=>{safeSet('qvs-eleven-voice',elevenVoice.value);updateSummary();refreshVoiceStatus()});elevenModel.addEventListener('change',()=>{updateSummary();refreshVoiceStatus()});
+    elevenSample.addEventListener('click',()=>{const v=elevenVoices.find(x=>x.voice_id===elevenVoice.value);if(!v||!v.preview_url){setVoiceStatus('This voice has no sample.');return}if(sampleAudio)sampleAudio.pause();sampleAudio=new Audio(v.preview_url);sampleAudio.play().catch(()=>setVoiceStatus('Could not play the sample.','err'))});
+    {const savedKey=safeGet('qvs-eleven-key');if(savedKey){elevenKey.value=savedKey;elevenForget.hidden=false}if(safeGet('qvs-voice-provider')==='eleven')setProvider('eleven')}
     quote.addEventListener('input',refreshVoiceStatus);[endCta,endSub].forEach(el=>el.addEventListener('input',refreshVoiceStatus));
     const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
     function openTab(name){tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);try{localStorage.setItem('qvs-tab',name)}catch(e){}}

@@ -193,6 +193,14 @@
     .quote-hl mark{background:none;color:var(--blue);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}.quote-hl .ast{color:#c9c2b4}.quote-hl .tag{color:#7a8387;background:#f1ece2;border-radius:4px}
     .quote-box textarea{position:relative;z-index:1;background:transparent!important;color:transparent!important;caret-color:var(--ink)}.quote-box textarea::placeholder{color:#9aa2a6}.quote-box textarea::selection{background:#4f7cff40;color:transparent}
       .music-block{margin-top:4px}.music-block .upload{margin-top:0}
+      /* Two-level navigation */
+    .rail-subs{display:none;flex-direction:column;gap:1px;margin:2px 0 8px 23px;padding-left:16px;border-left:2px solid #e2dacb}.rail-item.step.active+.rail-subs{display:flex}
+    .rail-sub-item{border:0;background:none;text-align:left;padding:7px 10px;border-radius:9px;font:500 14px var(--ui);color:#5f6468;cursor:pointer}.rail-sub-item:hover{background:#e7e0d4;color:var(--ink)}.rail-sub-item.active{background:#fff;color:var(--ink);font-weight:700;box-shadow:0 1px 2px #3a2f1f14}.rail-sub-item.action{color:#7a6f60;font-size:13px}
+    .rail-item.step.active{box-shadow:none!important;background:none!important}.rail-item.step.active .step-text b{color:var(--ink)}
+    .step-crumb{margin:0 0 2px;font:600 12px var(--ui);letter-spacing:.04em;text-transform:uppercase;color:#8a8478}
+    .sub-chips{display:none}
+    .sub>:first-child{margin-top:0!important}
+    @media(max-width:860px){.rail-subs{display:none!important}.sub-chips{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px}.sub-chips button{flex:0 0 auto;border:1px solid #e4ded2;border-radius:99px;background:#fff;padding:7px 12px;font:600 13px var(--ui);color:var(--ink)}.sub-chips button.active{background:var(--ink);border-color:var(--ink);color:#fff}}
   </style>
 </head>
 <body>
@@ -208,10 +216,10 @@
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="promo"><span class="step-num">4</span><span class="step-text"><b>Promo</b><small>Hook & book</small></span></button>
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
-      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.11.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.12.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
-      <div class="panel-head"><h2 id="panelTitle">1 · Write</h2><p id="panelDesc">Write or pick your quotes. One quote per page.</p></div>
+      <div class="panel-head"><p class="step-crumb" id="stepCrumb">Step 1 of 5 · Write</p><h2 id="panelTitle">Quotes &amp; pages</h2><p id="panelDesc">Write or pick your quotes. One quote per page.</p><div class="sub-chips" id="subChips"></div></div>
       <div class="side-scroll">
         <section class="panel" data-panel="quotes">
           <div class="page-editor">
@@ -1001,8 +1009,41 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
     {const savedKey=safeGet('qvs-eleven-key');if(savedKey){elevenKey.value=savedKey;elevenForget.hidden=false}if(safeGet('qvs-voice-provider')==='eleven')setProvider('eleven')}
     quote.addEventListener('input',refreshVoiceStatus);[endCta,endSub].forEach(el=>el.addEventListener('input',refreshVoiceStatus));
     const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
-    function openTab(name){const info=PANEL_INFO[name];if(info){panelTitle.textContent=info[0];panelDesc.textContent=info[1]}tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);if(name==='export')updateExportSummary();try{localStorage.setItem('qvs-tab',name)}catch(e){}}
+    function openTab(name){const info=PANEL_INFO[name];if(info){panelTitle.textContent=info[0];panelDesc.textContent=info[1]}tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);if(name==='export')updateExportSummary();if(typeof showSub==='function'&&SUBS[name])showSub(name,lastSub[name]||SUBS[name][0][0]);try{localStorage.setItem('qvs-tab',name)}catch(e){}}
     tabs.forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));
+    // ---------- Two-level navigation: steps in the rail, one sub-section at a time in the panel ----------
+    // [key, label, description, index of the panel's first child that belongs to it]
+    const SUBS={
+      quotes:[['pages','Quotes & pages','Write or pick your quotes. One quote per page.',0],['credit','Book & author','The credit line shown under every quote.',2]],
+      style:[['font','Quote font','The typeface of your quotes.',0],['background','Background','Pick a colour theme for the video.',1],['colour','Colour & effects','Accent colour and moving atmosphere.',5],['photo','Background photo','Optional: one photo behind the whole video.',10],['motion','Motion','How the words appear and how pages change.',14]],
+      voice:[['timing','Timing','How long each page stays on screen.',0],['music','Music','Optional background music under the whole video.',1],['voice','Voiceover','Optional: read each quote aloud.',2]],
+      promo:[['hook','Opening hook','Optional: a short first line before page 1.',0],['end','End card','Optional: finish with your cover and a “get the book” button.',1],['badge','Book badge & handle','Optional: your cover in a corner and your channel name.',3]],
+      export:[['export','Render & share','Check, render and download your video.',0]]};
+    const STEP_NAMES={quotes:'Write',style:'Look',voice:'Sound',promo:'Promo',export:'Export'},STEP_ORDER=['quotes','style','voice','promo','export'],lastSub={};
+    for(const [step,list] of Object.entries(SUBS)){
+      const panel=document.querySelector(`.panel[data-panel="${step}"]`),next=panel.querySelector('.next-step'),kids=[...panel.children].filter(c=>c!==next);
+      const wraps=list.map(([key])=>{const d=document.createElement('div');d.className='sub';d.dataset.sub=key;return d});
+      kids.forEach((c,i)=>{let k=0;list.forEach((item,j)=>{if(i>=item[3])k=j});wraps[k].appendChild(c)});
+      wraps.forEach(w=>panel.insertBefore(w,next||null));
+      const btn=document.querySelector(`.rail-item.step[data-tab="${step}"]`);if(!btn||list.length<2&&step!=='quotes')continue;
+      const box=document.createElement('div');box.className='rail-subs';box.dataset.for=step;
+      list.forEach(([key,label])=>{const b=document.createElement('button');b.type='button';b.className='rail-sub-item';b.dataset.step=step;b.dataset.sub=key;b.textContent=label;b.addEventListener('click',()=>{openTab(step);showSub(step,key)});box.appendChild(b)});
+      if(step==='quotes'){[['📚 Quote library',()=>openLibrary()],['📋 Paste many',()=>$('#bulkBtn').click()]].forEach(([label,fn])=>{const b=document.createElement('button');b.type='button';b.className='rail-sub-item action';b.textContent=label;b.addEventListener('click',fn);box.appendChild(b)})}
+      btn.after(box);
+    }
+    function showSub(step,key){
+      const list=SUBS[step];if(!list)return;const item=list.find(x=>x[0]===key)||list[0];key=item[0];lastSub[step]=key;
+      const panel=document.querySelector(`.panel[data-panel="${step}"]`);panel.querySelectorAll(':scope > .sub').forEach(d=>d.hidden=d.dataset.sub!==key);
+      document.querySelectorAll('.rail-sub-item[data-sub]').forEach(b=>b.classList.toggle('active',b.dataset.step===step&&b.dataset.sub===key));
+      panelTitle.textContent=item[1];panelDesc.textContent=item[2];$('#stepCrumb').textContent=`Step ${STEP_ORDER.indexOf(step)+1} of 5 · ${STEP_NAMES[step]}`;
+      const chips=$('#subChips');chips.innerHTML='';if(list.length>1)list.forEach(([k,label])=>{const c=document.createElement('button');c.type='button';c.textContent=label;c.className=k===key?'active':'';c.addEventListener('click',()=>showSub(step,k));chips.appendChild(c)});
+      const i=list.indexOf(item),nb=panel.querySelector('.next-step');if(nb){const nxt=list[i+1];nb.textContent=nxt?`Next: ${nxt[1]} →`:`Next step: ${STEP_NAMES[STEP_ORDER[STEP_ORDER.indexOf(step)+1]]} →`}
+      if(key==='font'){const d=$('#fontPicker');if(d)d.open=true}
+      try{localStorage.setItem('qvs-sub',step+':'+key)}catch(e){}
+      growQuote();const sc=document.querySelector('.side-scroll');if(sc)sc.scrollTop=0;
+    }
+    function goNext(step){const list=SUBS[step],i=list.findIndex(x=>x[0]===(lastSub[step]||list[0][0]));if(i<list.length-1)showSub(step,list[i+1][0]);else{const n=STEP_ORDER[STEP_ORDER.indexOf(step)+1];if(n){openTab(n);showSub(n,SUBS[n][0][0])}}}
+
     const formatButtons=document.querySelectorAll('#formatSeg button');formatButtons.forEach(b=>b.addEventListener('click',()=>{formatSelect.value=b.dataset.value;formatButtons.forEach(x=>x.classList.toggle('active',x===b));formatSelect.dispatchEvent(new Event('change'))}));
     const stage=$('#stage');
     function fitPhone(){phone.style.zoom=1;const cs=getComputedStyle(stage),aw=stage.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-16,ah=stage.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-16;if(aw<=0||ah<=0)return;phone.style.zoom=Math.max(.45,Math.min(aw/phone.offsetWidth,ah/phone.offsetHeight,2.6))}
@@ -1015,7 +1056,7 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
       catch(e){status.textContent='That file could not be read as audio. Try an MP3 or WAV file.'}musicInput.value=''});
     $('#musicVol').addEventListener('input',updateMusicUI);
     $('#musicRemove').addEventListener('click',()=>{musicBuffer=null;musicFileName='';stopPreviewAudio();updateMusicUI();fileSet('music',null);status.textContent='Music removed.'});
-    document.querySelectorAll('.next-step').forEach(b=>b.addEventListener('click',()=>{openTab(b.dataset.next);const sc=document.querySelector('.side-scroll');if(sc)sc.scrollTop=0}));
+    document.querySelectorAll('.next-step').forEach(b=>b.addEventListener('click',()=>goNext(b.closest('.panel').dataset.panel)));
     function updateExportSummary(){const parts=[`${pages.length} page${pages.length===1?'':'s'}`];if(hookOn())parts.unshift('hook');if(endEnabled.checked)parts.push('end card');
       const voice=(voiceEnabled.checked?(voiceProvider==='eleven'?'ElevenLabs voice':'Kokoro voice'):'no voiceover')+(musicBuffer?' · music':'');
       $('#exportSummary').innerHTML=`<b>${formatTime(Math.round(totalDuration()))}</b>${parts.join(' · ')}<br><span>${voice} · ${$('#themeName').textContent.replace('· ','')} background · 1080 × 1920</span>`}
@@ -1090,8 +1131,10 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
         setTimeout(()=>{status.textContent='Welcome back. Your last video was restored.'},150);
       }finally{setTimeout(()=>{restoring=false},300)}
     }
-    $('#newProject').addEventListener('click',async()=>{if(!confirm('Start a new video? Your current quotes and settings will be cleared.'))return;restoring=true;try{localStorage.removeItem(PROJECT_KEY);localStorage.removeItem('qvs-tab')}catch(e){}await fileSet('bg',null);await fileSet('cover',null);await fileSet('music',null);location.reload()});
+    $('#newProject').addEventListener('click',async()=>{if(!confirm('Start a new video? Your current quotes and settings will be cleared.'))return;restoring=true;try{localStorage.removeItem(PROJECT_KEY);localStorage.removeItem('qvs-tab');localStorage.removeItem('qvs-sub')}catch(e){}await fileSet('bg',null);await fileSet('cover',null);await fileSet('music',null);location.reload()});
+    let savedSub='';try{savedSub=localStorage.getItem('qvs-sub')||''}catch(e){}
     try{const saved=localStorage.getItem('qvs-tab');if(saved&&document.querySelector(`.tab[data-tab="${saved}"]`))openTab(saved)}catch(e){}
+    try{const [st,sb]=savedSub.split(':');if(SUBS[st]){if(st!==document.querySelector('.rail-item.active')?.dataset.tab)openTab(st);showSub(st,sb)}else showSub('quotes','pages')}catch(e){showSub('quotes','pages')}
     restoreProject();
     requestAnimationFrame(previewLoop);
   </script>

@@ -6,7 +6,7 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 
 ## How it works
 
-The editor follows five steps in the left rail; each step ends with a **Next** button.
+The editor follows five steps in the left rail. The open step lists its sections underneath, and the panel shows one section at a time; **Next** walks through the sections and then on to the next step. On phones the sections appear as chips above the panel.
 
 1. **Write**: the quote for each page, the page list, Paste many, the Quote library and the credit line.
 2. **Look**: quote font, background, accent colour, atmosphere, background photo, text animation and transition.
@@ -99,6 +99,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.12.0 (2026-10-05):** Two-level navigation: each step lists its sections in the rail and the panel shows one section at a time (Write: Quotes & pages, Book & author, plus Quote library and Paste many shortcuts; Look: Quote font, Background, Colour & effects, Background photo, Motion; Sound: Timing, Music, Voiceover; Promo: Opening hook, End card, Book badge & handle).
 - **0.11.0 (2026-10-05):** Background music in the Sound step: upload, volume, fade in/out, looping, ducking under the voice; included in preview, render and autosave.
 - **0.10.2 (2026-10-05):** The render toast no longer shows on phones before a render; *highlighted* words are coloured inside the quote box (stars faded, voice tags tinted); the rail shows only the version number; the 5 steps always fit on phones; the free voice download shows a progress bar and asks before downloading 90 MB on mobile data.
 - **0.10.1 (2026-10-05):** Write step redesigned: no orange frames or stripes, flat quote editor, neutral page list and buttons.

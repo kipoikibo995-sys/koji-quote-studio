@@ -9,6 +9,7 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Multi-page quote videos (up to 10 quotes, one per page): page cards with a text preview and photo thumbnail, drag (or Alt + ↑/↓) to reorder, duplicate, and delete with undo
 - One book & author line for the whole video, with an optional per-page override (leave it empty to hide the credit)
 - Reading-time check: each page shows whether viewers can read it in the time it is on screen
+- Quote fonts: 11 Google Fonts for the quote text (Playfair, Cormorant, Lora, Baskerville, DM Serif, Montserrat, Poppins, Bebas Neue, Dancing Script, Caveat, Typewriter), each with its own size, spacing and line height so quotes still fit the frame
 - Quote library: 184 ready-to-use quotes and poems across 14 topics (love, heartbreak & healing, self-love, life, meaning & purpose, motivation, courage, hope, peace & mindfulness, gratitude, friendship & family, time & change, growth, books & reading), with search, topic filters and "Surprise me"; poems can be split into one page per two lines
 - Book promo end card: your cover, book title, call to action (e.g. "Get the book on Amazon") and a small line (e.g. "Link in description ↓")
 - Channel handle shown on every frame (e.g. `@yourchannel`)

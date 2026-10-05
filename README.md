@@ -19,7 +19,7 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Channel handle shown on every frame (e.g. `@yourchannel`)
 - Keyword highlights: select words and click Highlight (or Ctrl/Cmd + B) to colour and underline them in the video; this wraps them in `*asterisks*`
 - Background photo: upload any image; it fills the frame, drifts slowly and sits under an adjustable darkening wash so the text stays readable
-- Per-page photos: give each quote page its own photo (pages without one use the background photo); photos cross-fade between pages
+- Per-page photos: in the Style tab, give the selected page its own photo (pages without one use the background photo); photos cross-fade between pages
 - Book badge: your cover, title and button text in a corner of every quote page, so viewers see the book from the first second
 - Voiceover: each quote (and optionally the end card) is read aloud by Kokoro TTS running in the browser; pages stretch to fit the voice and words appear in time with it. 11 US/UK voices and a speed control, or premium ElevenLabs voices with your own API key
 - Image export: download the current page or end card as a full-resolution PNG (thumbnails, Pinterest, Instagram, community posts)
@@ -73,3 +73,15 @@ It can also be opened directly from your computer by double-clicking `index.html
 - Chrome or Edge is recommended (best support for local MP4 rendering; other browsers may produce WebM).
 - Use HTTPS when hosting online.
 - Keep the tab open until rendering finishes. Rendering uses the user's CPU and memory, so longer multi-page videos take longer.
+
+## Changelog
+
+The current version is shown at the bottom of the left rail.
+
+- **0.9.0 (2026-10-05):** the page photo moved from the Quotes tab to the Style tab ("Photo for page N").
+  - Word cascade, line rise and typewriter speed up for long quotes, so the full text and the credit always appear.
+  - Wrapping quote marks of any kind are removed.
+  - Short quotes are set larger.
+  - The character counter turns amber over 150 and red over 220.
+  - New pages start empty, and rendering stops while a page is empty.
+  - Readability, layout and colour passes: larger UI text, monospace fallbacks, quote editor first, big preview buttons, theme thumbnails, finer scanlines.

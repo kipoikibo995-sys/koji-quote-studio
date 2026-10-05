@@ -123,6 +123,7 @@
     .quote-box textarea{border-radius:var(--r-ctl) var(--r-ctl) 0 0!important}
     .local-note{color:#c9d6db!important;font-size:13px!important}.stage-foot .status{font-size:13px!important}
       #countWrap.count-warn{color:#9a6200;font-weight:700}#countWrap.count-over{color:#c0392b;font-weight:700}
+      .app-version{margin:0 0 10px;font-size:12px;line-height:1.45;color:#5c5d56}.app-version span{color:#68625a}
   </style>
 </head>
 <body>
@@ -141,7 +142,7 @@
       <div class="rail-group">Tools</div>
       <button type="button" class="rail-item" id="railLibrary"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg><span>Quote library</span></button>
       <button type="button" class="rail-item" id="railImage"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg><span>Export image</span></button>
-      <div class="rail-foot"><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion" title="Page photo moved to the Style tab. Quotes: reveal fits the page, all quote marks stripped, bigger short quotes, counter warnings.">Version 0.9.0 · 05/10/2026<br><span>Page photo moved to Style</span></p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><h2 id="panelTitle">Quotes</h2><p id="panelDesc">Your book, your pages and what each one says.</p></div>
@@ -152,11 +153,9 @@
             <div class="quote-box"><textarea id="quote" maxlength="260" rows="2" placeholder="Paste a line from your book…">“Every chapter you finish is a *promise* you kept to yourself.”</textarea><div class="counter"><span class="read-meter" id="readMeter"></span><span id="countWrap"><span id="count">63</span> / 260</span></div></div>
             <div class="tag-row" id="tagRow" hidden><span>Voice tags</span><button type="button" data-tag="whispers">[whispers]</button><button type="button" data-tag="sighs">[sighs]</button><button type="button" data-tag="exhales">[exhales]</button><button type="button" data-tag="sad">[sad]</button><button type="button" data-tag="crying">[crying]</button><button type="button" data-tag="angry">[angry]</button><button type="button" data-tag="mischievously">[mischievously]</button><button type="button" data-tag="excited">[excited]</button><button type="button" data-tag="laughs">[laughs]</button></div>
             
-            <details class="disclosure" id="pageOptions"><summary><span class="disc-title">Page options</span><span class="summary-note" id="pageOptionsNote">Default credit · no photo</span></summary><div class="disc-body">
+            <details class="disclosure" id="pageOptions"><summary><span class="disc-title">Credit for this page</span><span class="summary-note" id="pageOptionsNote">Default credit · no photo</span></summary><div class="disc-body">
               <label class="check-row" for="sourceOverride"><input type="checkbox" id="sourceOverride" /> Different book or author on this page</label>
               <div class="field text" id="pageSourceWrap" hidden><input id="pageSource" placeholder="Book title · Author name for this page (empty hides it)" maxlength="80" /></div>
-              <label for="pagePhoto">Page photo</label><label class="upload" for="pagePhoto"><b id="pagePhotoName">Add a photo for this page</b><span>Browse</span></label><input type="file" id="pagePhoto" accept="image/*" hidden />
-              <button type="button" class="link-btn" id="pagePhotoRemove" hidden>Remove page photo</button><p class="hint">Without its own photo, the page uses the Style tab background.</p>
             </div></details>
           </div>
           <div class="q-group"><div class="pages-head"><label>Pages</label><span class="page-summary" id="pageSummary">1 page · 6s total</span></div>
@@ -172,6 +171,8 @@
           <label>Background</label><div class="presets"><button class="preset calm active" data-theme="calm"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Midnight</b><small>navy · orange</small></button><button class="preset noir" data-theme="noir"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Warm Paper</b><small>cream · ink</small></button><button class="preset editorial" data-theme="editorial"><span class="thumb" aria-hidden="true"><i>Aa</i><u></u></span><b>Orange Glow</b><small>orange · gold</small></button></div>
           <label for="bgPhoto">Background photo</label><label class="upload" for="bgPhoto"><b id="bgPhotoName">Upload a photo (optional)</b><span>Browse</span></label><input type="file" id="bgPhoto" accept="image/*" hidden />
           <div class="photo-controls" id="photoControls" hidden><label class="range-label" for="bgDim"><span>Darken photo</span><span id="bgDimValue">45%</span></label><input type="range" id="bgDim" min="0" max="85" value="45" /><button type="button" class="link-btn" id="bgRemove">Remove photo</button></div>
+          <label for="pagePhoto">Photo for page <span id="pagePhotoPage">1</span></label><label class="upload" for="pagePhoto"><b id="pagePhotoName">Add a photo for this page</b><span>Browse</span></label><input type="file" id="pagePhoto" accept="image/*" hidden />
+          <button type="button" class="link-btn" id="pagePhotoRemove" hidden>Remove page photo</button><p class="hint">Optional. Pages without their own photo use the background photo. Pick the page in the Quotes tab.</p>
           <div class="row"><div><label for="textAnimation">Text animation</label><div class="field"><select id="textAnimation"><option value="word">Word cascade</option><option value="line">Line rise</option><option value="type">Typewriter</option><option value="fade">Soft fade</option></select></div></div><div><label for="transition">Transition</label><div class="field"><select id="transition"><option value="slide-left">Slide left</option><option value="slide-up">Slide up</option><option value="fade">Crossfade</option><option value="zoom">Zoom through</option></select></div></div></div>
           <label for="duration">Seconds per page</label><div class="field"><select id="duration"><option value="4">4 seconds</option><option value="6" selected>6 seconds</option><option value="8">8 seconds</option></select></div>
         </section>
@@ -282,8 +283,8 @@
     function updateReadMeter(){const i=currentPage,flag=readFlag(i);if(pageVoice(i)){readMeter.textContent=`Voice sets this page to ${pageDuration(i).toFixed(1)}s`;readMeter.className='read-meter voice';return}
       const need=Math.round(readNeed(pages[i])),have=Math.round(pageDuration(i)-.6);readMeter.textContent=`~${need}s to read · on screen ${have}s `+(flag==='ok'?'✓':flag==='tight'?'· a little tight':'· too long — split it into 2 pages or use 8s pages')+(quote.value.length>150&&flag==='ok'?' · long for a Short, consider 2 pages':'');readMeter.className='read-meter '+flag}
     function updateFontSummary(){const f=quoteFont(),el=$('#fontCurrent');el.textContent=f.label;el.style.fontFamily=f.family;el.style.fontWeight=f.weight;el.style.textTransform=f.upper?'uppercase':'none'}
-    function updatePageOptionsNote(){const page=pages[currentPage],parts=[page.source!=null?(page.source?'Own credit':'Credit hidden'):'Default credit',page.photo?'Own photo':'No photo'];$('#pageOptionsNote').textContent=parts.join(' · ')}
-    function updatePagePhotoUI(){updatePageOptionsNote();const page=pages[currentPage];pagePhotoName.textContent=page.photo?page.photoName:'Add a photo for this page';pagePhotoRemove.hidden=!page.photo;pagePhotoInput.value=''}
+    function updatePageOptionsNote(){const page=pages[currentPage],parts=[page.source!=null?(page.source?'Own credit':'Credit hidden'):'Same as all pages'];$('#pageOptionsNote').textContent=parts.join(' · ')}
+    function updatePagePhotoUI(){updatePageOptionsNote();const page=pages[currentPage];pagePhotoName.textContent=page.photo?page.photoName:'Add a photo for this page';$('#pagePhotoPage').textContent=currentPage+1;pagePhotoRemove.hidden=!page.photo;pagePhotoInput.value=''}
     function growQuote(){if(!quote.offsetParent)return;quote.style.height='auto';quote.style.height=Math.min(240,quote.scrollHeight+2)+'px'}
     function refresh(){saveCurrent();growQuote();count.textContent=quote.value.length;$('#countWrap').className=quote.value.length>220?'count-over':quote.value.length>150?'count-warn':'';updateSummary();renderPageStrip();updateReadMeter();updatePageOptionsNote()}
     function updateSummary(){const total=totalDuration();pageSummary.textContent=`${pages.length} page${pages.length===1?'':'s'}${endEnabled.checked?' + end card':''} · ${formatTime(Math.round(total))} total`;durationLabel.textContent=formatTime(Math.round(total))}

@@ -475,19 +475,39 @@ self.onmessage=async e=>{const m=e.data;try{
       const url=URL.createObjectURL(blob),a=document.createElement('a'),part=previewEnd&&endEnabled.checked?'end-card':'page-'+String(currentPage+1).padStart(2,'0');a.href=url;a.download=`${fileStem()}-${part}-${config.label.replace(':','x')}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
       status.textContent=`Image downloaded · ${config.width} × ${config.height} PNG`;
     }
+    // H.264 at level 4.0 (High, Main, then Baseline) is needed for 1080p frames; WebM is the fallback.
+    const VIDEO_TYPES=['video/mp4;codecs=avc1.640028','video/mp4;codecs=avc1.4D0028','video/mp4;codecs=avc1.42E028','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+    function recorderTypes(withVoice){const list=VIDEO_TYPES.map(t=>!withVoice||t==='video/webm'?t:t+(t.includes('mp4')?',mp4a.40.2':',opus')).filter(t=>MediaRecorder.isTypeSupported(t));const mp4=list.find(t=>t.includes('mp4')),webm=list.find(t=>t.includes('webm'));return[mp4,webm].filter(Boolean)}
+    // Records one full pass of the video with the given container/codec and returns the result.
+    async function recordTake(mimeType,withVoice,config,label){
+      const canvas=renderCanvas;canvas.width=config.width;canvas.height=config.height;const ctx=canvas.getContext('2d'),duration=totalDuration(),stream=canvas.captureStream(30);let sources=[],audioDest=null;
+      if(withVoice){const actx=getAudioContext();await actx.resume();audioDest=actx.createMediaStreamDestination();stream.addTrack(audioDest.stream.getAudioTracks()[0])}
+      let recorder;try{recorder=new MediaRecorder(stream,{mimeType,videoBitsPerSecond:10000000})}catch(e){stream.getTracks().forEach(t=>t.stop());return{error:e,blob:new Blob([]),type:mimeType}}
+      const chunks=[];let error=null,wasHidden=false;recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};recorder.onerror=e=>{error=e.error||e};
+      const finished=new Promise(resolve=>recorder.onstop=resolve);drawFrame(ctx,0,canvas.width,canvas.height);recorder.start(250);if(withVoice)sources=scheduleVoices(getAudioContext(),audioDest,0);const start=performance.now();
+      await new Promise(resolve=>{function frame(now){if(document.hidden)wasHidden=true;const elapsed=Math.min(duration,(now-start)/1000);drawFrame(ctx,elapsed,canvas.width,canvas.height);const pct=Math.round(elapsed/duration*100),scene=pageAt(elapsed).index+1;status.textContent=label+(elapsed>=quoteDuration()&&endEnabled.checked?`Rendering end card… ${pct}%`:`Rendering page ${scene}/${pages.length}… ${pct}%`);if(elapsed<duration&&!error)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)});
+      if(recorder.state!=='inactive')recorder.stop();await finished;sources.forEach(src=>{try{src.stop()}catch(e){}});stream.getTracks().forEach(t=>t.stop());
+      const type=recorder.mimeType||mimeType;return{blob:new Blob(chunks,{type}),type,error,wasHidden};
+    }
     async function renderVideo(){
       if(rendering)return;if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){status.textContent='This browser cannot render video locally. Try Chrome or Edge.';return}
+      const done=()=>{rendering=false;renderButton.disabled=false;exportButton.disabled=false;renderButton.firstChild.textContent='Render & download video '};
       renderButton.disabled=true;exportButton.disabled=true;renderButton.firstChild.textContent='Rendering video… ';
-      stopPreviewAudio();playStart=null;if(!(await ensureVoices())){renderButton.disabled=false;exportButton.disabled=false;renderButton.firstChild.textContent='Render & download video ';return}
-      status.textContent='Loading fonts…';await loadVideoFonts();saveCurrent();const withVoice=voiceEnabled.checked&&voiceSegments().some(t=>voiceFor(t));let audioDest=null;const canvas=renderCanvas,config=FORMATS[formatSelect.value]||FORMATS.portrait;canvas.width=config.width;canvas.height=config.height;const ctx=canvas.getContext('2d'),fps=30,duration=totalDuration(),stream=canvas.captureStream(fps);
-      if(withVoice){const actx=getAudioContext();await actx.resume();audioDest=actx.createMediaStreamDestination();stream.addTrack(audioDest.stream.getAudioTracks()[0])}
-      const types=withVoice?['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']:['video/mp4;codecs=avc1.42E01E','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];const mimeType=types.find(type=>MediaRecorder.isTypeSupported(type))||'';let recorder;
-      try{recorder=new MediaRecorder(stream,mimeType?{mimeType,videoBitsPerSecond:10000000}:{videoBitsPerSecond:10000000})}catch(e){status.textContent='Video encoder is unavailable in this browser.';renderButton.disabled=false;exportButton.disabled=false;renderButton.firstChild.textContent='Render & download video ';return}
-      rendering=true;drawFrame(ctx,0,canvas.width,canvas.height);
-      const chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};const finished=new Promise(resolve=>recorder.onstop=resolve);recorder.start(250);if(withVoice)scheduleVoices(getAudioContext(),audioDest,0);const start=performance.now();
-      await new Promise(resolve=>{function frame(now){const elapsed=Math.min(duration,(now-start)/1000);drawFrame(ctx,elapsed,canvas.width,canvas.height);const pct=Math.round(elapsed/duration*100),scene=pageAt(elapsed).index+1;status.textContent=elapsed>=quoteDuration()&&endEnabled.checked?`Rendering end card… ${pct}%`:`Rendering page ${scene}/${pages.length}… ${pct}%`;if(elapsed<duration)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)});
-      recorder.stop();await finished;const actualType=recorder.mimeType||mimeType||'video/webm',ext=actualType.includes('mp4')?'mp4':'webm',blob=new Blob(chunks,{type:actualType}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=fileStem()+'-short-'+Date.now()+'.'+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
-      status.textContent=`Video downloaded · ${ext.toUpperCase()} · ${(blob.size/1048576).toFixed(1)} MB`;toast.textContent='Real video rendered and downloaded.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2800);rendering=false;renderButton.disabled=false;exportButton.disabled=false;renderButton.firstChild.textContent='Render & download video ';
+      stopPreviewAudio();playStart=null;if(!(await ensureVoices())){done();return}
+      status.textContent='Loading fonts…';await loadVideoFonts();saveCurrent();const withVoice=voiceEnabled.checked&&voiceSegments().some(t=>voiceFor(t)),config=FORMATS[formatSelect.value]||FORMATS.portrait,types=recorderTypes(withVoice);
+      if(!types.length){status.textContent='This browser has no video encoder for local rendering. Try Chrome or Edge.';done();return}
+      rendering=true;let take=null,note='';
+      for(let i=0;i<types.length;i++){
+        take=await recordTake(types[i],withVoice,config,i?'Retrying as WebM · ':'');
+        console.info('[render]',types[i],'→',take.blob.size,'bytes',take.error||'');
+        if(!take.error&&take.blob.size>20000)break;
+        if(i<types.length-1)note=' (MP4 failed in this browser, so it was saved as WebM)';
+      }
+      done();
+      if(!take||take.error||take.blob.size<=20000){status.textContent='Rendering produced no video'+(take&&take.error?` (${take.error.name||take.error.message||take.error})`:'')+'. Keep this tab visible while rendering, or try the latest Chrome or Edge.';return}
+      const ext=take.type.includes('mp4')?'mp4':'webm',url=URL.createObjectURL(take.blob),a=document.createElement('a');a.href=url;a.download=fileStem()+'-short-'+Date.now()+'.'+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+      status.textContent=`Video downloaded · ${ext.toUpperCase()} · ${(take.blob.size/1048576).toFixed(1)} MB${note}`+(take.wasHidden?' · The tab was hidden during rendering, so parts may be frozen — keep it visible next time.':'');
+      toast.textContent='Video rendered and downloaded.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2800);
     }
 
     // ---------- Wiring ----------

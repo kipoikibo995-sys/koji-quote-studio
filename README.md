@@ -13,6 +13,13 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Background photo: upload any image; it fills the frame, drifts slowly and sits under an adjustable darkening wash so the text stays readable
 - Per-page photos: give each quote page its own photo (pages without one use the background photo); photos cross-fade between pages
 - Book badge: your cover, title and button text in a corner of every quote page, so viewers see the book from the first second
+- Voiceover: each quote (and optionally the end card) is read aloud by Kokoro TTS running in the browser; pages stretch to fit the voice and words appear in time with it. 11 US/UK voices and a speed control
+
+## Voiceover notes
+
+- The voice engine is [kokoro-js](https://www.npmjs.com/package/kokoro-js) 1.2.1, loaded from jsDelivr, with the Kokoro-82M model (`onnx-community/Kokoro-82M-v1.0-ONNX`, q8, about 90 MB) loaded from Hugging Face. Both are Apache-2.0 licensed.
+- The model downloads the first time someone uses Voiceover and is then cached by their browser. Text never leaves the device.
+- Voice generation runs in a web worker; it is fast on desktop computers and slower on older phones.
 - Image export: download the current page or end card as a full-resolution PNG (thumbnails, Pinterest, Instagram, community posts)
 - Animated backgrounds (drifting light, bokeh, film texture) and a slow push-in so every frame has motion
 - Quote text auto-sizes to fit the frame, and the live preview uses the same renderer as the exported video

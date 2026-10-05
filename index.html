@@ -237,7 +237,7 @@
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="promo"><span class="step-num">4</span><span class="step-text"><b>Promo</b><small>Hook & book</small></span></button>
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
-      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.13.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.13.1</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><p class="step-crumb" id="stepCrumb">Step 1 of 5 · Write</p><h2 id="panelTitle">Quotes &amp; pages</h2><p id="panelDesc">Write or pick your quotes. One quote per page.</p><div class="sub-chips" id="subChips"></div></div>
@@ -879,9 +879,11 @@ self.onmessage=async e=>{const m=e.data;try{
       if(rendering){if(now-lastMirror>400){lastMirror=now;previewCtx.setTransform(1,0,0,1,0,0);previewCtx.drawImage(renderCanvas,0,0,previewCanvas.width,previewCanvas.height)}return}
       const config=FORMATS[formatSelect.value]||FORMATS.portrait;previewCtx.setTransform(previewCanvas.width/config.width,0,0,previewCanvas.height/config.height,0,0);const t=previewTime(now);drawFrame(previewCtx,t,config.width,config.height,now/1000,playStart===null);
     }
-    async function playPreview(){saveCurrent();stopPreviewAudio();playStart=null;if(!(await ensureVoices()))return;previewEnd=false;
-      if(voiceEnabled.checked||musicBuffer){const ctx=getAudioContext();await ctx.resume();lastVoiceSpans=[];previewSources=voiceEnabled.checked?scheduleVoices(ctx,ctx.destination,.05):[];previewSources.push(...scheduleMusic(ctx,ctx.destination,.05));playStart=performance.now()+50}else playStart=performance.now();
-      status.textContent=`Playing ${pages.length}-page preview…`}
+    // Preview never creates a voice (that costs ElevenLabs characters or a 90 MB download); it plays one only if it is ready.
+    async function playPreview(){saveCurrent();stopPreviewAudio();playStart=null;previewEnd=false;
+      const withVoice=voiceEnabled.checked&&voiceReady();
+      if(withVoice||musicBuffer){const ctx=getAudioContext();await ctx.resume();lastVoiceSpans=[];previewSources=withVoice?scheduleVoices(ctx,ctx.destination,.05):[];previewSources.push(...scheduleMusic(ctx,ctx.destination,.05));playStart=performance.now()+50}else playStart=performance.now();
+      status.textContent=`Playing ${pages.length}-page preview…`+(voiceEnabled.checked&&!withVoice?' (without voice: create it in Sound › Voiceover to hear it)':'')}
 
     function fileStem(){return endTitle.value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'quote-video'}
     async function exportImage(){

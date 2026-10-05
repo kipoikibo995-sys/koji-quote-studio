@@ -99,6 +99,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.13.1 (2026-10-05):** Play preview no longer creates the voice by itself (no ElevenLabs characters or 90 MB download just to watch the motion); it plays the voice only once it has been generated, otherwise it previews silently with a hint.
 - **0.13.0 (2026-10-05):** 218 new, deeper and more abstract original pieces across every topic of all seven collections (625 in total).
 - **0.12.3 (2026-10-05):** Library collection list without icons.
 - **0.12.2 (2026-10-05):** Library cards use the clean sans-serif UI font (regular weight, 16.5 px, more line spacing) instead of bold Playfair, so quotes are easier to read.

@@ -60,6 +60,7 @@
     .rail-item.active{background:#fff;color:var(--ink);font-weight:700;box-shadow:0 1px 2px #3a2f1f14,0 6px 14px #3a2f1f0f}.rail-item.active .ico{color:var(--blue)}
     .rail-foot{margin-top:auto;padding:14px 8px 0;border-top:1px solid #e2dacb}.rail-foot .helper{margin:0;font-size:11px;line-height:1.45;color:#8a8478}
     .panel-head{padding:22px 24px 4px}.panel-head h2{margin:0;font-size:20px;font-weight:800;letter-spacing:-.02em}.panel-head p{margin:4px 0 0;font-size:12px;line-height:1.4;color:#7a8387}
+    .tag-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:6px}.tag-row[hidden]{display:none}.tag-row span{margin-right:2px;font-size:11px;font-weight:600;color:#7a8387}.tag-row button{border:1px solid #e3ddd1;border-radius:99px;background:#fff;padding:3px 8px;font-size:11px;color:#5d4b6b}.tag-row button:hover{border-color:#5d4b6b;background:#f6f1fa}
     .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:14px 24px 2px;padding:4px;background:#f1ece2;border-radius:12px}.tab{border:0;background:transparent;border-radius:9px;padding:9px 4px;font:600 13px "DM Sans",Arial,sans-serif;color:#5d6a70}.tab b{display:inline-grid;place-items:center;width:18px;height:18px;margin-right:4px;border-radius:50%;background:#e2dccf;font:600 10px "DM Mono";color:#5d6a70}.tab.active{background:#fff;color:var(--ink);box-shadow:0 1px 3px #081c2522}.tab.active b{background:var(--blue);color:#fff}.tab:focus-visible{outline:2px solid var(--blue)}
     .panel[hidden]{display:none}.panel>label:first-child,.panel>.pages-head:first-child{margin-top:20px}.sidebar label{margin:16px 0 7px}.sidebar .pages-head{margin-top:20px}.sidebar .pages-head label{margin:0}.field:after{content:"▾";font-size:13px;bottom:14px;color:#8a9499}.field.text:after{content:""}
     .segmented{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.segmented button{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid #ded8cc;border-radius:11px;background:#fcfaf4;padding:11px 6px;font:700 15px "DM Sans",Arial,sans-serif;color:var(--ink)}.segmented small{font:500 9px "DM Mono";letter-spacing:.06em;text-transform:uppercase;opacity:.65}.segmented button:hover{border-color:var(--ink)}.segmented button.active{background:var(--ink);border-color:var(--ink);color:#fff}
@@ -120,6 +121,7 @@
           <div class="page-editor">
             <div class="quote-tools"><label for="quote" id="quoteLabel">Quote · page 1</label><span class="quote-btns"><button type="button" class="hl-btn" id="libraryBtn" title="Browse ready-made quotes and poems">📚 Library</button><button type="button" class="hl-btn" id="highlightBtn" title="Highlight the selected words (Ctrl/Cmd + B)"><span>A</span> Highlight</button></span></div>
             <textarea id="quote" maxlength="260">“Every chapter you finish is a *promise* you kept to yourself.”</textarea>
+            <div class="tag-row" id="tagRow" hidden><span>Voice tags</span><button type="button" data-tag="whispers">[whispers]</button><button type="button" data-tag="sighs">[sighs]</button><button type="button" data-tag="exhales">[exhales]</button><button type="button" data-tag="sad">[sad]</button><button type="button" data-tag="crying">[crying]</button><button type="button" data-tag="angry">[angry]</button><button type="button" data-tag="mischievously">[mischievously]</button><button type="button" data-tag="excited">[excited]</button><button type="button" data-tag="laughs">[laughs]</button></div>
             <div class="counter"><span class="read-meter" id="readMeter"></span><span><span id="count">63</span> / 260</span></div>
             <details class="disclosure" id="pageOptions"><summary><span class="disc-title">Page options</span><span class="summary-note" id="pageOptionsNote">Default credit · no photo</span></summary><div class="disc-body">
               <label class="check-row" for="sourceOverride"><input type="checkbox" id="sourceOverride" /> Different book or author on this page</label>
@@ -162,11 +164,14 @@
               <p class="hint">Get a key at elevenlabs.io → Developers → API keys. It is saved only in this browser and sent only to ElevenLabs. Quote text is sent to ElevenLabs to create the voice, and characters count against your ElevenLabs plan. <button type="button" class="link-btn inline" id="elevenForget" hidden>Forget key</button></p>
               <div id="elevenConnected" hidden>
                 <label for="elevenVoice">Voice</label><div class="key-row"><div class="field"><select id="elevenVoice"></select></div><button type="button" class="key-btn" id="elevenSample" title="Play the voice sample (free)">▶ Sample</button></div>
-                <label for="elevenModel">Model</label><div class="field"><select id="elevenModel"><option value="eleven_multilingual_v2">Multilingual v2 · best quality</option><option value="eleven_flash_v2_5">Flash v2.5 · faster, uses fewer credits</option></select></div>
+                <label for="elevenModel">Model</label><div class="field"><select id="elevenModel"><option value="eleven_multilingual_v2">Multilingual v2 · best quality</option><option value="eleven_flash_v2_5">Flash v2.5 · faster, uses fewer credits</option><option value="eleven_v3">Eleven v3 · most expressive, audio tags</option></select></div>
+                <label class="range-label" for="elevenExpr"><span>Expressiveness</span><span id="elevenExprValue">50%</span></label><input type="range" id="elevenExpr" min="0" max="100" step="5" value="50" />
+                <p class="hint" id="v3Hint" hidden>Eleven v3 understands audio tags like <b>[whispers]</b> or <b>[sighs]</b> in your quotes. They shape the voice and are hidden in the video.</p>
                 <div class="voice-status" id="elevenAccount"></div>
               </div>
             </div>
             <label class="range-label" for="voiceSpeed"><span>Speed</span><span id="voiceSpeedValue">1.00×</span></label><input type="range" id="voiceSpeed" min="0.8" max="1.2" step="0.05" value="1" />
+            <label class="range-label" for="voicePause"><span>Pause between pages</span><span id="voicePauseValue">0.4 s</span></label><input type="range" id="voicePause" min="0" max="2.5" step="0.1" value="0.4" />
             <label class="check-row" for="voiceEndCard"><input type="checkbox" id="voiceEndCard" checked /> Also read the end card button and small line</label>
             <button type="button" class="secondary-btn" id="voiceGenerate">Generate voice</button>
             <div class="voice-status" id="voiceStatus">The first time, the voice model (about 90 MB) downloads once, then your browser keeps it.</div>
@@ -192,6 +197,7 @@
   <script>
     const $=selector=>document.querySelector(selector);
     const quote=$('#quote'),count=$('#count'),source=$('#source'),phone=$('#phone'),status=$('#status'),toast=$('#toast'),durationSelect=$('#duration'),durationLabel=$('#durationLabel'),formatSelect=$('#format'),formatLabel=$('#formatLabel'),textAnimationSelect=$('#textAnimation'),transitionSelect=$('#transition'),renderMeta=$('#renderMeta'),renderButton=$('#generate'),pageStrip=$('#pageStrip'),pageSummary=$('#pageSummary'),previewCanvas=$('#previewCanvas'),renderCanvas=$('#renderCanvas');
+    const elevenExpr=$('#elevenExpr'),elevenExprValue=$('#elevenExprValue'),voicePause=$('#voicePause'),voicePauseValue=$('#voicePauseValue'),tagRow=$('#tagRow'),v3Hint=$('#v3Hint');
     const providerButtons=document.querySelectorAll('#providerSeg button'),kokoroFields=$('#kokoroFields'),elevenFields=$('#elevenFields'),elevenKey=$('#elevenKey'),elevenConnect=$('#elevenConnect'),elevenForget=$('#elevenForget'),elevenConnected=$('#elevenConnected'),elevenVoice=$('#elevenVoice'),elevenSample=$('#elevenSample'),elevenModel=$('#elevenModel'),elevenAccount=$('#elevenAccount');
     let voiceProvider='kokoro',elevenVoices=[],sampleAudio=null;
     const voiceEnabled=$('#voiceEnabled'),voiceFields=$('#voiceFields'),voiceSelect=$('#voiceSelect'),voiceSpeed=$('#voiceSpeed'),voiceSpeedValue=$('#voiceSpeedValue'),voiceEndCard=$('#voiceEndCard'),voiceGenerate=$('#voiceGenerate'),voiceStatus=$('#voiceStatus');
@@ -218,7 +224,7 @@
       const starts=n.segs.slice(0,P).map((seg,i)=>i===0?0:offset+seg.start-TAKE_LEAD);
       return{n,offset,starts,hasEnd,quoteEnd:hasEnd?offset+n.segs[P].start-END_VOICE_LEAD:offset+n.segs[P-1].end+.8};
     }
-    function pageDuration(i){const take=narrationTiming();if(take)return(i+1<pages.length?take.starts[i+1]:take.quoteEnd)-take.starts[i];const base=Number(durationSelect.value)||6,v=voiceFor(pageSpeech(pages[i]));return v?VOICE_LEAD+v.duration+VOICE_TAIL:base}
+    function pageDuration(i){const take=narrationTiming();if(take)return(i+1<pages.length?take.starts[i+1]:take.quoteEnd)-take.starts[i];const base=Number(durationSelect.value)||6,v=voiceFor(pageSpeech(pages[i]));return v?VOICE_LEAD+v.duration+Math.max(VOICE_TAIL,Number(voicePause.value)+.3):base}
     function pageStart(i){const take=narrationTiming();if(take)return take.starts[i];let t=0;for(let k=0;k<i;k++)t+=pageDuration(k);return t}
     // The voice for one page: start lead (seconds into the page), length and per-word start times.
     function pageVoice(i){
@@ -355,10 +361,13 @@
     }
 
     // Words wrapped in *asterisks* are highlighted; a run can span several words.
+    // [audio tags] are voice directions for ElevenLabs v3; they never appear on screen.
+    const TAG_RE=/\[[^\]\n]{1,40}\]/g;
+    function stripTags(text){return text.replace(TAG_RE,' ')}
     function parseQuote(raw){
       // Line breaks typed in the quote are kept: the first word after one is flagged with br.
       const words=[];let on=false,br=false;
-      cleanQuote(raw).split(/[ \t]+/).forEach(token=>token.split(/\r?\n/).forEach((piece,i)=>{if(i>0)br=true;let text=piece,hl=on;if(text.startsWith('*')){hl=on=true;text=text.slice(1)}if(text.includes('*')){on=false;text=text.replace(/\*/g,'')}if(text){words.push({text,hl,br:br&&words.length>0});br=false}}));
+      stripTags(cleanQuote(raw)).split(/[ \t]+/).forEach(token=>token.split(/\r?\n/).forEach((piece,i)=>{if(i>0)br=true;let text=piece,hl=on;if(text.startsWith('*')){hl=on=true;text=text.slice(1)}if(text.includes('*')){on=false;text=text.replace(/\*/g,'')}if(text){words.push({text,hl,br:br&&words.length>0});br=false}}));
       return words;
     }
     function wrapWords(ctx,words,maxWidth){const lines=[];let current=[],text='';words.forEach((word,i)=>{const test=text?text+' '+word.text:word.text;if(current.length&&ctx.measureText(test).width>maxWidth){lines.push(current);current=[i];text=word.text}else{current.push(i);text=test}});if(current.length)lines.push(current);return lines}
@@ -479,15 +488,25 @@ self.onmessage=async e=>{const m=e.data;try{
       return new Promise((resolve,reject)=>{const id=++voiceRequest;voicePending.set(id,{resolve,reject});voiceWorker.postMessage({...message,id})});
     }
     function loadVoiceModel(){if(!voiceModelReady)voiceModelReady=voiceCall({type:'load',url:KOKORO_URL,model:KOKORO_MODEL}).catch(err=>{voiceModelReady=null;throw err});return voiceModelReady}
-    function speechText(text){return text.replace(/\*/g,'').replace(/[“”"↓↑→←]/g,' ').replace(/\s+/g,' ').replace(/\s+([,.!?;:…])/g,'$1').trim()}
+    function tagsSpoken(){return voiceProvider==='eleven'&&elevenModel.value==='eleven_v3'}
+    function speechText(text){if(!tagsSpoken())text=stripTags(text);return text.replace(/\*/g,'').replace(/[“”"↓↑→←]/g,' ').replace(/\s+/g,' ').replace(/\s+([,.!?;:…])/g,'$1').trim()}
     function pageSpeech(page){return page?speechText(cleanQuote(page.quote)):''}
     function endSpeech(){return voiceEndCard.checked?[endCta.value,endSub.value].map(speechText).filter(Boolean).map(t=>/[.!?]$/.test(t)?t:t+'.').join(' '):''}
-    function voiceKey(text){return (voiceProvider==='eleven'?['eleven',elevenVoice.value,elevenModel.value]:['kokoro',voiceSelect.value]).concat(voiceSpeed.value,text).join('|')}
+    function voiceKey(text){return (voiceProvider==='eleven'?['eleven',elevenVoice.value,elevenModel.value,elevenExpr.value]:['kokoro',voiceSelect.value]).concat(voiceSpeed.value,text).join('|')}
     function voiceFor(text){return voiceEnabled.checked&&text?voiceCache.get(voiceKey(text))||null:null}
     // ElevenLabs: one script for the whole video (pages, then the end card line), read in a single take.
     function narrationParts(){const parts=pages.map(pageSpeech),end=endEnabled.checked?endSpeech():'';return end?parts.concat(end):parts}
     function narrationKey(){return 'take|'+voiceKey(narrationParts().join(' '))}
-    function narration(){return voiceEnabled.checked&&voiceProvider==='eleven'?voiceCache.get(narrationKey())||null:null}
+    function narration(){const raw=voiceEnabled.checked&&voiceProvider==='eleven'?voiceCache.get(narrationKey())||null:null;return raw?withPauses(raw,Number(voicePause.value)):null}
+    // Inserts a silence between parts, cutting at the middle of the natural gap, so changing the pause needs no new take.
+    function withPauses(raw,pause){
+      raw.paced=raw.paced||{};if(raw.paced[pause])return raw.paced[pause];
+      const segs=raw.segs;if(!(pause>0)||segs.length<2)return raw.paced[pause]={buffer:raw.buffer,duration:raw.duration,segs};
+      const src=raw.buffer,rate=src.sampleRate,gap=Math.round(pause*rate),cuts=[0];for(let i=1;i<segs.length;i++)cuts.push(Math.round((segs[i-1].end+segs[i].start)/2*rate));cuts.push(src.length);
+      const out=getAudioContext().createBuffer(src.numberOfChannels,src.length+gap*(segs.length-1),rate);
+      for(let c=0;c<src.numberOfChannels;c++){const from=src.getChannelData(c),to=out.getChannelData(c);for(let i=0;i<segs.length;i++)to.set(from.subarray(cuts[i],cuts[i+1]),cuts[i]+gap*i)}
+      return raw.paced[pause]={buffer:out,duration:out.duration,segs:segs.map((seg,i)=>({start:seg.start+pause*i,end:seg.end+pause*i,wordStarts:seg.wordStarts}))};
+    }
     function voiceReady(){return voiceProvider==='eleven'?!!narration():voiceSegments().some(t=>voiceFor(t))}
     function voiceSegments(){const list=pages.map(pageSpeech);if(endEnabled.checked&&endSpeech())list.push(endSpeech());return list.filter(Boolean)}
     function setVoiceStatus(text,kind=''){voiceStatus.textContent=text;voiceStatus.className='voice-status'+(kind?' '+kind:'')}
@@ -515,7 +534,7 @@ self.onmessage=async e=>{const m=e.data;try{
       try{
         const take=await elevenGenerate(script),segs=[];let pos=0;
         const at=(arr,i,fallback)=>arr&&arr[i]!=null?arr[i]:fallback;
-        parts.forEach(part=>{const end=pos+part.length-1,start=at(take.starts,pos,take.duration*pos/script.length),stop=at(take.ends,end,take.duration*(end+1)/script.length);let w=pos;const wordStarts=part.split(' ').map(word=>{const t=at(take.starts,w,take.duration*w/script.length)-start;w+=word.length+1;return Math.max(0,t)});segs.push({start,end:stop,wordStarts});pos+=part.length+1});
+        parts.forEach(part=>{const end=pos+part.length-1,abs=[];const re=/\[[^\]\n]{1,40}\]|\S+/g;let m;while((m=re.exec(part))){if(m[0][0]==='['&&m[0].endsWith(']'))continue;abs.push(at(take.starts,pos+m.index,take.duration*(pos+m.index)/script.length))}const start=abs.length?abs[0]:at(take.starts,pos,take.duration*pos/script.length),stop=at(take.ends,end,take.duration*(end+1)/script.length);segs.push({start,end:stop,wordStarts:abs.map(t=>Math.max(0,t-start))});pos+=part.length+1});
         voiceCache.set(key,{buffer:take.buffer,duration:take.duration,segs});
         if(voiceCache.size>80)[...voiceCache.keys()].slice(0,voiceCache.size-80).forEach(k=>voiceCache.delete(k));
         elevenLoadAccount();updateSummary();refresh();refreshVoiceStatus();status.textContent='Voiceover ready.';return true;
@@ -553,8 +572,10 @@ self.onmessage=async e=>{const m=e.data;try{
     }
     async function elevenLoadAccount(){try{const sub=await (await elevenFetch('/v1/user/subscription')).json();if(sub&&sub.character_limit)elevenAccount.textContent=`ElevenLabs plan: ${sub.tier||'account'} · ${Math.max(0,sub.character_limit-sub.character_count).toLocaleString()} of ${sub.character_limit.toLocaleString()} characters left this period.`}catch(e){elevenAccount.textContent=''}}
     // Returns a decoded clip plus the start time of every word, from ElevenLabs' character alignment.
+    // Expressiveness is the inverse of ElevenLabs stability; v3 accepts 0 (creative), 0.5 (natural) or 1 (robust).
+    function elevenStability(){const s=1-Number(elevenExpr.value)/100;return elevenModel.value==='eleven_v3'?(s<.34?0:s<.67?.5:1):Math.round(s*100)/100}
     async function elevenGenerate(text){
-      const res=await elevenFetch(`/v1/text-to-speech/${encodeURIComponent(elevenVoice.value)}/with-timestamps?output_format=mp3_44100_128`,{method:'POST',body:JSON.stringify({text,model_id:elevenModel.value,voice_settings:{stability:.5,similarity_boost:.75,speed:Number(voiceSpeed.value)}})});
+      const res=await elevenFetch(`/v1/text-to-speech/${encodeURIComponent(elevenVoice.value)}/with-timestamps?output_format=mp3_44100_128`,{method:'POST',body:JSON.stringify({text,model_id:elevenModel.value,voice_settings:Object.assign({stability:elevenStability(),similarity_boost:.75},elevenModel.value==='eleven_v3'?{}:{speed:Number(voiceSpeed.value)})})});
       const body=await res.json(),bytes=Uint8Array.from(atob(body.audio_base64),c=>c.charCodeAt(0)),buffer=await getAudioContext().decodeAudioData(bytes.buffer);
       const starts=(body.alignment&&body.alignment.character_start_times_seconds)||null,wordStarts=[];
       if(starts&&starts.length>=text.length){let pos=0;for(const word of text.split(' ')){wordStarts.push(starts[pos]);pos+=word.length+1}}
@@ -710,6 +731,12 @@ self.onmessage=async e=>{const m=e.data;try{
     [voiceSelect,voiceEndCard].forEach(el=>el.addEventListener('change',()=>{updateSummary();refreshVoiceStatus()}));
     voiceSpeed.addEventListener('input',()=>{voiceSpeedValue.textContent=Number(voiceSpeed.value).toFixed(2)+'×';updateSummary();refreshVoiceStatus()});
     voiceGenerate.addEventListener('click',()=>ensureVoices());
+    // Tag chips show only when the chosen voice can use them.
+    function updateTagUI(){const on=voiceEnabled.checked&&tagsSpoken();tagRow.hidden=!on;v3Hint.hidden=elevenModel.value!=='eleven_v3'}
+    tagRow.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const tag=`[${b.dataset.tag}] `,a=quote.selectionStart,v=quote.value,pre=a>0&&!/\s/.test(v[a-1])?' ':'';quote.value=v.slice(0,a)+pre+tag+v.slice(quote.selectionEnd);const pos=a+pre.length+tag.length;quote.focus();quote.setSelectionRange(pos,pos);refresh();refreshVoiceStatus()}));
+    elevenExpr.addEventListener('input',()=>{elevenExprValue.textContent=elevenExpr.value+'%';updateSummary();refreshVoiceStatus()});
+    voicePause.addEventListener('input',()=>{voicePauseValue.textContent=Number(voicePause.value).toFixed(1)+' s';updateSummary();refresh()});
+    [elevenModel,voiceEnabled].forEach(el=>el.addEventListener('change',updateTagUI));providerButtons.forEach(b=>b.addEventListener('click',updateTagUI));
     providerButtons.forEach(b=>b.addEventListener('click',()=>{setProvider(b.dataset.value);if(b.dataset.value==='eleven'&&elevenKey.value.trim()&&!elevenVoices.length)elevenConnectKey()}));
     elevenConnect.addEventListener('click',elevenConnectKey);elevenKey.addEventListener('keydown',e=>{if(e.key==='Enter')elevenConnectKey()});
     elevenKey.addEventListener('input',()=>{elevenConnect.textContent='Connect'});
@@ -726,7 +753,7 @@ self.onmessage=async e=>{const m=e.data;try{
     function fitPhone(){phone.style.zoom=1;const cs=getComputedStyle(stage),aw=stage.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-16,ah=stage.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-16;if(aw<=0||ah<=0)return;phone.style.zoom=Math.max(.45,Math.min(aw/phone.offsetWidth,ah/phone.offsetHeight,2.6))}
     new ResizeObserver(fitPhone).observe(stage);formatSelect.addEventListener('change',fitPhone);
     $('#playPreview').addEventListener('click',playPreview);renderButton.addEventListener('click',renderVideo);
-    renderPageStrip();updateSetup(false);refresh();updateEndCard();fitPhone();
+    renderPageStrip();updateSetup(false);refresh();updateEndCard();fitPhone();updateTagUI();
     try{const saved=localStorage.getItem('qvs-tab');if(saved&&document.querySelector(`.tab[data-tab="${saved}"]`))openTab(saved)}catch(e){}
     requestAnimationFrame(previewLoop);
   </script>

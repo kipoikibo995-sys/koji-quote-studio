@@ -42,6 +42,10 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - The Kokoro model downloads the first time someone uses Voiceover and is then cached by their browser. With Kokoro, text never leaves the device.
 - Voice generation runs in a web worker; it is fast on desktop computers and slower on older phones.
 - **ElevenLabs (premium, bring your own key):** in the Voice tab choose ElevenLabs, paste an API key (elevenlabs.io → Developers → API keys) and click Connect. The app lists the voices on that account, shows remaining characters, and calls the ElevenLabs API directly from the browser. The key is stored only in that browser (localStorage) and is sent only to `api.elevenlabs.io`; quote text is sent to ElevenLabs and characters count against the user's ElevenLabs plan. ElevenLabs returns per-character timings, so words appear exactly when they are spoken.
+- ElevenLabs reads the whole video (all pages, then the end card line) in **one continuous take**; pages turn when the voice reaches them.
+- **Eleven v3 audio tags:** with the Eleven v3 model, write tags such as `[whispers]`, `[sighs]`, `[sad]` or `[mischievously]` in a quote (or insert them with the Voice tags chips under the quote). Tags are sent to the voice only and never shown in the video; with other models and Kokoro they are removed before speaking.
+- **Pause between pages** (0–2.5 s): silence is inserted at the natural gap between pages in the take, so changing it needs no new ElevenLabs request. With Kokoro it lengthens the breath after each page.
+- **Expressiveness** sets ElevenLabs stability (higher = more expressive; v3 uses its creative / natural / robust steps).
 
 ## Suggested YouTube workflow
 

@@ -10,12 +10,6 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - One book & author line for the whole video, with an optional per-page override (leave it empty to hide the credit)
 - Reading-time check: each page shows whether viewers can read it in the time it is on screen
 - Quote library: 184 ready-to-use quotes and poems across 14 topics (love, heartbreak & healing, self-love, life, meaning & purpose, motivation, courage, hope, peace & mindfulness, gratitude, friendship & family, time & change, growth, books & reading), with search, topic filters and "Surprise me"; poems can be split into one page per two lines
-
-## Quote library licensing
-
-- **Originals** (141) are written for Quote Video Studio and may be used freely in videos, including commercially.
-- **Classics** (29) and **poems** (14) come from public-domain works published before 1929 (Shakespeare, Thoreau, Emerson, Austen, the Brontës, Dickens, Gibran, Tagore, Dickinson, Frost, Blake, Yeats and others). Translated works use public-domain translations, which are named in the credit line.
-- The library is stored inside `index.html` (a JSON block with the id `quoteLibraryData`) and is easy to extend.
 - Book promo end card: your cover, book title, call to action (e.g. "Get the book on Amazon") and a small line (e.g. "Link in description ↓")
 - Channel handle shown on every frame (e.g. `@yourchannel`)
 - Keyword highlights: select words and click Highlight (or Ctrl/Cmd + B) to colour and underline them in the video; this wraps them in `*asterisks*`
@@ -30,6 +24,12 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 - Text animations, page transitions and background presets
 - Live preview before rendering
 - Renders at full HD (1080 × 1920, 1920 × 1080 or 1080 × 1080) and downloads directly
+
+## Quote library licensing
+
+- **Originals** (141) are written for Quote Video Studio and may be used freely in videos, including commercially.
+- **Classics** (29) and **poems** (14) come from public-domain works published before 1929 (Shakespeare, Thoreau, Emerson, Austen, the Brontës, Dickens, Gibran, Tagore, Dickinson, Frost, Blake, Yeats and others). Translated works use public-domain translations, which are named in the credit line.
+- The library is stored inside `index.html` (a JSON block with the id `quoteLibraryData`) and is easy to extend.
 
 ## Voiceover notes
 

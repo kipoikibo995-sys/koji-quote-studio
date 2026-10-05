@@ -77,7 +77,7 @@
           <label>Background</label><div class="presets"><button class="preset calm active" data-theme="calm"><span class="swatch"></span><b>Midnight</b><small>navy · orange</small></button><button class="preset noir" data-theme="noir"><span class="swatch"></span><b>Warm Paper</b><small>cream · ink</small></button><button class="preset editorial" data-theme="editorial"><span class="swatch"></span><b>Orange Glow</b><small>orange · gold</small></button></div>
           <label for="bgPhoto">Background photo</label><label class="upload" for="bgPhoto"><b id="bgPhotoName">Upload a photo (optional)</b><span>Browse</span></label><input type="file" id="bgPhoto" accept="image/*" hidden />
           <div class="photo-controls" id="photoControls" hidden><label class="range-label" for="bgDim"><span>Darken photo</span><span id="bgDimValue">45%</span></label><input type="range" id="bgDim" min="0" max="85" value="45" /><button type="button" class="link-btn" id="bgRemove">Remove photo</button></div>
-          <div class="row"><div><label for="textAnimation">Text animation</label><div class="field"><select id="textAnimation"><option value="word">Word cascade</option><option value="line">Line rise</option><option value="type">Typewriter</option><option value="fade">Soft fade</option></select></div></div><div><label for="transition">Transition</label><div class="field"><select id="transition"><option value="slide-left">Slide left</option><option value="slide-up">Slide up</option><option value="fade">Fade out</option><option value="zoom">Zoom out</option></select></div></div></div>
+          <div class="row"><div><label for="textAnimation">Text animation</label><div class="field"><select id="textAnimation"><option value="word">Word cascade</option><option value="line">Line rise</option><option value="type">Typewriter</option><option value="fade">Soft fade</option></select></div></div><div><label for="transition">Transition</label><div class="field"><select id="transition"><option value="slide-left">Slide left</option><option value="slide-up">Slide up</option><option value="fade">Crossfade</option><option value="zoom">Zoom through</option></select></div></div></div>
           <label for="duration">Seconds per page</label><div class="field"><select id="duration"><option value="4">4 seconds</option><option value="6" selected>6 seconds</option><option value="8">8 seconds</option></select></div>
         </section>
         <section class="panel" data-panel="promo" hidden>
@@ -226,7 +226,10 @@
     const PREVIEW_SCALE=.6;
     function clamp01(v){return Math.max(0,Math.min(1,v))}
     function easeOut(t){return 1-Math.pow(1-t,3)}
-    function nudgeCurve(t){t=clamp01(t);if(t<.2)return .1*Math.pow(t/.2,3);if(t<.38)return .1+.65*((t-.2)/.18);return .75+.25*(1-Math.pow(1-(t-.38)/.62,4))}
+    function easeInOut(t){t=clamp01(t);return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
+    // Page transitions: the outgoing page eases out over its last EXIT seconds while the next page eases in,
+    // starting OVERLAP seconds before its own start, so the two cross instead of leaving an empty frame.
+    const EXIT=.7,OVERLAP=.35,ENTER=.8,END_LEAD=OVERLAP+.1;
     function hash(n){const x=Math.sin(n*127.1+311.7)*43758.5453;return x-Math.floor(x)}
     function rgba(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`}
     function setTracking(ctx,px){if('letterSpacing' in ctx)ctx.letterSpacing=px+'px'}
@@ -295,31 +298,36 @@
       if(layoutCache.size>200)layoutCache.clear();layoutCache.set(key,layout);return layout;
     }
     function drawQuoteScene(ctx,page,st,spp,w,h,th,still=false){
-      const L=layoutQuote(ctx,page.quote,w,h),fs=L.fs,mode=textAnimationSelect.value,transition=transitionSelect.value,exit=still?0:clamp01((st-(spp-.6))/.6),curve=nudgeCurve(exit);
-      // Slow push-in for the whole page, then the exit transition.
-      let gx=0,gy=0,gs=still?1:1+.04*clamp01(st/spp),ga=1;
-      if(transition==='slide-left')gx=-w*1.18*curve;else if(transition==='slide-up')gy=-h*1.08*curve;else if(transition==='fade')ga=1-curve;else if(transition==='zoom'){gs*=1-.45*curve;ga=1-curve*.78}
+      const L=layoutQuote(ctx,page.quote,w,h),fs=L.fs,mode=textAnimationSelect.value,transition=transitionSelect.value;
+      // Ease in at the start, a slow push-in through the page, then ease out at the end.
+      const enter=still?1:easeInOut((st+OVERLAP)/ENTER),leave=still?0:easeInOut((st-(spp-EXIT))/EXIT);
+      let gx=0,gy=0,gs=still?1:1+.03*clamp01(st/spp),ga=enter*(1-leave);
+      if(transition==='slide-left')gx=w*.16*(1-enter)-w*.16*leave;
+      else if(transition==='slide-up')gy=h*.07*(1-enter)-h*.07*leave;
+      else if(transition==='fade')gs*=1+.025*(1-enter);
+      else if(transition==='zoom')gs*=(.9+.1*enter)*(1+.12*leave);
+      if(ga<=0.001)return;
       // A still frame shows the page fully revealed.
       if(still)st=1e3;
       ctx.save();ctx.globalAlpha=ga;ctx.translate(w/2+gx,h/2+gy);ctx.scale(gs,gs);ctx.translate(-w/2,-h/2);
       const blockH=L.lines.length*L.lh,top=h/2-blockH/2,markSize=fs*2.1;
-      const mark=easeOut(clamp01(st/.45));ctx.save();ctx.globalAlpha*=mark;ctx.fillStyle=th.accent;ctx.font=`600 ${markSize}px ${SERIF}`;setTracking(ctx,0);ctx.textAlign='center';ctx.translate(w/2,top-fs*.3+markSize*.35);ctx.scale(.7+.3*mark,.7+.3*mark);ctx.fillText('“',0,0);ctx.restore();
+      const mark=easeOut(clamp01((st+.2)/.45));ctx.save();ctx.globalAlpha*=mark;ctx.fillStyle=th.accent;ctx.font=`600 ${markSize}px ${SERIF}`;setTracking(ctx,0);ctx.textAlign='center';ctx.translate(w/2,top-fs*.3+markSize*.35);ctx.scale(.7+.3*mark,.7+.3*mark);ctx.fillText('“',0,0);ctx.restore();
       // With a voiceover, words appear in step with the speech (spread by character count over its length).
       const voice=voiceFor(pageSpeech(page)),aligned=voice&&voice.wordStarts&&voice.wordStarts.length===L.words?voice.wordStarts:null;
       // Exact word times when the provider returns them (ElevenLabs), otherwise spread by character count.
       const charTime=c=>VOICE_LEAD+(c/Math.max(1,L.chars))*voice.duration*.92,wordTime=item=>aligned?VOICE_LEAD+aligned[item.index]:charTime(item.charStart);
-      const appearAt=voice?(item,lineIndex)=>mode==='word'?wordTime(item):mode==='line'?wordTime(L.lines[lineIndex].items[0]):mode==='type'?wordTime(item):.25:(item,lineIndex)=>mode==='word'?.25+item.index*.065:mode==='line'?.25+lineIndex*.22:mode==='type'?.25+item.charStart*.03:.25;
-      const span=mode==='word'?.32:mode==='line'?.4:mode==='type'?0:.8,typeRate=voice?voice.duration*.92/Math.max(1,L.chars):.03;
-      const textDone=voice&&mode!=='fade'?VOICE_LEAD+voice.duration*.92+.3:mode==='word'?.25+L.words*.065+.32:mode==='line'?.25+L.lines.length*.22+.4:mode==='type'?.25+L.chars*.03:1.05;
+      const appearAt=voice?(item,lineIndex)=>mode==='word'?wordTime(item):mode==='line'?wordTime(L.lines[lineIndex].items[0]):mode==='type'?wordTime(item):.25:(item,lineIndex)=>mode==='word'?.05+item.index*.065:mode==='line'?.05+lineIndex*.22:mode==='type'?.05+item.charStart*.03:.05;
+      const span=mode==='word'?.38:mode==='line'?.4:mode==='type'?0:.8,typeRate=voice?voice.duration*.92/Math.max(1,L.chars):.03;
+      const textDone=voice&&mode!=='fade'?VOICE_LEAD+voice.duration*.92+.3:mode==='word'?.05+L.words*.065+.38:mode==='line'?.05+L.lines.length*.22+.4:mode==='type'?.05+L.chars*.03:.85;
       ctx.font=`600 ${fs}px ${SERIF}`;setTracking(ctx,-.035*fs);ctx.textAlign='left';
       L.lines.forEach((line,lineIndex)=>{
         const baseline=top+lineIndex*L.lh+fs*.82,startX=w/2-line.width/2;
         line.items.forEach(item=>{
           const start=appearAt(item,lineIndex);let text=item.text,p;
-          if(mode==='type'){const shown=aligned?Math.floor((st-start)/Math.max(.02,((item.index+1<L.words?aligned[item.index+1]+VOICE_LEAD:VOICE_LEAD+voice.duration)-start)/Math.max(1,item.text.length+1))):Math.floor((st-(voice?VOICE_LEAD:.25))/typeRate)-item.charStart;if(shown<=0)return;text=item.text.slice(0,shown);p=1}else{p=clamp01((st-start)/span);if(p<=0)return}
+          if(mode==='type'){const shown=aligned?Math.floor((st-start)/Math.max(.02,((item.index+1<L.words?aligned[item.index+1]+VOICE_LEAD:VOICE_LEAD+voice.duration)-start)/Math.max(1,item.text.length+1))):Math.floor((st-(voice?VOICE_LEAD:.05))/typeRate)-item.charStart;if(shown<=0)return;text=item.text.slice(0,shown);p=1}else{p=clamp01((st-start)/span);if(p<=0)return}
           const e=easeOut(p);ctx.save();ctx.globalAlpha*=e;
           if(item.hl){const u=easeOut(clamp01((st-start-.25)/.35));if(u>0){ctx.fillStyle=th.accent;ctx.globalAlpha*=.85;ctx.fillRect(startX+item.x,baseline+fs*.14,item.width*u,Math.max(4,fs*.07));ctx.globalAlpha/=.85}}
-          ctx.fillStyle=item.hl?th.accent:th.text;ctx.fillText(text,startX+item.x,baseline+(1-e)*fs*.5);ctx.restore();
+          ctx.fillStyle=item.hl?th.accent:th.text;ctx.fillText(text,startX+item.x,baseline+(1-e)*fs*.35);ctx.restore();
         });
       });
       const credit=easeOut(clamp01((st-textDone)/.4));
@@ -330,11 +338,14 @@
       setTracking(ctx,0);ctx.textBaseline='alphabetic';
       const th=THEMES[selectedTheme]||THEMES.calm,inEnd=endEnabled.checked&&t>=quoteDuration();
       const photoFor=i=>i>=pages.length?(endEnabled.checked?bgPhoto:photoFor(pages.length-1)):(pages[i].photo||bgPhoto);
-      if(inEnd){drawBackground(ctx,bgTime,w,h,th,bgPhoto);drawEndCard(ctx,still?3:t-quoteDuration(),w,h,[th.bg[0],th.bg[1],th.accent,th.text])}
+      const endColors=[th.bg[0],th.bg[1],th.accent,th.text];
+      if(inEnd){drawBackground(ctx,bgTime,w,h,th,bgPhoto);drawEndCard(ctx,still?3:t-quoteDuration()+END_LEAD,w,h,endColors)}
       else{
-        const {index,start,duration}=pageAt(t),st=t-start,mix=still?0:clamp01((st-(duration-.6))/.6);
+        const {index,start,duration}=pageAt(t),st=t-start,mix=still?0:easeInOut((st-(duration-EXIT))/EXIT);
         drawBackground(ctx,bgTime,w,h,th,photoFor(index),photoFor(index+1),mix);
         drawQuoteScene(ctx,pages[index]||pages[0],st,duration,w,h,th,still);
+        // During the last moments of a page, the next page (or the end card) is already easing in.
+        if(!still&&duration-st<OVERLAP){if(index+1<pages.length)drawQuoteScene(ctx,pages[index+1],st-duration,pageDuration(index+1),w,h,th);else if(endEnabled.checked)drawEndCard(ctx,st-duration+END_LEAD,w,h,endColors)}
         drawBadge(ctx,still?9:t,w,h,th);
       }
       const handle=handleInput.value.trim(),small=w>h*1.25,badgeTop=!inEnd&&h<=w*1.25&&coverBadge.checked&&coverImage;if(handle){ctx.save();ctx.globalAlpha=.72;ctx.fillStyle=th.text;ctx.textAlign=badgeTop?'right':'center';ctx.font=`500 ${small?28:32}px ${MONO}`;setTracking(ctx,.07*(small?28:32));ctx.fillText(handle,badgeTop?w-60:w/2,badgeTop?140:small?70:110);ctx.restore()}

@@ -6,10 +6,12 @@ Built for KDP authors: paste a quote from your book, add your cover, and render 
 
 ## Features
 
-- Multi-page quote videos (up to 10 quotes from your book, one per page)
+- Multi-page quote videos (up to 10 quotes, one per page): page cards with a text preview and photo thumbnail, drag (or Alt + ↑/↓) to reorder, duplicate, and delete with undo
+- One book & author line for the whole video, with an optional per-page override (leave it empty to hide the credit)
+- Reading-time check: each page shows whether viewers can read it in the time it is on screen
 - Book promo end card: your cover, book title, call to action (e.g. "Get the book on Amazon") and a small line (e.g. "Link in description ↓")
 - Channel handle shown on every frame (e.g. `@yourchannel`)
-- Keyword highlights: wrap words in `*asterisks*` to colour and underline them
+- Keyword highlights: select words and click Highlight (or Ctrl/Cmd + B) to colour and underline them in the video; this wraps them in `*asterisks*`
 - Background photo: upload any image; it fills the frame, drifts slowly and sits under an adjustable darkening wash so the text stays readable
 - Per-page photos: give each quote page its own photo (pages without one use the background photo); photos cross-fade between pages
 - Book badge: your cover, title and button text in a corner of every quote page, so viewers see the book from the first second

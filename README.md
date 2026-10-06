@@ -104,6 +104,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.15.1 (2026-10-06):** ElevenLabs: keys that cannot list voices (restricted keys) still connect, with ElevenLabs default voices; clear messages for a blocked connection, a wrong key or a missing key permission, shown in Settings next to the key.
 - **0.15.0 (2026-10-05):** Each step is one scrolling page with rail shortcuts and a scroll highlight; Back and Next on every step; Opening hook moves to Write, background photo joins Background, motion joins Effects, Timing follows Music and Voiceover; eight style presets at the top of Look; on phones the preview stays pinned while scrolling and typing.
 - **0.14.0 (2026-10-05):** Technical voice options moved to a new Settings page (engine, API key, model, expressiveness, speed, pause); the Voiceover section keeps only the toggle, voice choice with Sample, end card option and Generate voice.
 - **0.13.2 (2026-10-05):** Voice hints no longer say previewing creates the voice.

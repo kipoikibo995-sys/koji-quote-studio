@@ -257,7 +257,7 @@
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
       <button type="button" class="rail-item tab settings-tab" role="tab" aria-selected="false" data-tab="settings"><span class="step-num gear">⚙</span><span class="step-text"><b>Settings</b><small>Voice engine &amp; API key</small></span></button>
-      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.15.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.15.1</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><p class="step-crumb" id="stepCrumb">Step 1 of 5</p><h2 id="panelTitle">Write</h2><p id="panelDesc">Your quotes, the credit line and an optional opening hook.</p><div class="sub-chips" id="subChips"></div></div>
@@ -323,7 +323,7 @@
         <section class="panel" data-panel="settings" hidden>
           <div class="set-group"><h4>Voice engine</h4><div class="segmented two" id="providerSeg"><button class="active" data-value="kokoro">Kokoro<small>Free · on this device</small></button><button data-value="eleven">ElevenLabs<small>Premium · your API key</small></button></div><p class="hint">Kokoro is free and runs on this device. ElevenLabs sounds more natural and uses your own API key.</p></div>
           <div class="set-group" id="elevenFields" hidden><h4>ElevenLabs</h4>
-              <label for="elevenKey">API key</label><div class="key-row"><div class="field text"><input id="elevenKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your API key" /></div><button type="button" class="key-btn" id="elevenConnect">Connect</button></div>
+              <label for="elevenKey">API key</label><div class="key-row"><div class="field text"><input id="elevenKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your API key" /></div><button type="button" class="key-btn" id="elevenConnect">Connect</button></div><div class="voice-status" id="elevenConnStatus"></div>
               <p class="hint">Get a key at elevenlabs.io → Developers → API keys. It is saved only in this browser and sent only to ElevenLabs. Quote text is sent to ElevenLabs to create the voice, and characters count against your ElevenLabs plan. <button type="button" class="link-btn inline" id="elevenForget" hidden>Forget key</button></p>
               <div id="elevenConnected" hidden>
                 
@@ -805,6 +805,7 @@ self.onmessage=async e=>{const m=e.data;try{
     function voiceReady(){return voiceProvider==='eleven'?!!narration():voiceSegments().some(t=>voiceFor(t))}
     function voiceSegments(){const list=[hookSpeech()].concat(pages.map(pageSpeech));if(endEnabled.checked&&endSpeech())list.push(endSpeech());return list.filter(Boolean)}
     function setVoiceStatus(text,kind=''){voiceStatus.textContent=text;voiceStatus.className='voice-status'+(kind?' '+kind:'')}
+    function setConnStatus(text,kind=''){const el=$('#elevenConnStatus');if(el){el.textContent=text;el.className='voice-status'+(kind?' '+kind:'')}}
     function refreshVoiceStatus(){if(!voiceEnabled.checked)return;if(voiceProvider==='eleven'){narration()?setVoiceStatus(`Voice ready · one continuous take across ${hookSpeech()?'the hook, ':''}${pages.length} page${pages.length===1?'':'s'}${endEnabled.checked&&endSpeech()?' and the end card':''}.`,'ok'):setVoiceStatus('Not generated yet. When your quotes are final, click Generate voice (or just render). Play preview shows the motion without a voice until then.');return}const segments=voiceSegments(),ready=segments.filter(t=>voiceCache.has(voiceKey(t))).length;if(segments.length&&ready===segments.length)setVoiceStatus(`Voice ready for ${ready} part${ready===1?'':'s'}.`,'ok');else if(ready)setVoiceStatus(`Voice ready for ${ready} of ${segments.length} parts — text or settings changed. Click Generate voice again when you are done (or just render).`);else setVoiceStatus('Not generated yet. When your quotes are final, click Generate voice (or just render). Play preview shows the motion without a voice until then.')}
     async function ensureVoices(){
       if(!voiceEnabled.checked)return true;saveCurrent();
@@ -839,24 +840,27 @@ self.onmessage=async e=>{const m=e.data;try{
     // ElevenLabs: called straight from the browser with the user's own key.
     const ELEVEN_API='https://api.elevenlabs.io';
     async function elevenFetch(path,options={}){
-      let res;try{res=await fetch(ELEVEN_API+path,{...options,headers:{'xi-api-key':elevenKey.value.trim(),...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}})}catch(e){throw new Error('Could not reach ElevenLabs. Check your internet connection.')}
+      let res;try{res=await fetch(ELEVEN_API+path,{...options,headers:{'xi-api-key':elevenKey.value.trim(),...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}})}catch(e){throw new Error('This page could not reach api.elevenlabs.io. Check your internet, turn off ad blockers for this site, and make sure your hosting does not block outside connections (Content-Security-Policy). The browser console (F12) shows the exact reason.')}
       if(!res.ok){let detail='';try{const body=await res.json(),d=body.detail;detail=typeof d==='string'?d:(d&&(d.message||d.status))||''}catch(e){}
-        if(res.status===401)throw new Error('ElevenLabs did not accept this API key'+(detail?` (${detail})`:'')+'.');
+        if(/permission/i.test(detail)){const e=new Error(`This API key is restricted: ${detail} In ElevenLabs open Developers → API keys, edit the key and allow that permission (or turn off “Restrict key”).`);e.permission=true;throw e}
+        if(res.status===401)throw new Error('ElevenLabs did not accept this API key'+(detail?` (${detail})`:'')+'. Copy the full key again from elevenlabs.io → Developers → API keys.');
         if(res.status===429||/quota/i.test(detail))throw new Error('Your ElevenLabs plan is out of characters or busy'+(detail?` (${detail})`:'')+'.');
         throw new Error(`ElevenLabs error ${res.status}${detail?': '+detail:''}.`)}
       return res;
     }
+    // Used when a restricted key may create speech but not list voices (ElevenLabs default voices).
+    const ELEVEN_DEFAULT_VOICES=[['JBFqnCBsd6RMkjVDRZzb','George','male','warm, captivating storyteller'],['EXAVITQu4vr4xnSDxMaL','Sarah','female','mature, reassuring'],['FGY2WhTYpPnrIDTdsKH5','Laura','female','enthusiastic'],['IKne3meq5aSn9XLyUdCD','Charlie','male','deep, confident'],['N2lVS1w4EtoT3dr4eOWO','Callum','male','husky'],['TX3LPaxmHKxFdv7VOQHJ','Liam','male','energetic'],['XB0fDUnXU5powFXDhCwa','Charlotte','female','seductive'],['Xb7hH8MSUJpSbSDYk0k2','Alice','female','clear, engaging'],['XrExE9yKIg1WjnnlVkGX','Matilda','female','knowledgeable'],['cgSgspJ2msm6clMCkdW9','Jessica','female','playful, bright'],['nPczCjzI2devNBz1zQrb','Brian','male','deep, resonant'],['onwK4e9ZLuTAKqWW03F9','Daniel','male','steady broadcaster'],['pFZP5JQG7iQjIQuC4Bku','Lily','female','velvety actress'],['pqHfZKP75CvOlQylNhV4','Bill','male','wise, mature']].map(([voice_id,name,gender,desc])=>({voice_id,name:`${name} - ${desc}`,labels:{gender}}));
     async function elevenConnectKey(){
       if(!elevenKey.value.trim()){elevenAccount.textContent='';return}
       elevenConnect.disabled=true;elevenConnect.textContent='Connecting…';
       try{
-        const {voices=[]}=await (await elevenFetch('/v1/voices')).json();
+        let voices=[],limited=false;try{({voices=[]}=await (await elevenFetch('/v1/voices')).json())}catch(err){if(!err.permission)throw err;voices=ELEVEN_DEFAULT_VOICES;limited=true}
         elevenVoices=voices;const previous=elevenVoice.value||safeGet('qvs-eleven-voice');elevenVoice.innerHTML='';
         elevenFillVoices(voices);
         if(previous&&voices.some(v=>v.voice_id===previous))elevenVoice.value=previous;
         safeSet('qvs-eleven-key',elevenKey.value.trim());elevenConnected.hidden=false;elevenForget.hidden=false;elevenConnect.textContent='Connected';
-        setVoiceStatus(`Connected to ElevenLabs · ${voices.length} voices.`,'ok');elevenLoadAccount();refreshVoiceStatus();
-      }catch(err){elevenConnected.hidden=true;elevenConnect.textContent='Connect';setVoiceStatus(err.message,'err')}
+        setConnStatus(limited?'Connected with ElevenLabs default voices (this key cannot list your own voices).':`Connected · ${voices.length} voices.`,'ok');setVoiceStatus(limited?'Connected. This key cannot list your voices, so ElevenLabs default voices are shown. Allow “Voices: read” on the key to see your own voices.':`Connected to ElevenLabs · ${voices.length} voices.`,'ok');elevenLoadAccount();refreshVoiceStatus();
+      }catch(err){elevenConnected.hidden=true;elevenConnect.textContent='Connect';setVoiceStatus(err.message,'err');setConnStatus(err.message,'err')}
       finally{elevenConnect.disabled=false}
     }
     // Lists voices as "Name · Gender — traits", grouped by gender and sorted by name.

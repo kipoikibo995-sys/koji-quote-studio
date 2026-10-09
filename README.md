@@ -14,7 +14,7 @@ The editor follows five steps in the left rail. Each step is one scrolling page;
 4. **Promo** (optional, off by default): End card, Book badge & channel handle.
 5. **Export**: a summary of the video, Render video, Save the current page as PNG, and upload tips.
 
-**⚙ Settings** (bottom of the rail, outside the steps) holds the technical options: voice engine (Kokoro or ElevenLabs), ElevenLabs API key, model and expressiveness, voice speed and the pause between pages.
+**⚙ Settings** (bottom of the rail, outside the steps) holds the technical options: voice engine (Kokoro, GenMax or ElevenLabs), API keys, model, expressiveness, voice speed and the pause between pages.
 
 On phones the preview stays pinned at the top while you scroll and type, and the sections appear as chips.
 
@@ -73,6 +73,8 @@ The project (quotes, settings, background photo, book cover and music) is saved 
 - **Pause between pages** (0–2.5 s): silence is inserted at the natural gap between pages in the take, so changing it needs no new ElevenLabs request. With Kokoro it lengthens the breath after each page.
 - **Expressiveness** sets ElevenLabs stability (higher = more expressive; v3 uses its creative / natural / robust steps).
 
+- **GenMax (lower cost, bring your own key):** in Settings choose GenMax, paste a GenMax API key (genmax.io → API Docs) and click Connect; the app shows your credit balance. Pick the ElevenLabs or MiniMax voice library and a model, then choose the voice in Sound › Voiceover. Each page is created as a GenMax task (`POST /v1/text-to-speech/{voice_id}`), polled until it is done (`GET /v1/history/{id}`) and its mp3 is downloaded; three parts are created at a time. GenMax returns no word timings, so words are paced by text length, like Kokoro. The key is stored only in that browser and sent only to `api.genmax.io`.
+
 ## Suggested YouTube workflow
 
 1. Pick a strong line from your book and paste it as a page quote (add 2–4 pages for a longer Short).
@@ -104,6 +106,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.16.0 (2026-10-09):** GenMax added as a third voice engine (ElevenLabs or MiniMax voice libraries through genmax.io with the user's own key): connect with credit balance, voice list with samples, model choice, task polling, three parts at a time, clear error messages; autosaved.
 - **0.15.1 (2026-10-06):** ElevenLabs: keys that cannot list voices (restricted keys) still connect, with ElevenLabs default voices; clear messages for a blocked connection, a wrong key or a missing key permission, shown in Settings next to the key.
 - **0.15.0 (2026-10-05):** Each step is one scrolling page with rail shortcuts and a scroll highlight; Back and Next on every step; Opening hook moves to Write, background photo joins Background, motion joins Effects, Timing follows Music and Voiceover; eight style presets at the top of Look; on phones the preview stays pinned while scrolling and typing.
 - **0.14.0 (2026-10-05):** Technical voice options moved to a new Settings page (engine, API key, model, expressiveness, speed, pause); the Voiceover section keeps only the toggle, voice choice with Sample, end card option and Generate voice.

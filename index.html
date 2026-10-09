@@ -241,6 +241,7 @@
       .side-scroll :is(input,textarea,select,button,summary){scroll-margin-top:calc(var(--rail-h,58px) + 34vh + 70px)}
     }
       .panel > .sub:first-of-type{margin-top:16px}
+      .segmented.three{grid-template-columns:repeat(3,1fr)!important}.segmented.three button small{font-size:11px!important}
   </style>
 </head>
 <body>
@@ -257,7 +258,7 @@
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
       <button type="button" class="rail-item tab settings-tab" role="tab" aria-selected="false" data-tab="settings"><span class="step-num gear">⚙</span><span class="step-text"><b>Settings</b><small>Voice engine &amp; API key</small></span></button>
-      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.15.1</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.16.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><p class="step-crumb" id="stepCrumb">Step 1 of 5</p><h2 id="panelTitle">Write</h2><p id="panelDesc">Your quotes, the credit line and an optional opening hook.</p><div class="sub-chips" id="subChips"></div></div>
@@ -321,7 +322,8 @@
           <button type="button" class="link-btn" id="newProject">Start a new video</button><p class="hint">Your work is saved in this browser automatically.</p>
         </section>
         <section class="panel" data-panel="settings" hidden>
-          <div class="set-group"><h4>Voice engine</h4><div class="segmented two" id="providerSeg"><button class="active" data-value="kokoro">Kokoro<small>Free · on this device</small></button><button data-value="eleven">ElevenLabs<small>Premium · your API key</small></button></div><p class="hint">Kokoro is free and runs on this device. ElevenLabs sounds more natural and uses your own API key.</p></div>
+          <div class="set-group"><h4>Voice engine</h4><div class="segmented three" id="providerSeg"><button class="active" data-value="kokoro">Kokoro<small>Free · on this device</small></button><button data-value="genmax">GenMax<small>Lower cost · your key</small></button><button data-value="eleven">ElevenLabs<small>Premium · your key</small></button></div><p class="hint">Kokoro is free and runs on this device. GenMax gives ElevenLabs and MiniMax voices at a lower price with your GenMax key. ElevenLabs uses your own ElevenLabs key.</p></div>
+          <div class="set-group" id="gmFields" hidden><h4>GenMax</h4><label for="gmKey">API key</label><div class="key-row"><div class="field text"><input id="gmKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your GenMax API key" /></div><button type="button" class="key-btn" id="gmConnect">Connect</button></div><div class="voice-status" id="gmConnStatus"></div><p class="hint">Find your key at genmax.io → API Docs. It is saved only in this browser and sent only to GenMax. Quote text is sent to GenMax to create the voice and uses your GenMax credits. <button type="button" class="link-btn inline" id="gmForget" hidden>Forget key</button></p><div id="gmConnected" hidden><label for="gmSource">Voice library</label><div class="field"><select id="gmSource"><option value="elevenlabs">ElevenLabs voices</option><option value="minimax">MiniMax voices</option></select></div><label for="gmModel">Model</label><div class="field"><select id="gmModel"></select></div></div></div>
           <div class="set-group" id="elevenFields" hidden><h4>ElevenLabs</h4>
               <label for="elevenKey">API key</label><div class="key-row"><div class="field text"><input id="elevenKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your API key" /></div><button type="button" class="key-btn" id="elevenConnect">Connect</button></div><div class="voice-status" id="elevenConnStatus"></div>
               <p class="hint">Get a key at elevenlabs.io → Developers → API keys. It is saved only in this browser and sent only to ElevenLabs. Quote text is sent to ElevenLabs to create the voice, and characters count against your ElevenLabs plan. <button type="button" class="link-btn inline" id="elevenForget" hidden>Forget key</button></p>
@@ -352,6 +354,8 @@
             <div id="elevenVoiceBox" hidden><div id="elevenVoiceRow" hidden><label for="elevenVoice">Voice</label><div class="key-row"><div class="field"><select id="elevenVoice"></select></div><button type="button" class="key-btn" id="elevenSample" title="Play the voice sample (free)">▶ Sample</button></div></div>
               <div class="need-key" id="elevenNeedKey"><b>Connect ElevenLabs first</b><span>Add your API key in Settings to choose an ElevenLabs voice.</span><button type="button" class="key-btn" data-open-settings>⚙ Open settings</button></div>
               <p class="hint" id="v3Hint" hidden>Eleven v3 understands audio tags like <b>[whispers]</b> or <b>[sighs]</b> in your quotes. They shape the voice and are hidden in the video.</p></div>
+            <div id="gmVoiceBox" hidden><div id="gmVoiceRow" hidden><label for="gmVoice">Voice</label><div class="key-row"><div class="field"><select id="gmVoice"></select></div><button type="button" class="key-btn" id="gmSample" title="Play the voice sample (free)">▶ Sample</button></div></div>
+              <div class="need-key" id="gmNeedKey"><b>Connect GenMax first</b><span>Add your GenMax API key in Settings to choose a voice.</span><button type="button" class="key-btn" data-open-settings>⚙ Open settings</button></div></div>
             
             
             <label class="check-row" for="voiceEndCard"><input type="checkbox" id="voiceEndCard" checked /> Also read the end card button and small line</label>
@@ -787,7 +791,7 @@ self.onmessage=async e=>{const m=e.data;try{
     function speechText(text){if(!tagsSpoken())text=stripTags(text);return text.replace(/\*/g,'').replace(/[“”"↓↑→←]/g,' ').replace(/\s+/g,' ').replace(/\s+([,.!?;:…])/g,'$1').trim()}
     function pageSpeech(page){return page?speechText(cleanQuote(page.quote)):''}
     function endSpeech(){return voiceEndCard.checked?[endCta.value,endSub.value].map(speechText).filter(Boolean).map(t=>/[.!?]$/.test(t)?t:t+'.').join(' '):''}
-    function voiceKey(text){return (voiceProvider==='eleven'?['eleven',elevenVoice.value,elevenModel.value,elevenExpr.value]:['kokoro',voiceSelect.value]).concat(voiceSpeed.value,text).join('|')}
+    function voiceKey(text){return (voiceProvider==='eleven'?['eleven',elevenVoice.value,elevenModel.value,elevenExpr.value]:voiceProvider==='genmax'?['genmax',$('#gmSource').value,$('#gmVoice').value,$('#gmModel').value]:['kokoro',voiceSelect.value]).concat(voiceSpeed.value,text).join('|')}
     function voiceFor(text){return voiceEnabled.checked&&text?voiceCache.get(voiceKey(text))||null:null}
     // ElevenLabs: one script for the whole video (pages, then the end card line), read in a single take.
     function narrationParts(){const hook=hookSpeech(),parts=(hook?[hook]:[]).concat(pages.map(pageSpeech)),end=endEnabled.checked?endSpeech():'';return end?parts.concat(end):parts}
@@ -813,12 +817,13 @@ self.onmessage=async e=>{const m=e.data;try{
       const missing=[...new Set(voiceSegments())].filter(t=>!voiceCache.has(voiceKey(t)));if(!missing.length){refreshVoiceStatus();return true}
       voiceGenerate.disabled=true;
       try{
-        setVoiceStatus('Loading the voice engine…');status.textContent='Preparing voiceover…';await loadVoiceModel();
+        if(voiceProvider==='genmax'){await gmEnsure(missing);updateSummary();refreshVoiceStatus();status.textContent='Voiceover ready.';return true}
+      setVoiceStatus('Loading the voice engine…');status.textContent='Preparing voiceover…';await loadVoiceModel();
         for(let i=0;i<missing.length;i++){const text=missing[i],key=voiceKey(text);setVoiceStatus(`Generating voice ${i+1} of ${missing.length}…`);status.textContent=`Generating voice ${i+1} of ${missing.length}…`;
           const {data,rate}=await voiceCall({type:'generate',text,voice:voiceSelect.value,speed:Number(voiceSpeed.value)});const buffer=getAudioContext().createBuffer(1,data.length,rate);buffer.copyToChannel(data,0);voiceCache.set(key,{buffer,duration:buffer.duration})}
         if(voiceCache.size>80)[...voiceCache.keys()].slice(0,voiceCache.size-80).forEach(k=>voiceCache.delete(k));
         updateSummary();refreshVoiceStatus();status.textContent='Voiceover ready.';return true;
-      }catch(err){setVoiceStatus('Could not create the voice: '+err.message+' Check your internet connection for the first download, or turn Voiceover off.','err');status.textContent='Voiceover failed — see the Voice tab.';return false}
+      }catch(err){setVoiceStatus(voiceProvider==='genmax'?err.message:'Could not create the voice: '+err.message+' Check your internet connection for the first download, or turn Voiceover off.','err');status.textContent='Voiceover failed — see the Voice tab.';return false}
       finally{voiceGenerate.disabled=false}
     }
     // One ElevenLabs request for the whole script; its character timings give each part's start, end and word times.
@@ -883,7 +888,7 @@ self.onmessage=async e=>{const m=e.data;try{
     function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
     function safeSet(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
     function setProvider(name){voiceProvider=name;providerButtons.forEach(b=>b.classList.toggle('active',b.dataset.value===name));kokoroFields.hidden=name!=='kokoro';elevenFields.hidden=name!=='eleven';safeSet('qvs-voice-provider',name);updateRenderMeta();updateSummary();refreshVoiceStatus();try{updateVoiceBoxes()}catch(e){}}
-    function updateRenderMeta(){const config=FORMATS[formatSelect.value]||FORMATS.portrait;const cloudVoice=voiceEnabled.checked&&voiceProvider==='eleven';renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · `+(cloudVoice?'voice by ElevenLabs':'nothing is uploaded');$('#localNote').textContent=cloudVoice?'Renders on your device · voice by ElevenLabs':'No cloud AI · renders on your device'}
+    function updateRenderMeta(){const config=FORMATS[formatSelect.value]||FORMATS.portrait;const cloudVoice=voiceEnabled.checked&&voiceProvider!=='kokoro',who=voiceProvider==='genmax'?'GenMax':'ElevenLabs';renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · `+(cloudVoice?'voice by '+who:'nothing is uploaded');$('#localNote').textContent=cloudVoice?'Renders on your device · voice by '+who:'No cloud AI · renders on your device'}
 
     // Schedules every voice clip on an audio graph, starting `when` seconds from now (audio clock).
     function scheduleVoices(ctx,destination,when){when+=hookDuration();lastVoiceSpans=[];const sources=[],take=narrationTiming();if(take){const src=ctx.createBufferSource();src.buffer=take.n.buffer;src.connect(destination);const at=when+take.offset;src.start(ctx.currentTime+Math.max(0,at),Math.max(0,-at));const base=ctx.currentTime+at;(take.n.hookSeg?[take.n.hookSeg]:[]).concat(take.n.segs).forEach(seg=>lastVoiceSpans.push([base+seg.start,base+seg.end]));return[src]}const play=(text,at)=>{const v=voiceFor(text);if(!v)return;const src=ctx.createBufferSource();src.buffer=v.buffer;src.connect(destination);src.start(ctx.currentTime+when+at);lastVoiceSpans.push([ctx.currentTime+when+at,ctx.currentTime+when+at+v.duration]);sources.push(src)};play(hookSpeech(),HOOK_LEAD-hookDuration());pages.forEach((page,i)=>play(pageSpeech(page),pageStart(i)+VOICE_LEAD));if(endEnabled.checked)play(endSpeech(),quoteDuration()+END_VOICE_LEAD);return sources}
@@ -1077,6 +1082,69 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
     elevenVoice.addEventListener('change',()=>{safeSet('qvs-eleven-voice',elevenVoice.value);updateSummary();refreshVoiceStatus()});elevenModel.addEventListener('change',()=>{updateSummary();refreshVoiceStatus()});
     elevenSample.addEventListener('click',()=>{const v=elevenVoices.find(x=>x.voice_id===elevenVoice.value);if(!v||!v.preview_url){setVoiceStatus('This voice has no sample.');return}if(sampleAudio)sampleAudio.pause();sampleAudio=new Audio(v.preview_url);sampleAudio.play().catch(()=>setVoiceStatus('Could not play the sample.','err'))});
     {const savedKey=safeGet('qvs-eleven-key');if(savedKey){elevenKey.value=savedKey;elevenForget.hidden=false}if(safeGet('qvs-voice-provider')==='eleven')setProvider('eleven')}
+
+    // ---------- GenMax (genmax.io): ElevenLabs and MiniMax voices through one cheaper API, with the user's own key ----------
+    // Each part is a task: POST /v1/text-to-speech/{voice} returns an id, GET /v1/history/{id} reports status and the mp3 URL.
+    const GM_API='https://api.genmax.io',GM_MODELS={elevenlabs:[['eleven_multilingual_v2','Multilingual v2 · best quality'],['eleven_flash_v2_5','Flash v2.5 · faster, fewer credits']],minimax:[['speech-2.8-hd','Speech 2.8 HD · best quality'],['speech-2.8-turbo','Speech 2.8 Turbo · faster, cheaper']]};
+    const gmKey=$('#gmKey'),gmSource=$('#gmSource'),gmModel=$('#gmModel'),gmVoice=$('#gmVoice');let gmVoices=[];
+    function gmSetConn(text,kind=''){const el=$('#gmConnStatus');el.textContent=text;el.className='voice-status'+(kind?' '+kind:'')}
+    async function gmFetch(path,options={}){
+      let res;try{res=await fetch(GM_API+path,{...options,headers:{'xi-api-key':gmKey.value.trim(),...(options.body?{'Content-Type':'application/json'}:{})}})}catch(e){throw new Error('This page could not reach api.genmax.io. Check your internet and turn off ad blockers for this site. The browser console (F12) shows the exact reason.')}
+      if(!res.ok){let detail='';try{const b=await res.json();detail=b.error||b.message||(b.detail&&(b.detail.message||b.detail))||''}catch(e){}
+        if(res.status===401)throw new Error('GenMax did not accept this API key'+(detail?` (${detail})`:'')+'. Copy it again from genmax.io → API Docs.');
+        if(res.status===402||/credit|balance|insufficient/i.test(detail))throw new Error('Your GenMax account is out of credits'+(detail?` (${detail})`:'')+'.');
+        throw new Error(`GenMax error ${res.status}${detail?': '+detail:''}.`)}
+      return res;
+    }
+    function gmFillModels(){const prev=gmModel.value;gmModel.innerHTML='';GM_MODELS[gmSource.value].forEach(([v,l])=>gmModel.add(new Option(l,v)));if(GM_MODELS[gmSource.value].some(m=>m[0]===prev))gmModel.value=prev}
+    function gmLabel(v){const cap=x=>x?String(x)[0].toUpperCase()+String(x).slice(1):'';if(gmSource.value==='minimax'){const tags=(v.tag_list||[]).filter(t=>!/^english$/i.test(t));return `${v.voice_name||v.uniq_id||'Voice'}${tags.length?' · '+tags.join(', '):''}`}
+      return `${v.name||'Voice'}${v.gender?' · '+cap(v.gender):''}${v.descriptive||v.accent?' — '+[v.descriptive,v.accent].filter(Boolean).join(', ').replace(/_/g,' '):''}`}
+    async function gmLoadVoices(){
+      const src=gmSource.value,body=await (await gmFetch(src==='minimax'?'/v1/minimax/system-voices?language=English&page_size=100':'/v1/default-voices?page_size=100')).json();
+      gmVoices=(src==='minimax'?body.voice_list:body.voices)||[];const prev=gmVoice.value||safeGet('qvs-genmax-voice-'+src);gmVoice.innerHTML='';
+      gmVoices.forEach(v=>gmVoice.add(new Option(gmLabel(v),v.voice_id)));if(prev&&gmVoices.some(v=>v.voice_id===prev))gmVoice.value=prev;
+      if(!gmVoices.length)throw new Error('GenMax returned no voices for this library.');
+    }
+    async function gmConnectKey(){
+      if(!gmKey.value.trim()){gmSetConn('');return}
+      const btn=$('#gmConnect');btn.disabled=true;btn.textContent='Connecting…';
+      try{const me=await (await gmFetch('/v1/auth/me')).json();gmFillModels();await gmLoadVoices();
+        safeSet('qvs-genmax-key',gmKey.value.trim());$('#gmConnected').hidden=false;$('#gmForget').hidden=false;btn.textContent='Connected';
+        const credits=me&&me.credit_balance!=null?` · ${Number(me.credit_balance).toLocaleString()} credits left`:'';gmSetConn(`Connected · ${gmVoices.length} voices${credits}.`,'ok');setVoiceStatus(`Connected to GenMax · ${gmVoices.length} voices${credits}.`,'ok');refreshVoiceStatus();updateSummary()}
+      catch(err){$('#gmConnected').hidden=true;btn.textContent='Connect';gmSetConn(err.message,'err');setVoiceStatus(err.message,'err')}
+      finally{btn.disabled=false}
+    }
+    const gmSleep=ms=>new Promise(r=>setTimeout(r,ms));
+    async function gmGenerate(text){
+      const src=gmSource.value,settings=src==='minimax'?{speed:Number(voiceSpeed.value),pitch:0,vol:1}:{stability:.5,similarity_boost:.75,speed:Number(voiceSpeed.value)};
+      const task=await (await gmFetch(`/v1/text-to-speech/${encodeURIComponent(gmVoice.value)}`,{method:'POST',body:JSON.stringify({text,provider:src,model_id:gmModel.value,language_code:src==='minimax'?'English':'en',voice_settings:settings})})).json();
+      if(!task||!task.id)throw new Error('GenMax did not return a task id.');
+      const until=Date.now()+180000;let info=null;
+      while(Date.now()<until){await gmSleep(1200);info=await (await gmFetch(`/v1/history/${encodeURIComponent(task.id)}`)).json();
+        if(info.status==='completed')break;if(info.status==='failed')throw new Error('GenMax could not create this voice'+(info.error?`: ${info.error}`:'.'))}
+      if(!info||info.status!=='completed'||!info.result||!info.result.audio_url)throw new Error('GenMax is taking too long. Try again in a minute.');
+      // The mp3 link may be public or may need the key; try without it first, then with it.
+      let audio;try{audio=await fetch(info.result.audio_url);if(audio.status===401||audio.status===403)audio=await fetch(info.result.audio_url,{headers:{'xi-api-key':gmKey.value.trim()}})}catch(e){throw new Error('The GenMax audio file could not be downloaded in this browser.')}
+      if(!audio.ok)throw new Error(`The GenMax audio file could not be downloaded (${audio.status}).`);
+      const buffer=await getAudioContext().decodeAudioData(await audio.arrayBuffer());return{buffer,duration:buffer.duration};
+    }
+    // Creates every missing part, three at a time.
+    async function gmEnsure(missing){
+      if(!gmKey.value.trim()||$('#gmConnected').hidden||!gmVoice.value){setVoiceStatus('Connect your GenMax key in Settings and pick a voice first.','err');status.textContent='Voiceover needs a GenMax key — see Settings.';throw new Error('GenMax not connected')}
+      voiceGenerate.disabled=true;let done=0;const queue=missing.slice();const bar=$('#voiceBar');bar.hidden=false;bar.firstChild.style.width='0%';
+      const tick=()=>{const pct=Math.round(done/missing.length*100);bar.firstChild.style.width=pct+'%';setVoiceStatus(`Creating voice with GenMax… ${done} of ${missing.length} parts`);status.textContent=`Creating voice… ${done}/${missing.length}`};tick();
+      try{await Promise.all([0,1,2].map(async()=>{while(queue.length){const text=queue.shift(),key=voiceKey(text);voiceCache.set(key,await gmGenerate(text));done++;tick()}}))}
+      catch(err){setVoiceStatus(err.message,'err');status.textContent='Voiceover failed — see the Voice section.';throw err}
+      finally{voiceGenerate.disabled=false;bar.hidden=true}
+    }
+    $('#gmConnect').addEventListener('click',gmConnectKey);gmKey.addEventListener('keydown',e=>{if(e.key==='Enter')gmConnectKey()});gmKey.addEventListener('input',()=>{$('#gmConnect').textContent='Connect'});
+    $('#gmForget').addEventListener('click',()=>{safeSet('qvs-genmax-key',null);gmKey.value='';gmVoices=[];gmVoice.innerHTML='';$('#gmConnected').hidden=true;$('#gmForget').hidden=true;$('#gmConnect').textContent='Connect';gmSetConn('GenMax key removed from this browser.')});
+    gmSource.addEventListener('change',async()=>{gmFillModels();try{await gmLoadVoices();gmSetConn(`${gmVoices.length} voices.`,'ok')}catch(err){gmSetConn(err.message,'err')}updateSummary();refreshVoiceStatus()});
+    gmModel.addEventListener('change',()=>{updateSummary();refreshVoiceStatus()});
+    gmVoice.addEventListener('change',()=>{safeSet('qvs-genmax-voice-'+gmSource.value,gmVoice.value);updateSummary();refreshVoiceStatus()});
+    $('#gmSample').addEventListener('click',()=>{const v=gmVoices.find(x=>x.voice_id===gmVoice.value),url=v&&(v.preview_url||v.sample_audio);if(!url){setVoiceStatus('This voice has no sample.');return}if(sampleAudio)sampleAudio.pause();sampleAudio=new Audio(url);sampleAudio.play().catch(()=>setVoiceStatus('Could not play the sample.','err'))});
+    providerButtons.forEach(b=>b.addEventListener('click',()=>{if(b.dataset.value==='genmax'&&gmKey.value.trim()&&!gmVoices.length)gmConnectKey()}));
+    gmFillModels();{const k=safeGet('qvs-genmax-key');if(k){gmKey.value=k;$('#gmForget').hidden=false}if(safeGet('qvs-voice-provider')==='genmax'){setProvider('genmax');if(k)gmConnectKey()}}
     quote.addEventListener('input',refreshVoiceStatus);[endCta,endSub].forEach(el=>el.addEventListener('input',refreshVoiceStatus));
     const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
     function openTab(name){const info=PANEL_INFO[name];if(info){panelTitle.textContent=info[0];panelDesc.textContent=info[1]}tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);if(name==='export')updateExportSummary();if(name==='settings'){$('#stepCrumb').textContent='Settings';$('#subChips').innerHTML=''}else lastStep=name;if(typeof onStepOpen==='function')onStepOpen(name);try{localStorage.setItem('qvs-tab',name)}catch(e){}}
@@ -1177,7 +1245,8 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
     // Settings: engine, key and timing live outside the step flow.
     document.querySelectorAll('[data-open-settings]').forEach(b=>b.addEventListener('click',()=>openTab('settings')));
     $('#settingsDone').addEventListener('click',()=>{openTab(lastStep==='settings'?'voice':lastStep);if(lastStep==='voice')setTimeout(()=>scrollToSection('voice','voice'),50)});
-    function updateVoiceBoxes(){const eleven=voiceProvider==='eleven',connected=!elevenConnected.hidden;kokoroFields.hidden=eleven;$('#elevenVoiceBox').hidden=!eleven;$('#elevenVoiceRow').hidden=!connected;$('#elevenNeedKey').hidden=connected;elevenFields.hidden=!eleven}
+    function updateVoiceBoxes(){const p=voiceProvider,connected=!elevenConnected.hidden,gmOn=!$('#gmConnected').hidden;kokoroFields.hidden=p!=='kokoro';$('#elevenVoiceBox').hidden=p!=='eleven';$('#elevenVoiceRow').hidden=!connected;$('#elevenNeedKey').hidden=connected;elevenFields.hidden=p!=='eleven';$('#gmVoiceBox').hidden=p!=='genmax';$('#gmFields').hidden=p!=='genmax';$('#gmVoiceRow').hidden=!gmOn;$('#gmNeedKey').hidden=gmOn}
+    new MutationObserver(updateVoiceBoxes).observe($('#gmConnected'),{attributes:true,attributeFilter:['hidden']});
     new MutationObserver(updateVoiceBoxes).observe(elevenConnected,{attributes:true,attributeFilter:['hidden']});
     providerButtons.forEach(b=>b.addEventListener('click',()=>setTimeout(updateVoiceBoxes)));updateVoiceBoxes();
     const musicInput=$('#musicFile');
@@ -1189,7 +1258,7 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
     $('#musicRemove').addEventListener('click',()=>{musicBuffer=null;musicFileName='';stopPreviewAudio();updateMusicUI();fileSet('music',null);status.textContent='Music removed.'});
     document.querySelectorAll('.next-step').forEach(b=>b.addEventListener('click',()=>goNext(b.closest('.panel').dataset.panel)));
     function updateExportSummary(){const parts=[`${pages.length} page${pages.length===1?'':'s'}`];if(hookOn())parts.unshift('hook');if(endEnabled.checked)parts.push('end card');
-      const voice=(voiceEnabled.checked?(voiceProvider==='eleven'?'ElevenLabs voice':'Kokoro voice'):'no voiceover')+(musicBuffer?' · music':'');
+      const voice=(voiceEnabled.checked?(voiceProvider==='eleven'?'ElevenLabs voice':voiceProvider==='genmax'?'GenMax voice':'Kokoro voice'):'no voiceover')+(musicBuffer?' · music':'');
       $('#exportSummary').innerHTML=`<b>${formatTime(Math.round(totalDuration()))}</b>${parts.join(' · ')}<br><span>${voice} · ${$('#themeName').textContent.replace('· ','')} background · 1080 × 1920</span>`}
     document.querySelectorAll('#themeGroups button').forEach(b=>b.addEventListener('click',()=>{$('#presetGrid').dataset.show=b.dataset.group;document.querySelectorAll('#themeGroups button').forEach(x=>x.classList.toggle('active',x===b))}));
     // ---------- Accent colour & atmosphere ----------
@@ -1231,7 +1300,7 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
     renderPageStrip();updateSetup(false);refresh();updateEndCard();fitPhone();updateTagUI();
 
     // ---------- Autosave: the project is kept in this browser (text in localStorage, images in IndexedDB) ----------
-    const PROJECT_KEY='qvs-project',SAVE_FIELDS=['source','duration','textAnimation','transition','bgDim','endTitle','endCta','endSub','endSeconds','handle','hookText','voiceSelect','voiceSpeed','voicePause','elevenModel','elevenExpr','musicVol'],SAVE_CHECKS=['endEnabled','coverBadge','hookEnabled','hookVoice','voiceEnabled','voiceEndCard','musicDuck'];
+    const PROJECT_KEY='qvs-project',SAVE_FIELDS=['source','duration','textAnimation','transition','bgDim','endTitle','endCta','endSub','endSeconds','handle','hookText','voiceSelect','voiceSpeed','voicePause','elevenModel','elevenExpr','musicVol','gmSource','gmModel'],SAVE_CHECKS=['endEnabled','coverBadge','hookEnabled','hookVoice','voiceEnabled','voiceEndCard','musicDuck'];
     let restoring=false,saveTimer=0;
     function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open('qvs-files',1);r.onupgradeneeded=()=>r.result.createObjectStore('files');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
     async function fileSet(key,file){try{const db=await idb();await new Promise((res,rej)=>{const tx=db.transaction('files','readwrite');file?tx.objectStore('files').put({blob:file,name:file.name,type:file.type},key):tx.objectStore('files').delete(key);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}catch(e){}}

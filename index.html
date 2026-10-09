@@ -242,6 +242,12 @@
     }
       .panel > .sub:first-of-type{margin-top:16px}
       .segmented.three{grid-template-columns:repeat(3,1fr)!important}.segmented.three button small{font-size:11px!important}
+      .batch-box{display:flex;flex-direction:column;gap:12px}.batch-box textarea{width:100%;height:170px;resize:vertical;border:1px solid #e3ddd1;border-radius:var(--r-ctl);padding:12px 14px;font:15px/1.5 var(--ui);background:#fff;outline:none}.batch-box textarea:focus{border-color:var(--ink)}
+    .batch-summary{font-size:14px;color:#56616a}.batch-box .export-btn{margin-top:0}.batch-box .export-btn:disabled{opacity:.45;cursor:not-allowed}
+    .batch-queue{display:flex;flex-direction:column;gap:4px;max-height:280px;overflow-y:auto;padding:6px;border:1px solid #e8e2d6;border-radius:var(--r-ctl);background:#fff}
+    .batch-row{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;padding:6px 8px;border-radius:8px;font-size:13px}.batch-row .n{color:#8a8478;font-weight:700}.batch-row .t{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.batch-row .st{color:#8a8478;font-weight:600}
+    .batch-row[data-state="work"]{background:#fff4ec}.batch-row[data-state="work"] .st{color:var(--blue)}.batch-row[data-state="done"] .st a{color:#2b8a57;text-decoration:none}.batch-row[data-state="fail"] .st{color:#c0392b}.batch-row[data-state="skip"]{opacity:.5}
+    .batch-actions{display:flex;gap:8px;flex-wrap:wrap}.batch-actions .key-btn{height:40px}
   </style>
 </head>
 <body>
@@ -258,7 +264,7 @@
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
       <button type="button" class="rail-item tab settings-tab" role="tab" aria-selected="false" data-tab="settings"><span class="step-num gear">⚙</span><span class="step-text"><b>Settings</b><small>Voice engine &amp; API key</small></span></button>
-      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.16.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.17.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><p class="step-crumb" id="stepCrumb">Step 1 of 5</p><h2 id="panelTitle">Write</h2><p id="panelDesc">Your quotes, the credit line and an optional opening hook.</p><div class="sub-chips" id="subChips"></div></div>
@@ -320,6 +326,19 @@
           <div class="tips"><b>Before you upload</b><ol><li>Upload the file as a YouTube Short, a TikTok or an Instagram Reel.</li><li>Put your Amazon book link in the description and in a pinned comment.</li><li>Add 3–5 hashtags, for example #booktok #quotes #poetry.</li></ol></div>
           <div class="divider"></div>
           <button type="button" class="link-btn" id="newProject">Start a new video</button><p class="hint">Your work is saved in this browser automatically.</p>
+        
+          <div class="batch-box" id="batchBox">
+            <div class="segmented two" id="batchSourceSeg"><button type="button" class="active" data-src="paste">Paste a list<small>your own quotes</small></button><button type="button" data-src="library">From the library<small>pick a topic</small></button></div>
+            <div id="batchPasteBox"><textarea id="batchList" placeholder="One line = one video.&#10;For a video with several pages, put its pages on lines next to each other and leave an empty line between videos."></textarea></div>
+            <div id="batchLibBox" hidden><div class="row"><div><label for="batchSet">Collection</label><div class="field"><select id="batchSet"></select></div></div><div><label for="batchTopic">Topic</label><div class="field"><select id="batchTopic"></select></div></div></div>
+              <label for="batchCount">How many videos</label><div class="field"><select id="batchCount"><option>5</option><option selected>10</option><option>15</option><option>20</option><option>30</option></select></div></div>
+            <label class="check-row" for="batchRotate"><input type="checkbox" id="batchRotate" /> Give each video a different style (rotates the 8 style presets)</label>
+            <div class="batch-summary" id="batchSummary"></div>
+            <button type="button" class="export-btn" id="batchStart">Create videos</button>
+            <div class="batch-queue" id="batchQueue" hidden></div>
+            <div class="batch-actions" id="batchActions" hidden><button type="button" class="key-btn primary" id="batchStop">Stop after this video</button><button type="button" class="key-btn" id="batchZip" hidden>⬇ Download all (.zip)</button></div>
+            <p class="hint">Every video uses your current font, background, music, voice, hook and end card. Keep this tab open: videos are made one after another in real time.</p>
+          </div>
         </section>
         <section class="panel" data-panel="settings" hidden>
           <div class="set-group"><h4>Voice engine</h4><div class="segmented three" id="providerSeg"><button class="active" data-value="kokoro">Kokoro<small>Free · on this device</small></button><button data-value="genmax">GenMax<small>Lower cost · your key</small></button><button data-value="eleven">ElevenLabs<small>Premium · your key</small></button></div><p class="hint">Kokoro is free and runs on this device. GenMax gives ElevenLabs and MiniMax voices at a lower price with your GenMax key. ElevenLabs uses your own ElevenLabs key.</p></div>
@@ -959,6 +978,13 @@ self.onmessage=async e=>{const m=e.data;try{
       if(recorder.state!=='inactive')recorder.stop();await finished;sources.forEach(src=>{try{src.stop()}catch(e){}});stream.getTracks().forEach(t=>t.stop());
       const type=recorder.mimeType||mimeType;return{blob:new Blob(chunks,{type}),type,error,wasHidden};
     }
+    // Records the current pages into a video blob (fonts, encoder fallback); voices must already be ready.
+    async function renderTake(prefix=''){
+      await loadVideoFonts();saveCurrent();const withVoice=voiceEnabled.checked&&voiceReady(),config=FORMATS[formatSelect.value]||FORMATS.portrait,types=recorderTypes(withVoice||!!musicBuffer);
+      if(!types.length)return{error:new Error('no encoder'),blob:new Blob([]),type:''};
+      let take=null;for(let i=0;i<types.length;i++){take=await recordTake(types[i],withVoice,config,prefix+(i?'Retrying as WebM · ':''));if(!take.error&&take.blob.size>20000)break}
+      return take;
+    }
     async function renderVideo(){
       if(rendering)return;if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){status.textContent='This browser cannot render video locally. Try Chrome or Edge.';return}
       const done=()=>{rendering=false;renderButton.disabled=false;renderLabel.textContent='Render video'};
@@ -1158,7 +1184,7 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
         ['background','Background','Background','',[['style',1],['style',3],['style',4],['style',10],['style',11],['style',12],['style',13]]],['effects','Effects & motion','Effects & motion','',[['style',5],['style',6],['style',7],['style',8],['style',9],['style',14]]]],
       voice:[['music','Music','Music','Optional background music under the whole video.',[['voice',1]]],['voice','Voiceover',null,'',[['voice',2],['voice',3]]],['timing','Timing','Timing','',[['voice',0]]]],
       promo:[['end','End card',null,'',[['promo',1],['promo',2]]],['badge','Book badge & handle',null,'',[['promo',3],['promo',4],['promo',5],['promo',6],['promo',7]]]],
-      export:[['export','Render & share',null,'',null]]};
+      export:[['export','Render & share',null,'',[['export',0],['export',1],['export',2],['export',3],['export',4]]],['batch','Bulk create','Bulk create','Make many videos at once from a list or the library.',[['export',8]]],['project','New video',null,'',[['export',5],['export',6],['export',7]]]]};
     const SUBS=SECTIONS,lastSub={};let lastStep='quotes';
     {
       const original={};STEP_ORDER.forEach(p=>original[p]=[...document.querySelector(`.panel[data-panel="${p}"]`).children].filter(c=>!c.classList.contains('next-step')));
@@ -1232,6 +1258,76 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
       textAnimationSelect.value=pr.anim;textAnimationSelect.dispatchEvent(new Event('change'));transitionSelect.value=pr.trans;transitionSelect.dispatchEvent(new Event('change'));
       document.querySelectorAll('.spreset').forEach(x=>x.classList.toggle('active',x.dataset.preset===pr.id));status.textContent=`Style: ${pr.name}. Fine-tune it below if you like.`;
     }
+
+    // ---------- Bulk create: many videos in one go, each with the current look and sound ----------
+    const BULK_MAX=30;let batchSource='paste',batchRunning=false,batchStopAsked=false,batchResults=[];
+    const batchList=$('#batchList'),batchSet=$('#batchSet'),batchTopic=$('#batchTopic'),batchCount=$('#batchCount'),batchQueue=$('#batchQueue');
+    Object.entries(SET_INFO).forEach(([k,[name]])=>batchSet.add(new Option(name,k)));
+    function batchFillTopics(){const counts={};libraryItems().filter(i=>i.s===batchSet.value).forEach(i=>counts[i.c]=(counts[i.c]||0)+1);batchTopic.innerHTML='';batchTopic.add(new Option(`All topics (${Object.values(counts).reduce((a,b)=>a+b,0)})`,''));Object.keys(counts).forEach(c=>batchTopic.add(new Option(`${c} (${counts[c]})`,c)))}
+    const cleanLine=l=>l.replace(/^\s*(?:\d{1,2}[.)]\s+|[-•–—]\s+|\*\s+)/,'').trim().slice(0,260);
+    // A job is one video: {title, pages:[{quote,source}]}
+    function batchJobs(){
+      if(batchSource==='library'){let items=libraryItems().filter(i=>i.s===batchSet.value&&(!batchTopic.value||i.c===batchTopic.value));items=items.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]).slice(0,Math.min(BULK_MAX,Number(batchCount.value)));
+        return items.map(it=>({title:(it.p?it.p[it.p.length-1]:it.t).replace(/\*/g,''),pages:(it.p||[it.t]).slice(0,10).map(q=>({quote:q,source:it.a||''}))}))}
+      const text=batchList.value.replace(/\r/g,'').trim();if(!text)return[];
+      const blocks=/\n[ \t]*\n/.test(text)?text.split(/\n[ \t]*\n+/).map(b=>b.split('\n').map(cleanLine).filter(Boolean)):text.split('\n').map(cleanLine).filter(Boolean).map(l=>[l]);
+      return blocks.filter(b=>b.length).slice(0,BULK_MAX).map(b=>({title:b[0].replace(/\*/g,''),pages:b.slice(0,10).map(q=>({quote:q,source:null}))}));
+    }
+    function batchUpdateSummary(){if(batchRunning)return;const jobs=batchJobs(),n=jobs.length,pagesN=jobs.reduce((a,j)=>a+j.pages.length,0);
+      let msg=n?`${n} video${n===1?'':'s'} · ${pagesN} page${pagesN===1?'':'s'}`:'Nothing to make yet.';
+      if(n&&voiceEnabled.checked&&voiceProvider!=='kokoro'){const chars=jobs.reduce((a,j)=>a+j.pages.reduce((b,p)=>b+speechText(cleanQuote(p.quote)).length,0),0);msg+=` · about ${chars.toLocaleString()} characters of ${voiceProvider==='genmax'?'GenMax':'ElevenLabs'} voice`}
+      const raw=batchSource==='paste'?batchList.value.trim():'';if(raw&&batchJobs().length>=BULK_MAX)msg+=` · only the first ${BULK_MAX} are made`;
+      $('#batchSummary').textContent=msg;$('#batchStart').disabled=!n}
+    document.querySelectorAll('#batchSourceSeg button').forEach(b=>b.addEventListener('click',()=>{batchSource=b.dataset.src;document.querySelectorAll('#batchSourceSeg button').forEach(x=>x.classList.toggle('active',x===b));$('#batchPasteBox').hidden=batchSource!=='paste';$('#batchLibBox').hidden=batchSource!=='library';if(batchSource==='library'&&!batchTopic.options.length)batchFillTopics();batchUpdateSummary()}));
+    batchList.addEventListener('input',batchUpdateSummary);batchSet.addEventListener('change',()=>{batchFillTopics();batchUpdateSummary()});[batchTopic,batchCount].forEach(el=>el.addEventListener('change',batchUpdateSummary));
+    const slug=t=>t.toLowerCase().replace(/\[[^\]]*\]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').split('-').slice(0,6).join('-')||'video';
+    function batchRow(i,job){const row=document.createElement('div');row.className='batch-row';row.innerHTML=`<span class="n">${i+1}</span><span class="t"></span><span class="st">Waiting</span>`;row.querySelector('.t').textContent=job.title;batchQueue.appendChild(row);return row}
+    function setRow(row,state,text){row.dataset.state=state;row.querySelector('.st').textContent=text}
+    function lookState(){return{theme:selectedTheme,font:selectedFont,accent:accentColor,fx:fxMode,anim:textAnimationSelect.value,trans:transitionSelect.value}}
+    async function batchRun(){
+      if(batchRunning||rendering)return;if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){status.textContent='This browser cannot render video locally. Try Chrome or Edge.';return}
+      const jobs=batchJobs();if(!jobs.length)return;
+      if(jobs.length>3&&!confirm(`Create ${jobs.length} videos now? This takes a few minutes; keep this tab open until it finishes.`))return;
+      saveCurrent();const keep={pages:JSON.parse(JSON.stringify(pages)),current:currentPage,look:lookState()};
+      batchRunning=true;batchStopAsked=false;batchResults=[];rendering=true;renderButton.disabled=true;$('#batchStart').disabled=true;stopPreviewAudio();playStart=null;
+      batchQueue.innerHTML='';batchQueue.hidden=false;$('#batchActions').hidden=false;$('#batchStop').hidden=false;$('#batchZip').hidden=true;
+      const rows=jobs.map((j,i)=>batchRow(i,j));let made=0,failed=0;
+      try{
+        for(let i=0;i<jobs.length;i++){
+          if(batchStopAsked){for(let k=i;k<jobs.length;k++)setRow(rows[k],'skip','Skipped');break}
+          const job=jobs[i],row=rows[i];row.scrollIntoView({block:'nearest'});
+          pages.splice(0,pages.length,...job.pages.map(p=>({quote:p.quote,source:p.source,photo:null})));currentPage=0;loadPageIntoEditor();refresh();
+          if($('#batchRotate').checked)applyPreset(STYLE_PRESETS[i%STYLE_PRESETS.length]);
+          if(voiceEnabled.checked){setRow(row,'work','Creating voice…');rendering=false;const ok=await ensureVoices();rendering=true;if(!ok){setRow(row,'fail','Voice failed');failed++;for(let k=i+1;k<jobs.length;k++)setRow(rows[k],'skip','Skipped');status.textContent='Bulk stopped: the voice could not be created. See Sound › Voiceover.';break}}
+          setRow(row,'work','Rendering…');const take=await renderTake(`Video ${i+1}/${jobs.length} · `);
+          if(!take||take.error||take.blob.size<=20000){setRow(row,'fail','Render failed');failed++;continue}
+          const ext=take.type.includes('mp4')?'mp4':'webm',name=`${String(i+1).padStart(2,'0')}-${slug(job.title)}.${ext}`;batchResults.push({name,blob:take.blob});made++;
+          const url=URL.createObjectURL(take.blob);row.dataset.state='done';row.querySelector('.st').innerHTML=`<a href="${url}" download="${name}">⬇ Download</a>`;
+        }
+      }finally{
+        pages.splice(0,pages.length,...keep.pages);currentPage=keep.current;const L=keep.look;
+        applyPreset({id:'',name:'',theme:L.theme,font:L.font,accent:L.accent,fx:L.fx,anim:L.anim,trans:L.trans});document.querySelectorAll('.spreset').forEach(x=>x.classList.remove('active'));
+        loadPageIntoEditor();refresh();rendering=false;renderButton.disabled=false;batchRunning=false;$('#batchStop').hidden=true;batchUpdateSummary();
+      }
+      status.textContent=`Bulk done · ${made} video${made===1?'':'s'} made`+(failed?` · ${failed} failed`:'')+(made?'. Download them below or as one .zip.':'.');
+      if(made){$('#batchZip').hidden=false;batchDownloadZip()}
+    }
+    // A minimal .zip writer (stored, no compression: videos are already compressed).
+    const CRC_TABLE=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+    function crc32(bytes){let c=0xFFFFFFFF;for(let i=0;i<bytes.length;i++)c=CRC_TABLE[(c^bytes[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+    async function makeZip(files){
+      const enc=new TextEncoder(),parts=[],central=[];let offset=0;
+      for(const f of files){const data=new Uint8Array(await f.blob.arrayBuffer()),name=enc.encode(f.name),crc=crc32(data);
+        const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,0,true);h.setUint32(14,crc,true);h.setUint32(18,data.length,true);h.setUint32(22,data.length,true);h.setUint16(26,name.length,true);
+        parts.push(h,name,data);
+        const c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint32(16,crc,true);c.setUint32(20,data.length,true);c.setUint32(24,data.length,true);c.setUint16(28,name.length,true);c.setUint32(42,offset,true);
+        central.push(c,name);offset+=30+name.length+data.length}
+      const size=central.reduce((a,p)=>a+p.byteLength,0),e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,size,true);e.setUint32(16,offset,true);
+      return new Blob([...parts,...central,e],{type:'application/zip'});
+    }
+    async function batchDownloadZip(){if(!batchResults.length)return;status.textContent='Packing the .zip…';const zip=await makeZip(batchResults),url=URL.createObjectURL(zip),a=document.createElement('a');a.href=url;a.download=`${fileStem()}-batch-${batchResults.length}-videos.zip`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);status.textContent=`Downloaded ${batchResults.length} videos as one .zip.`}
+    $('#batchStart').addEventListener('click',batchRun);$('#batchStop').addEventListener('click',()=>{batchStopAsked=true;$('#batchStop').textContent='Stopping after this video…'});$('#batchZip').addEventListener('click',batchDownloadZip);
+    batchUpdateSummary();
     function goStep(step){if(!step)return;openTab(step);if(isPhone()){const sb=document.querySelector('.sidebar');window.scrollTo({top:sb.getBoundingClientRect().top+scrollY-stickyTop(),behavior:'smooth'})}}
     function goNext(step){if(!SECTIONS[step])return;goStep(STEP_ORDER[STEP_ORDER.indexOf(step)+1])}
     function goBack(step){goStep(STEP_ORDER[STEP_ORDER.indexOf(step)-1])}

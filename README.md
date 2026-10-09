@@ -23,6 +23,7 @@ The project (quotes, settings, background photo, book cover and music) is saved 
 ## Features
 
 - Multi-page quote videos (up to 10 quotes, one per page): page cards with a text preview, drag (or Alt + ↑/↓) to reorder, duplicate, and delete with undo
+- Bulk create (Export step): paste a list (one line = one video, or blocks separated by empty lines = multi-page videos) or pick N quotes from a library collection/topic, optionally rotate style presets, and render up to 30 videos in one go; per-video downloads plus an automatic .zip of all videos
 - Paste many: paste a list of quotes (one per line, or separated by empty lines for poems) and each becomes a page; list numbers and bullets are removed
 - Opening hook: an optional 1.5-second first line before page 1 (e.g. "Lines from *Your Book*", "If you're tired, read this."), with one-click presets; with Voiceover on it can be read aloud (the hook then lasts as long as its voice, and with ElevenLabs it opens the same continuous take)
 - One book & author line for the whole video, with an optional per-page override (leave it empty to hide the credit)
@@ -106,6 +107,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.17.0 (2026-10-09):** Bulk create in Export: paste a list (one line = one video, blocks = multi-page videos) or pick N from a library collection/topic; optional rotating style presets; voice estimate; queue with per-video downloads, Stop, and an automatic .zip of all videos (up to 30).
 - **0.16.0 (2026-10-09):** GenMax added as a third voice engine (ElevenLabs or MiniMax voice libraries through genmax.io with the user's own key): connect with credit balance, voice list with samples, model choice, task polling, three parts at a time, clear error messages; autosaved.
 - **0.15.1 (2026-10-06):** ElevenLabs: keys that cannot list voices (restricted keys) still connect, with ElevenLabs default voices; clear messages for a blocked connection, a wrong key or a missing key permission, shown in Settings next to the key.
 - **0.15.0 (2026-10-05):** Each step is one scrolling page with rail shortcuts and a scroll highlight; Back and Next on every step; Opening hook moves to Write, background photo joins Background, motion joins Effects, Timing follows Music and Voiceover; eight style presets at the top of Look; on phones the preview stays pinned while scrolling and typing.

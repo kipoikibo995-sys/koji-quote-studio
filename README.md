@@ -107,6 +107,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.17.1 (2026-10-09):** Videos with voice or music now save as MP4 in Chrome and Edge: the app tries H.264 with AAC or Opus, then VP9/AV1 in an MP4 file, and uses WebM only when the browser cannot write MP4 (Firefox).
 - **0.17.0 (2026-10-09):** Bulk create in Export: paste a list (one line = one video, blocks = multi-page videos) or pick N from a library collection/topic; optional rotating style presets; voice estimate; queue with per-video downloads, Stop, and an automatic .zip of all videos (up to 30).
 - **0.16.0 (2026-10-09):** GenMax added as a third voice engine (ElevenLabs or MiniMax voice libraries through genmax.io with the user's own key): connect with credit balance, voice list with samples, model choice, task polling, three parts at a time, clear error messages; autosaved.
 - **0.15.1 (2026-10-06):** ElevenLabs: keys that cannot list voices (restricted keys) still connect, with ElevenLabs default voices; clear messages for a blocked connection, a wrong key or a missing key permission, shown in Settings next to the key.

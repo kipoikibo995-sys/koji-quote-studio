@@ -264,7 +264,7 @@
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
       <button type="button" class="rail-item tab settings-tab" role="tab" aria-selected="false" data-tab="settings"><span class="step-num gear">⚙</span><span class="step-text"><b>Settings</b><small>Voice engine &amp; API key</small></span></button>
-      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.17.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.17.1</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><p class="step-crumb" id="stepCrumb">Step 1 of 5</p><h2 id="panelTitle">Write</h2><p id="panelDesc">Your quotes, the credit line and an optional opening hook.</p><div class="sub-chips" id="subChips"></div></div>
@@ -952,8 +952,11 @@ self.onmessage=async e=>{const m=e.data;try{
       status.textContent=`Image downloaded · ${config.width} × ${config.height} PNG`;
     }
     // H.264 at level 4.0 (High, Main, then Baseline) is needed for 1080p frames; WebM is the fallback.
-    const VIDEO_TYPES=['video/mp4;codecs=avc1.640028','video/mp4;codecs=avc1.4D0028','video/mp4;codecs=avc1.42E028','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
-    function recorderTypes(withVoice){const list=VIDEO_TYPES.map(t=>!withVoice||t==='video/webm'?t:t+(t.includes('mp4')?',mp4a.40.2':',opus')).filter(t=>MediaRecorder.isTypeSupported(t));const mp4=list.find(t=>t.includes('mp4')),webm=list.find(t=>t.includes('webm'));return[mp4,webm].filter(Boolean)}
+    // MP4 first (H.264 with AAC or Opus, then VP9/AV1 in an MP4 file), WebM only when the browser cannot write MP4.
+    const MP4_VIDEO=['avc1.640028','avc1.4D0028','avc1.42E028','avc1','vp9','av01'],MP4_AUDIO=['mp4a.40.2','opus'];
+    function recorderTypes(withAudio){const mp4=[];MP4_VIDEO.forEach(v=>{if(withAudio)MP4_AUDIO.forEach(a=>mp4.push(`video/mp4;codecs=${v},${a}`));else mp4.push(`video/mp4;codecs=${v}`)});
+      const webm=withAudio?['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']:['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+      const ok=t=>{try{return MediaRecorder.isTypeSupported(t)}catch(e){return false}};return[mp4.find(ok),webm.find(ok)].filter(Boolean)}
     // Records one full pass of the video with the given container/codec and returns the result.
     // The last frame is held a little longer so the file is never shorter than the video.
     const RENDER_TAIL=.35;

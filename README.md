@@ -64,3 +64,10 @@ Avoid pasting the complete `index.html` into an Elementor HTML widget. WordPress
 
 Keep a backup of the current `index.html`, then replace it with the newer version. The public URL can remain unchanged.
 
+
+## Sales page
+
+- `sales.html` — marketing/sales page for Quote Studio, styled to match the KoJi Academy header.
+- Upload it next to `index.html` (e.g. `public_html/quote-studio/sales.html`) and link to `/quote-studio/sales.html` from Elementor or ads.
+- Its "Open Quote Studio" buttons point to `./`, which loads the app in the same folder.
+- To change the offer, edit the `.price` block in the "OFFER" section (currently "Free during early access").

@@ -2,7 +2,7 @@
 
 Turn lines from your book into scroll-stopping YouTube Shorts that send viewers to your Amazon listing.
 
-Built for KDP authors: paste a quote from your book, add your cover, and render a ready-to-upload vertical video that ends with a "get the book" call to action. Video renders locally in the browser: no external rendering API, no server-side processing and no subscription. The optional voiceover runs on the device (Kokoro) or uses ElevenLabs with the user's own API key.
+Built for KDP authors: paste a quote from your book, add your cover, and render a ready-to-upload vertical video that ends with a "get the book" call to action. Video renders locally in the browser: no external rendering API, no server-side processing and no subscription. The optional voiceover runs on the device (Kokoro) or uses GenMax voices, which are included (the site owner's GenMax key stays on the server).
 
 ## How it works
 
@@ -14,7 +14,7 @@ The editor follows five steps in the left rail. Each step is one scrolling page;
 4. **Promo** (optional, off by default): End card, Book badge & channel handle.
 5. **Export**: a summary of the video, Render video, Save the current page as PNG, and upload tips.
 
-**⚙ Settings** (bottom of the rail, outside the steps) holds the technical options: voice engine (Kokoro, GenMax or ElevenLabs), API keys, model, expressiveness, voice speed and the pause between pages.
+**⚙ Settings** (bottom of the rail, outside the steps) holds the technical options: voice engine (Kokoro or GenMax), GenMax voice library and model, expressiveness, voice speed and the pause between pages.
 
 On phones the preview stays pinned at the top while you scroll and type, and the sections appear as chips.
 
@@ -74,7 +74,10 @@ The project (quotes, settings, background photo, book cover and music) is saved 
 - **Pause between pages** (0–2.5 s): silence is inserted at the natural gap between pages in the take, so changing it needs no new ElevenLabs request. With Kokoro it lengthens the breath after each page.
 - **Expressiveness** sets ElevenLabs stability (higher = more expressive; v3 uses its creative / natural / robust steps).
 
-- **GenMax (lower cost, bring your own key):** in Settings choose GenMax, paste a GenMax API key (genmax.io → API Docs) and click Connect; the app shows your credit balance. Pick the ElevenLabs or MiniMax voice library and a model, then choose the voice in Sound › Voiceover. Each page is created as a GenMax task (`POST /v1/text-to-speech/{voice_id}`), polled until it is done (`GET /v1/history/{id}`) and its mp3 is downloaded; three parts are created at a time. GenMax returns no word timings, so words are paced by text length, like Kokoro. The key is stored only in that browser and sent only to `api.genmax.io`.
+- **GenMax (included):** in Settings choose GenMax; the voices load by themselves, with no account or key for the user. Pick the ElevenLabs or MiniMax voice library and a model, then choose the voice in Sound › Voiceover. Each page is created as a GenMax task (`POST /v1/text-to-speech/{voice_id}`), polled until it is done (`GET /v1/history/{id}`) and its mp3 is downloaded; three parts are created at a time. GenMax returns no word timings, so words are paced by text length, like Kokoro.
+- **How the GenMax key stays secret:** the browser calls `/api/genmax` (`api/genmax.js`, a Vercel serverless function), which adds the key from the `GENMAX_API_KEY` environment variable and forwards the request. It allows only the calls the app needs (voice lists, create a voice, task status, the finished mp3), at most 1,500 characters per page, only requests coming from the site itself (add other sites in `ALLOWED_ORIGINS`, comma-separated), and about 150 voice parts per visitor per hour (`GENMAX_HOURLY_LIMIT`). GenMax voices therefore work only on the deployed site, not from a downloaded copy of `index.html`.
+- **Setup on Vercel:** Project → Settings → Environment Variables → add `GENMAX_API_KEY` (Production), then redeploy. Without it, the app says GenMax voices are not set up and Kokoro still works.
+- ElevenLabs (bring your own key) is still in the code but hidden (`ELEVEN_ENABLED=false` in `index.html`).
 
 ## Suggested YouTube workflow
 
@@ -107,6 +110,7 @@ It can also be opened directly from your computer by double-clicking `index.html
 
 The current version number is shown at the bottom of the left rail.
 
+- **0.18.0 (2026-10-12):** Two voice engines only: Kokoro (free, on device) and GenMax (included). ElevenLabs is hidden. GenMax now runs through the site's own `/api/genmax` Vercel function with the owner's key from `GENMAX_API_KEY`, so users enter no key; the function allows only the app's calls, caps text length, checks the site origin and limits each visitor per hour.
 - **0.17.1 (2026-10-09):** Videos with voice or music now save as MP4 in Chrome and Edge: the app tries H.264 with AAC or Opus, then VP9/AV1 in an MP4 file, and uses WebM only when the browser cannot write MP4 (Firefox).
 - **0.17.0 (2026-10-09):** Bulk create in Export: paste a list (one line = one video, blocks = multi-page videos) or pick N from a library collection/topic; optional rotating style presets; voice estimate; queue with per-video downloads, Stop, and an automatic .zip of all videos (up to 30).
 - **0.16.0 (2026-10-09):** GenMax added as a third voice engine (ElevenLabs or MiniMax voice libraries through genmax.io with the user's own key): connect with credit balance, voice list with samples, model choice, task polling, three parts at a time, clear error messages; autosaved.

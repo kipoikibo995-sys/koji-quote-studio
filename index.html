@@ -63,7 +63,7 @@
     .tag-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:6px}.tag-row[hidden]{display:none}.tag-row span{margin-right:2px;font-size:13px;font-weight:600;color:#59646a}.tag-row button{border:1px solid #e3ddd1;border-radius:99px;background:#fff;padding:3px 8px;font-size:13px;color:#5d4b6b}.tag-row button:hover{border-color:#5d4b6b;background:#f6f1fa}
     .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:14px 24px 2px;padding:4px;background:#f1ece2;border-radius:12px}.tab{border:0;background:transparent;border-radius:9px;padding:9px 4px;font:600 13px "DM Sans",Arial,sans-serif;color:#5d6a70}.tab b{display:inline-grid;place-items:center;width:18px;height:18px;margin-right:4px;border-radius:50%;background:#e2dccf;font:600 12px "DM Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;color:#5d6a70}.tab.active{background:#fff;color:var(--ink);box-shadow:0 1px 3px #081c2522}.tab.active b{background:var(--blue);color:#fff}.tab:focus-visible{outline:2px solid var(--blue)}
     .panel[hidden]{display:none}.panel>label:first-child,.panel>.pages-head:first-child{margin-top:20px}.sidebar label{margin:16px 0 7px}.sidebar .pages-head{margin-top:20px}.sidebar .pages-head label{margin:0}.field:after{content:"▾";font-size:13px;bottom:14px;color:#5d6a70}.field.text:after{content:""}
-    .segmented{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.segmented button{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid #ded8cc;border-radius:11px;background:#fcfaf4;padding:11px 6px;font:700 15px "DM Sans",Arial,sans-serif;color:var(--ink)}.segmented small{font:500 12px "DM Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;opacity:.65}.segmented button:hover{border-color:var(--ink)}.segmented button.active{background:var(--ink);border-color:var(--ink);color:#fff}
+    .segmented{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.segmented button{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid #ded8cc;border-radius:11px;background:#fcfaf4;padding:11px 6px;font:700 15px "DM Sans",Arial,sans-serif;color:var(--ink)}.segmented small{font:500 12px "DM Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;opacity:.65}.segmented button[hidden]{display:none}.segmented button:hover{border-color:var(--ink)}.segmented button.active{background:var(--ink);border-color:var(--ink);color:#fff}
     .toggle-card{display:flex!important;align-items:center;justify-content:space-between;gap:14px;margin:20px 0 4px!important;padding:14px 16px;border:1px solid #e4ded2;border-radius:12px;background:#fff;text-transform:none!important;letter-spacing:0!important;cursor:pointer}.toggle-card span{display:flex;flex-direction:column;gap:3px}.toggle-card b{font:700 14px "DM Sans",Arial,sans-serif;color:var(--ink)}.toggle-card small{font:400 12px "DM Sans",Arial,sans-serif;color:#56616a}.toggle-card input{appearance:none;flex:0 0 auto;width:40px;height:23px;margin:0;border-radius:99px;background:#cfd5d6;position:relative;cursor:pointer;transition:background .15s}.toggle-card input:after{content:"";position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 2px #0003;transition:transform .15s}.toggle-card input:checked{background:var(--blue)}.toggle-card input:checked:after{transform:translateX(17px)}
     .end-fields{border:0;padding:0;margin:0;background:none}.end-fields.off{opacity:.4;pointer-events:none}.divider{height:1px;background:#e4ded2;margin:24px 0 2px}.hint{margin:7px 0 0;font-size:13px;color:#59646a}.side-foot .helper{font-size:10.5px}
     @media(max-width:860px){.app{padding:0 18px 18px}main{grid-template-columns:1fr}.controls{border-right:0;border-bottom:1px solid #e4ded2}.preview-panel{padding:25px}.phone{width:300px}.row,.setup-grid{grid-template-columns:1fr}.presets{grid-template-columns:repeat(3,1fr)}}
@@ -264,7 +264,7 @@
         <button type="button" class="rail-item tab step" role="tab" aria-selected="false" data-tab="export"><span class="step-num">5</span><span class="step-text"><b>Export</b><small>Render & share</small></span></button>
       </div>
       <button type="button" class="rail-item tab settings-tab" role="tab" aria-selected="false" data-tab="settings"><span class="step-num gear">⚙</span><span class="step-text"><b>Settings</b><small>Voice engine &amp; API key</small></span></button>
-      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.17.1</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
+      <div class="rail-foot"><p class="app-version" id="appVersion">Quote Studio v0.18.0</p><p class="helper" id="renderMeta">1080 × 1920 · renders in your browser · nothing is uploaded</p></div>
     </nav>
     <aside class="sidebar">
       <div class="panel-head"><p class="step-crumb" id="stepCrumb">Step 1 of 5</p><h2 id="panelTitle">Write</h2><p id="panelDesc">Your quotes, the credit line and an optional opening hook.</p><div class="sub-chips" id="subChips"></div></div>
@@ -341,8 +341,8 @@
           </div>
         </section>
         <section class="panel" data-panel="settings" hidden>
-          <div class="set-group"><h4>Voice engine</h4><div class="segmented three" id="providerSeg"><button class="active" data-value="kokoro">Kokoro<small>Free · on this device</small></button><button data-value="genmax">GenMax<small>Lower cost · your key</small></button><button data-value="eleven">ElevenLabs<small>Premium · your key</small></button></div><p class="hint">Kokoro is free and runs on this device. GenMax gives ElevenLabs and MiniMax voices at a lower price with your GenMax key. ElevenLabs uses your own ElevenLabs key.</p></div>
-          <div class="set-group" id="gmFields" hidden><h4>GenMax</h4><label for="gmKey">API key</label><div class="key-row"><div class="field text"><input id="gmKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your GenMax API key" /></div><button type="button" class="key-btn" id="gmConnect">Connect</button></div><div class="voice-status" id="gmConnStatus"></div><p class="hint">Find your key at genmax.io → API Docs. It is saved only in this browser and sent only to GenMax. Quote text is sent to GenMax to create the voice and uses your GenMax credits. <button type="button" class="link-btn inline" id="gmForget" hidden>Forget key</button></p><div id="gmConnected" hidden><label for="gmSource">Voice library</label><div class="field"><select id="gmSource"><option value="elevenlabs">ElevenLabs voices</option><option value="minimax">MiniMax voices</option></select></div><label for="gmModel">Model</label><div class="field"><select id="gmModel"></select></div></div></div>
+          <div class="set-group"><h4>Voice engine</h4><div class="segmented two" id="providerSeg"><button class="active" data-value="kokoro">Kokoro<small>Free · on this device</small></button><button data-value="genmax">GenMax<small>Natural · included</small></button><button data-value="eleven" hidden>ElevenLabs<small>Premium · your key</small></button></div><p class="hint">Kokoro is free and runs on this device. GenMax gives natural ElevenLabs and MiniMax voices and is included: nothing to set up.</p></div>
+          <div class="set-group" id="gmFields" hidden><h4>GenMax</h4><div class="voice-status" id="gmConnStatus"></div><p class="hint">GenMax voices are included with Quote Studio: no account or key needed. Quote text is sent to GenMax to create the voice.</p><div id="gmConnected" hidden><label for="gmSource">Voice library</label><div class="field"><select id="gmSource"><option value="elevenlabs">ElevenLabs voices</option><option value="minimax">MiniMax voices</option></select></div><label for="gmModel">Model</label><div class="field"><select id="gmModel"></select></div></div></div>
           <div class="set-group" id="elevenFields" hidden><h4>ElevenLabs</h4>
               <label for="elevenKey">API key</label><div class="key-row"><div class="field text"><input id="elevenKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your API key" /></div><button type="button" class="key-btn" id="elevenConnect">Connect</button></div><div class="voice-status" id="elevenConnStatus"></div>
               <p class="hint">Get a key at elevenlabs.io → Developers → API keys. It is saved only in this browser and sent only to ElevenLabs. Quote text is sent to ElevenLabs to create the voice, and characters count against your ElevenLabs plan. <button type="button" class="link-btn inline" id="elevenForget" hidden>Forget key</button></p>
@@ -374,7 +374,7 @@
               <div class="need-key" id="elevenNeedKey"><b>Connect ElevenLabs first</b><span>Add your API key in Settings to choose an ElevenLabs voice.</span><button type="button" class="key-btn" data-open-settings>⚙ Open settings</button></div>
               <p class="hint" id="v3Hint" hidden>Eleven v3 understands audio tags like <b>[whispers]</b> or <b>[sighs]</b> in your quotes. They shape the voice and are hidden in the video.</p></div>
             <div id="gmVoiceBox" hidden><div id="gmVoiceRow" hidden><label for="gmVoice">Voice</label><div class="key-row"><div class="field"><select id="gmVoice"></select></div><button type="button" class="key-btn" id="gmSample" title="Play the voice sample (free)">▶ Sample</button></div></div>
-              <div class="need-key" id="gmNeedKey"><b>Connect GenMax first</b><span>Add your GenMax API key in Settings to choose a voice.</span><button type="button" class="key-btn" data-open-settings>⚙ Open settings</button></div></div>
+              <div class="need-key" id="gmNeedKey"><b id="gmNeedTitle">Loading GenMax voices…</b><span id="gmNeedText">This takes a few seconds.</span><button type="button" class="key-btn" id="gmRetry" hidden>Try again</button></div></div>
             
             
             <label class="check-row" for="voiceEndCard"><input type="checkbox" id="voiceEndCard" checked /> Also read the end card button and small line</label>
@@ -906,7 +906,9 @@ self.onmessage=async e=>{const m=e.data;try{
     }
     function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
     function safeSet(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
-    function setProvider(name){voiceProvider=name;providerButtons.forEach(b=>b.classList.toggle('active',b.dataset.value===name));kokoroFields.hidden=name!=='kokoro';elevenFields.hidden=name!=='eleven';safeSet('qvs-voice-provider',name);updateRenderMeta();updateSummary();refreshVoiceStatus();try{updateVoiceBoxes()}catch(e){}}
+    // ElevenLabs is hidden for now; the code stays so it can be turned back on.
+    const ELEVEN_ENABLED=false;
+    function setProvider(name){if(name==='eleven'&&!ELEVEN_ENABLED)name='kokoro';voiceProvider=name;if(name==='genmax')try{if(!gmVoices.length)gmConnectKey()}catch(e){}providerButtons.forEach(b=>b.classList.toggle('active',b.dataset.value===name));kokoroFields.hidden=name!=='kokoro';elevenFields.hidden=name!=='eleven';safeSet('qvs-voice-provider',name);updateRenderMeta();updateSummary();refreshVoiceStatus();try{updateVoiceBoxes()}catch(e){}}
     function updateRenderMeta(){const config=FORMATS[formatSelect.value]||FORMATS.portrait;const cloudVoice=voiceEnabled.checked&&voiceProvider!=='kokoro',who=voiceProvider==='genmax'?'GenMax':'ElevenLabs';renderMeta.textContent=`${config.width} × ${config.height} · renders in your browser · `+(cloudVoice?'voice by '+who:'nothing is uploaded');$('#localNote').textContent=cloudVoice?'Renders on your device · voice by '+who:'No cloud AI · renders on your device'}
 
     // Schedules every voice clip on an audio graph, starting `when` seconds from now (audio clock).
@@ -1112,18 +1114,23 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
     elevenSample.addEventListener('click',()=>{const v=elevenVoices.find(x=>x.voice_id===elevenVoice.value);if(!v||!v.preview_url){setVoiceStatus('This voice has no sample.');return}if(sampleAudio)sampleAudio.pause();sampleAudio=new Audio(v.preview_url);sampleAudio.play().catch(()=>setVoiceStatus('Could not play the sample.','err'))});
     {const savedKey=safeGet('qvs-eleven-key');if(savedKey){elevenKey.value=savedKey;elevenForget.hidden=false}if(safeGet('qvs-voice-provider')==='eleven')setProvider('eleven')}
 
-    // ---------- GenMax (genmax.io): ElevenLabs and MiniMax voices through one cheaper API, with the user's own key ----------
+    // ---------- GenMax (genmax.io): ElevenLabs and MiniMax voices, paid by the site owner ----------
+    // Calls go through /api/genmax (api/genmax.js on Vercel), which adds the owner's key; the browser never sees it.
     // Each part is a task: POST /v1/text-to-speech/{voice} returns an id, GET /v1/history/{id} reports status and the mp3 URL.
-    const GM_API='https://api.genmax.io',GM_MODELS={elevenlabs:[['eleven_multilingual_v2','Multilingual v2 · best quality'],['eleven_flash_v2_5','Flash v2.5 · faster, fewer credits']],minimax:[['speech-2.8-hd','Speech 2.8 HD · best quality'],['speech-2.8-turbo','Speech 2.8 Turbo · faster, cheaper']]};
-    const gmKey=$('#gmKey'),gmSource=$('#gmSource'),gmModel=$('#gmModel'),gmVoice=$('#gmVoice');let gmVoices=[];
+    const GM_API='/api/genmax',GM_MODELS={elevenlabs:[['eleven_multilingual_v2','Multilingual v2 · best quality'],['eleven_flash_v2_5','Flash v2.5 · faster, fewer credits']],minimax:[['speech-2.8-hd','Speech 2.8 HD · best quality'],['speech-2.8-turbo','Speech 2.8 Turbo · faster, cheaper']]};
+    const gmSource=$('#gmSource'),gmModel=$('#gmModel'),gmVoice=$('#gmVoice');let gmVoices=[];
     function gmSetConn(text,kind=''){const el=$('#gmConnStatus');el.textContent=text;el.className='voice-status'+(kind?' '+kind:'')}
     async function gmFetch(path,options={}){
-      let res;try{res=await fetch(GM_API+path,{...options,headers:{'xi-api-key':gmKey.value.trim(),...(options.body?{'Content-Type':'application/json'}:{})}})}catch(e){throw new Error('This page could not reach api.genmax.io. Check your internet and turn off ad blockers for this site. The browser console (F12) shows the exact reason.')}
-      if(!res.ok){let detail='';try{const b=await res.json();detail=b.error||b.message||(b.detail&&(b.detail.message||b.detail))||''}catch(e){}
-        if(res.status===401)throw new Error('GenMax did not accept this API key'+(detail?` (${detail})`:'')+'. Copy it again from genmax.io → API Docs.');
-        if(res.status===402||/credit|balance|insufficient/i.test(detail))throw new Error('Your GenMax account is out of credits'+(detail?` (${detail})`:'')+'.');
-        throw new Error(`GenMax error ${res.status}${detail?': '+detail:''}.`)}
-      return res;
+      let res;try{res=await fetch(GM_API+'?path='+encodeURIComponent(path),{...options,headers:options.body?{'Content-Type':'application/json'}:{}})}catch(e){throw new Error('Could not reach the voice service. Check your internet and try again.')}
+      return gmCheck(res);
+    }
+    async function gmCheck(res){
+      if(res.ok)return res;let detail='',code='';try{const b=await res.json();code=b.code||'';detail=b.error||b.message||(b.detail&&(b.detail.message||b.detail))||''}catch(e){if(res.status===404||res.status===405)throw new Error('GenMax voices only work on the Quote Studio website. Use Kokoro here.')}
+      if(code==='no_key')throw new Error('GenMax voices are not set up on this site yet. Use Kokoro for now.');
+      if(res.status===401)throw new Error('The GenMax connection of this site is not working right now. Use Kokoro for now and tell the seller.');
+      if(res.status===402||/credit|balance|insufficient/i.test(detail))throw new Error('GenMax voices are paused right now (no credits left). Use Kokoro for now and tell the seller.');
+      if(res.status===429||res.status===400||res.status===403)throw new Error(detail||`GenMax error ${res.status}.`);
+      throw new Error(`GenMax error ${res.status}${detail?': '+detail:''}.`);
     }
     function gmFillModels(){const prev=gmModel.value;gmModel.innerHTML='';GM_MODELS[gmSource.value].forEach(([v,l])=>gmModel.add(new Option(l,v)));if(GM_MODELS[gmSource.value].some(m=>m[0]===prev))gmModel.value=prev}
     function gmLabel(v){const cap=x=>x?String(x)[0].toUpperCase()+String(x).slice(1):'';if(gmSource.value==='minimax'){const tags=(v.tag_list||[]).filter(t=>!/^english$/i.test(t));return `${v.voice_name||v.uniq_id||'Voice'}${tags.length?' · '+tags.join(', '):''}`}
@@ -1134,14 +1141,14 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
       gmVoices.forEach(v=>gmVoice.add(new Option(gmLabel(v),v.voice_id)));if(prev&&gmVoices.some(v=>v.voice_id===prev))gmVoice.value=prev;
       if(!gmVoices.length)throw new Error('GenMax returned no voices for this library.');
     }
-    async function gmConnectKey(){
-      if(!gmKey.value.trim()){gmSetConn('');return}
-      const btn=$('#gmConnect');btn.disabled=true;btn.textContent='Connecting…';
-      try{const me=await (await gmFetch('/v1/auth/me')).json();gmFillModels();await gmLoadVoices();
-        safeSet('qvs-genmax-key',gmKey.value.trim());$('#gmConnected').hidden=false;$('#gmForget').hidden=false;btn.textContent='Connected';
-        const credits=me&&me.credit_balance!=null?` · ${Number(me.credit_balance).toLocaleString()} credits left`:'';gmSetConn(`Connected · ${gmVoices.length} voices${credits}.`,'ok');setVoiceStatus(`Connected to GenMax · ${gmVoices.length} voices${credits}.`,'ok');refreshVoiceStatus();updateSummary()}
-      catch(err){$('#gmConnected').hidden=true;btn.textContent='Connect';gmSetConn(err.message,'err');setVoiceStatus(err.message,'err')}
-      finally{btn.disabled=false}
+    let gmLoading=null;
+    function gmNeed(title,text,retry){$('#gmNeedTitle').textContent=title;$('#gmNeedText').textContent=text;$('#gmRetry').hidden=!retry}
+    function gmConnectKey(){
+      if(gmLoading)return gmLoading;gmNeed('Loading GenMax voices…','This takes a few seconds.',false);gmSetConn('Loading voices…');
+      gmLoading=(async()=>{try{gmFillModels();await gmLoadVoices();$('#gmConnected').hidden=false;gmSetConn(`Ready · ${gmVoices.length} voices.`,'ok');refreshVoiceStatus();updateSummary()}
+        catch(err){$('#gmConnected').hidden=true;gmNeed('GenMax voices are not available',err.message,true);gmSetConn(err.message,'err')}
+        finally{gmLoading=null}})();
+      return gmLoading;
     }
     const gmSleep=ms=>new Promise(r=>setTimeout(r,ms));
     async function gmGenerate(text){
@@ -1152,28 +1159,28 @@ coverBadge.addEventListener('change',()=>{showEnd(false);status.textContent=cove
       while(Date.now()<until){await gmSleep(1200);info=await (await gmFetch(`/v1/history/${encodeURIComponent(task.id)}`)).json();
         if(info.status==='completed')break;if(info.status==='failed')throw new Error('GenMax could not create this voice'+(info.error?`: ${info.error}`:'.'))}
       if(!info||info.status!=='completed'||!info.result||!info.result.audio_url)throw new Error('GenMax is taking too long. Try again in a minute.');
-      // The mp3 link may be public or may need the key; try without it first, then with it.
-      let audio;try{audio=await fetch(info.result.audio_url);if(audio.status===401||audio.status===403)audio=await fetch(info.result.audio_url,{headers:{'xi-api-key':gmKey.value.trim()}})}catch(e){throw new Error('The GenMax audio file could not be downloaded in this browser.')}
+      // The server fetches the finished mp3 for this task, so no key is needed here.
+      let audio;try{audio=await gmCheck(await fetch(GM_API+'?audio='+encodeURIComponent(task.id)))}catch(e){throw new Error(e.message&&!/fetch/i.test(e.message)?e.message:'The GenMax audio file could not be downloaded in this browser.')}
       if(!audio.ok)throw new Error(`The GenMax audio file could not be downloaded (${audio.status}).`);
       const buffer=await getAudioContext().decodeAudioData(await audio.arrayBuffer());return{buffer,duration:buffer.duration};
     }
     // Creates every missing part, three at a time.
     async function gmEnsure(missing){
-      if(!gmKey.value.trim()||$('#gmConnected').hidden||!gmVoice.value){setVoiceStatus('Connect your GenMax key in Settings and pick a voice first.','err');status.textContent='Voiceover needs a GenMax key — see Settings.';throw new Error('GenMax not connected')}
+      if($('#gmConnected').hidden)await gmConnectKey();
+      if($('#gmConnected').hidden||!gmVoice.value){setVoiceStatus('GenMax voices are not available right now. Try again, or use Kokoro.','err');status.textContent='Voiceover needs GenMax voices — see the Voice section.';throw new Error('GenMax not connected')}
       voiceGenerate.disabled=true;let done=0;const queue=missing.slice();const bar=$('#voiceBar');bar.hidden=false;bar.firstChild.style.width='0%';
       const tick=()=>{const pct=Math.round(done/missing.length*100);bar.firstChild.style.width=pct+'%';setVoiceStatus(`Creating voice with GenMax… ${done} of ${missing.length} parts`);status.textContent=`Creating voice… ${done}/${missing.length}`};tick();
       try{await Promise.all([0,1,2].map(async()=>{while(queue.length){const text=queue.shift(),key=voiceKey(text);voiceCache.set(key,await gmGenerate(text));done++;tick()}}))}
       catch(err){setVoiceStatus(err.message,'err');status.textContent='Voiceover failed — see the Voice section.';throw err}
       finally{voiceGenerate.disabled=false;bar.hidden=true}
     }
-    $('#gmConnect').addEventListener('click',gmConnectKey);gmKey.addEventListener('keydown',e=>{if(e.key==='Enter')gmConnectKey()});gmKey.addEventListener('input',()=>{$('#gmConnect').textContent='Connect'});
-    $('#gmForget').addEventListener('click',()=>{safeSet('qvs-genmax-key',null);gmKey.value='';gmVoices=[];gmVoice.innerHTML='';$('#gmConnected').hidden=true;$('#gmForget').hidden=true;$('#gmConnect').textContent='Connect';gmSetConn('GenMax key removed from this browser.')});
+    $('#gmRetry').addEventListener('click',gmConnectKey);
     gmSource.addEventListener('change',async()=>{gmFillModels();try{await gmLoadVoices();gmSetConn(`${gmVoices.length} voices.`,'ok')}catch(err){gmSetConn(err.message,'err')}updateSummary();refreshVoiceStatus()});
     gmModel.addEventListener('change',()=>{updateSummary();refreshVoiceStatus()});
     gmVoice.addEventListener('change',()=>{safeSet('qvs-genmax-voice-'+gmSource.value,gmVoice.value);updateSummary();refreshVoiceStatus()});
     $('#gmSample').addEventListener('click',()=>{const v=gmVoices.find(x=>x.voice_id===gmVoice.value),url=v&&(v.preview_url||v.sample_audio);if(!url){setVoiceStatus('This voice has no sample.');return}if(sampleAudio)sampleAudio.pause();sampleAudio=new Audio(url);sampleAudio.play().catch(()=>setVoiceStatus('Could not play the sample.','err'))});
-    providerButtons.forEach(b=>b.addEventListener('click',()=>{if(b.dataset.value==='genmax'&&gmKey.value.trim()&&!gmVoices.length)gmConnectKey()}));
-    gmFillModels();{const k=safeGet('qvs-genmax-key');if(k){gmKey.value=k;$('#gmForget').hidden=false}if(safeGet('qvs-voice-provider')==='genmax'){setProvider('genmax');if(k)gmConnectKey()}}
+    providerButtons.forEach(b=>b.addEventListener('click',()=>{if(b.dataset.value==='genmax'&&!gmVoices.length)gmConnectKey()}));
+    gmFillModels();safeSet('qvs-genmax-key',null);if(safeGet('qvs-voice-provider')==='genmax'){setProvider('genmax');gmConnectKey()}
     quote.addEventListener('input',refreshVoiceStatus);[endCta,endSub].forEach(el=>el.addEventListener('input',refreshVoiceStatus));
     const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
     function openTab(name){const info=PANEL_INFO[name];if(info){panelTitle.textContent=info[0];panelDesc.textContent=info[1]}tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle('active',on);t.setAttribute('aria-selected',String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);showEnd(name==='promo'&&endEnabled.checked);if(name==='export')updateExportSummary();if(name==='settings'){$('#stepCrumb').textContent='Settings';$('#subChips').innerHTML=''}else lastStep=name;if(typeof onStepOpen==='function')onStepOpen(name);try{localStorage.setItem('qvs-tab',name)}catch(e){}}
